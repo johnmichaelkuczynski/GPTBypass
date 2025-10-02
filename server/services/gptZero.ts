@@ -13,13 +13,20 @@ export class GPTZeroService {
       throw new Error('GPTZero API key not configured');
     }
 
+    const trimmedKey = this.API_KEY.trim();
+    console.log('GPTZero API Key Debug:', {
+      keyLength: trimmedKey.length,
+      keyPrefix: trimmedKey.substring(0, 10) + '...',
+      hasSuffix: trimmedKey.length > 10,
+    });
+
     try {
       const response = await fetch(this.API_URL, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'x-api-key': this.API_KEY,
+          'x-api-key': trimmedKey,
         },
         body: JSON.stringify({
           document: text,

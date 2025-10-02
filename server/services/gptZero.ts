@@ -14,11 +14,6 @@ export class GPTZeroService {
     }
 
     const trimmedKey = this.API_KEY.trim();
-    console.log('GPTZero API Key Debug:', {
-      keyLength: trimmedKey.length,
-      keyPrefix: trimmedKey.substring(0, 10) + '...',
-      hasSuffix: trimmedKey.length > 10,
-    });
 
     try {
       const response = await fetch(this.API_URL, {

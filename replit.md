@@ -6,6 +6,18 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 
 ## Recent Changes (January 2025)
 
+**GPTZero Integration Fixed (October 2, 2025)**
+- Successfully updated GPTZero API key with proper authentication
+- Confirmed API integration working with 32-character key format
+- Text analysis returning accurate AI detection scores (tested with 100% AI content)
+- Full pipeline operational: PDF upload → Text extraction → GPTZero analysis → AI rewriting → Output analysis
+
+**PDF Binary-Safe Processing (Confirmed Working)**
+- Dedicated `/api/pdf/extract` endpoint using multer memory storage
+- Clean text extraction using pdf-parse library
+- Binary corruption issues fully resolved - PDFs display readable text
+- "Completely de novo" implementation as required
+
 **Advanced Preset System Implementation**
 - Added comprehensive PRESET_TEXT mapping with 40+ precise rewrite instructions
 - Implemented expandPresets function for combo preset handling ("Lean & Sharp", "Analytic")

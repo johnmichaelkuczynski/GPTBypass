@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function VideoInstructions() {
-  const videoPath = "/attached_assets/GPBBYPASS VIDEO_1760210392316.mkv";
+  const videoPath = "/attached_assets/instructional-video.mp4";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -29,11 +29,11 @@ export default function VideoInstructions() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6">
             <video 
               controls 
+              preload="metadata"
               className="w-full rounded-lg"
               data-testid="video-instructions"
+              src={videoPath}
             >
-              <source src={videoPath} type="video/x-matroska" />
-              <source src={videoPath} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
 

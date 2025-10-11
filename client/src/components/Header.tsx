@@ -1,5 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
+import { PlayCircle } from "lucide-react";
 
 interface HeaderProps {
   provider: string;
@@ -17,6 +19,17 @@ export default function Header({ provider, onProviderChange, onShowApiKeys }: He
             <span className="text-sm text-gray-500 font-medium">AI Text Rewriter</span>
           </div>
           <div className="flex items-center space-x-4">
+            <Link href="/video-instructions">
+              <Button 
+                variant="default" 
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md"
+                data-testid="button-video-link"
+              >
+                <PlayCircle className="w-4 h-4 mr-2" />
+                LINK TO INSTRUCTIONAL VIDEO
+              </Button>
+            </Link>
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">LLM Provider:</label>
               <Select value={provider} onValueChange={onProviderChange}>

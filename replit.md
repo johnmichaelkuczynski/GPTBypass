@@ -6,6 +6,14 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 
 ## Recent Changes (January 2025)
 
+**Instructional Video Integration (October 11, 2025)**
+- Added dedicated video instructions page at `/video-instructions` route
+- Prominent "LINK TO INSTRUCTIONAL VIDEO" button in header with PlayCircle icon
+- Video page features full-width player with MKV format support
+- Back navigation button returns users to main application
+- Static asset serving configured for attached_assets folder
+- Successfully tested navigation flow: homepage → video page → back to homepage
+
 **GPTZero Integration Fixed (October 2, 2025)**
 - Successfully updated GPTZero API key with proper authentication
 - Confirmed API integration working with 32-character key format

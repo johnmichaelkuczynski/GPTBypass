@@ -6,6 +6,13 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 
 ## Recent Changes (January 2025)
 
+**Database Integration (October 21, 2025)**
+- PostgreSQL database provisioned with Neon serverless connection
+- DATABASE_URL environment variable configured
+- Database tables created: users, documents, rewrite_jobs
+- Ready to migrate from MemStorage to DatabaseStorage when needed
+- Schema successfully pushed using drizzle-kit
+
 **UI/UX Improvements (October 21, 2025)**
 - Dramatically increased text box sizes for better readability (calc(100vh - 300px) height, 600px minimum)
 - Increased font size from 14px to 16px (text-base) across all text boxes

@@ -26,6 +26,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const document: Document = {
       ...insertDocument,
+      aiScore: insertDocument.aiScore ?? null,
       id,
       createdAt: new Date(),
     };
@@ -39,11 +40,22 @@ export class MemStorage implements IStorage {
 
   async createRewriteJob(insertJob: InsertRewriteJob): Promise<RewriteJob> {
     const id = randomUUID();
-    const job: RewriteJob = {
+    const job = {
       ...insertJob,
+      styleText: insertJob.styleText ?? null,
+      contentMixText: insertJob.contentMixText ?? null,
+      customInstructions: insertJob.customInstructions ?? null,
+      selectedPresets: insertJob.selectedPresets ?? null,
+      chunks: insertJob.chunks ?? null,
+      selectedChunkIds: insertJob.selectedChunkIds ?? null,
+      mixingMode: insertJob.mixingMode ?? null,
+      outputText: insertJob.outputText ?? null,
+      inputAiScore: insertJob.inputAiScore ?? null,
+      outputAiScore: insertJob.outputAiScore ?? null,
+      status: insertJob.status ?? "pending",
       id,
       createdAt: new Date(),
-    };
+    } as RewriteJob;
     this.rewriteJobs.set(id, job);
     return job;
   }

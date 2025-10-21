@@ -3,8 +3,6 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function VideoInstructions() {
-  const videoPath = "/attached_assets/instructional-video.mp4";
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
@@ -27,15 +25,16 @@ export default function VideoInstructions() {
           </h1>
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6">
-            <video 
-              controls 
-              preload="metadata"
-              className="w-full rounded-lg"
-              data-testid="video-instructions"
-              src={videoPath}
-            >
-              Your browser does not support the video tag.
-            </video>
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <iframe 
+                className="absolute top-0 left-0 w-full h-full rounded-lg"
+                src="https://www.youtube.com/embed/PR0JX_Hrgqc"
+                title="GPT Bypass Instructional Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                data-testid="video-instructions"
+              />
+            </div>
 
             <div className="mt-6 text-gray-600 dark:text-gray-400">
               <p className="text-sm">

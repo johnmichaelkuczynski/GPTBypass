@@ -9,12 +9,11 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 **Instructional Video Integration (October 11, 2025)**
 - Added dedicated video instructions page at `/video-instructions` route
 - Prominent "LINK TO INSTRUCTIONAL VIDEO" button in header with PlayCircle icon
-- Converted instructional video from MKV to MP4 format using ffmpeg for universal browser compatibility
-- Video specs: H.264/AAC codec, 1280x720 @ 30fps, 2:40 duration, 3.9MB file size
-- Full-width video player with controls, preload metadata, and proper MIME type serving
+- Embedded YouTube video (https://www.youtube.com/watch?v=PR0JX_Hrgqc) with responsive iframe
+- 16:9 aspect ratio maintained with padding-bottom technique for all screen sizes
+- Full YouTube player controls including fullscreen, quality selection, and playback speed
 - Back navigation button returns users to main application
-- Static asset serving configured for attached_assets folder
-- Successfully tested: navigation flow, video playback, and browser compatibility
+- Successfully tested: navigation flow, video playback, and responsive behavior
 
 **GPTZero Integration Fixed (October 2, 2025)**
 - Successfully updated GPTZero API key with proper authentication

@@ -294,7 +294,7 @@ export default function Home() {
         
         <main className="flex-1 overflow-y-auto">
           <div className="p-6">
-            <div className="grid grid-cols-4 gap-4 mb-6" style={{ height: '65%' }}>
+            <div className="grid grid-cols-4 gap-4 mb-6" style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}>
               <TextBox
                 title="Input Text (Box A)"
                 icon="fas fa-upload"

@@ -207,7 +207,7 @@ export default function TextBox({
           </div>
         ) : (
           <Textarea
-            className="w-full h-full resize-none border-0 focus:ring-0 text-sm text-gray-900 placeholder-gray-500 p-0"
+            className="w-full h-full resize-none border-0 focus:ring-0 !text-base md:!text-base leading-relaxed text-gray-900 placeholder-gray-500 p-0"
             placeholder={placeholder}
             value={value}
             onChange={(e) => onChange(e.target.value)}

@@ -6,6 +6,14 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 
 ## Recent Changes (January 2025)
 
+**UI/UX Improvements (October 21, 2025)**
+- Dramatically increased text box sizes for better readability (calc(100vh - 300px) height, 600px minimum)
+- Increased font size from 14px to 16px (text-base) across all text boxes
+- Added relaxed line-height for improved text readability
+- Set minimum content area height to 450px for each box (actual heights: Box A 435px, Box B 463px, Box C 463px, Box D 418px)
+- Proper scrolling functionality implemented for long text content
+- Successfully tested with end-to-end playwright verification
+
 **Instructional Video Integration (October 11, 2025)**
 - Added dedicated video instructions page at `/video-instructions` route
 - Prominent "LINK TO INSTRUCTIONAL VIDEO" button in header with PlayCircle icon

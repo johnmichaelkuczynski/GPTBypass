@@ -89,6 +89,8 @@
   
   .text-box-content {
     @apply flex-1 p-4;
+    min-height: 450px;
+    overflow-y: auto;
   }
   
   .text-box-footer {

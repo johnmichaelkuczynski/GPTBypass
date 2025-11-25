@@ -7,6 +7,7 @@ import { textChunkerService } from "./services/textChunker";
 import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
+import { matchSentences } from "./services/styleMatcher";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -139,10 +140,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Analyze input text
       const inputAnalysis = await gptZeroService.analyzeText(rewriteRequest.inputText);
       
+      // AUTOMATIC SENTENCE MATCHING: Build style text from matched sentences
+      let matchedStyleText = rewriteRequest.styleText || '';
+      const styleType = rewriteRequest.styleType || 'academic';
+      
+      if (styleType === 'academic' || styleType === 'personal') {
+        matchedStyleText = matchSentences(rewriteRequest.inputText, styleType);
+        console.log(`🔥 STYLE MATCHER: Built ${matchedStyleText.length} chars of matched style text from ${styleType} sample`);
+      } else if (styleType === 'custom' && rewriteRequest.styleText) {
+        matchedStyleText = matchSentences(rewriteRequest.inputText, 'custom', rewriteRequest.styleText);
+        console.log(`🔥 STYLE MATCHER: Built ${matchedStyleText.length} chars of matched style text from custom sample`);
+      }
+      
       // Create rewrite job
       const rewriteJob = await storage.createRewriteJob({
         inputText: rewriteRequest.inputText,
-        styleText: rewriteRequest.styleText,
+        styleText: matchedStyleText,
         contentMixText: rewriteRequest.contentMixText,
         customInstructions: rewriteRequest.customInstructions,
         selectedPresets: rewriteRequest.selectedPresets,
@@ -155,10 +168,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
-        // Perform rewrite
+        // Perform rewrite with matched style text
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: rewriteRequest.styleText,
+          styleText: matchedStyleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,

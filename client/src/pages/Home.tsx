@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "@/components/Header";
 import LeftSidebar from "@/components/LeftSidebar";
 import TextBox from "@/components/TextBox";
@@ -8,9 +8,8 @@ import ChunkSelectionModal from "@/components/ChunkSelectionModal";
 import DownloadModal from "@/components/DownloadModal";
 import ChatInterface from "@/components/ChatInterface";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { writingSamples } from "@/lib/writingSamples";
 import type { TextChunk, RewriteRequest, RewriteResponse } from "@shared/schema";
 
 export default function Home() {
@@ -20,7 +19,7 @@ export default function Home() {
   const [outputText, setOutputText] = useState("");
   const [customInstructions, setCustomInstructions] = useState("");
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
-  const [selectedStyleSample, setSelectedStyleSample] = useState<string>("");
+  const [styleType, setStyleType] = useState<'academic' | 'personal' | 'custom'>('academic');
   
   // Content mixing state
   const [contentMixText, setContentMixText] = useState("");
@@ -41,15 +40,6 @@ export default function Home() {
   const [lastJobId, setLastJobId] = useState<string | null>(null);
   
   const { toast } = useToast();
-
-  // Set default style sample on component mount
-  useEffect(() => {
-    const defaultSample = writingSamples.find(sample => sample.id === "formal-functional-relationships");
-    if (defaultSample && !selectedStyleSample) {
-      setSelectedStyleSample(defaultSample.content);
-      setStyleText(defaultSample.content);
-    }
-  }, []);
 
   // Text analysis mutation
   const analyzeTextMutation = useMutation({
@@ -154,11 +144,6 @@ export default function Home() {
     }
   };
 
-  const handleStyleSampleSelect = (content: string) => {
-    setSelectedStyleSample(content);
-    handleStyleTextChange(content);
-  };
-
   const handleStyleUpload = (content: string, type: 'style' | 'content') => {
     if (type === 'style') {
       setStyleText(content);
@@ -194,7 +179,8 @@ export default function Home() {
             .map(chunk => chunk.content)
             .join('\n\n')
         : inputText,
-      styleText: styleText.trim() || undefined,
+      styleType,
+      styleText: styleType === 'custom' ? (styleText.trim() || undefined) : undefined,
       contentMixText: contentMixText.trim() || undefined,
       customInstructions: customInstructions.trim() || undefined,
       selectedPresets: selectedPresets.length > 0 ? selectedPresets : undefined,
@@ -261,13 +247,8 @@ export default function Home() {
         <LeftSidebar
           selectedPresets={selectedPresets}
           onPresetsChange={setSelectedPresets}
-          selectedStyleSample={selectedStyleSample}
-          onStyleSampleSelect={handleStyleSampleSelect}
-          onContentSampleSelect={(content) => {
-            setContentMixText(content);
-            setMixingMode(styleText.trim() ? 'both' : 'content');
-            toast({ description: "Writing sample sent to Content Box successfully!" });
-          }}
+          selectedStyleType={styleType}
+          onStyleTypeChange={setStyleType}
         />
         
         <main className="flex-1 overflow-y-auto">

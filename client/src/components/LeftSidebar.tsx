@@ -1,227 +1,248 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { instructionPresets } from "@/lib/instructionPresets";
-import { writingSamples, getCategories, getSamplesByCategory, getCategoryCounts } from "@/lib/writingSamples";
+import { GraduationCap, User, Upload, Check, FileText, X } from "lucide-react";
+import { StyleMode } from "@/lib/sentenceDatabases";
+import { useToast } from "@/hooks/use-toast";
 
 interface LeftSidebarProps {
-  selectedPresets: string[];
-  onPresetsChange: (presets: string[]) => void;
-  selectedStyleSample: string;
-  onStyleSampleSelect: (content: string) => void;
-  onContentSampleSelect: (content: string) => void;
+  styleMode: StyleMode;
+  onStyleModeChange: (mode: StyleMode) => void;
+  onCustomUpload: (text: string) => void;
+  customDatabaseLoaded: boolean;
 }
 
 export default function LeftSidebar({ 
-  selectedPresets, 
-  onPresetsChange, 
-  selectedStyleSample,
-  onStyleSampleSelect,
-  onContentSampleSelect
+  styleMode,
+  onStyleModeChange,
+  onCustomUpload,
+  customDatabaseLoaded,
 }: LeftSidebarProps) {
-  const [selectedSampleId, setSelectedSampleId] = useState<string>("formal-functional-relationships");
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
-  const handlePresetSelect = (presetId: string) => {
-    if (!selectedPresets.includes(presetId)) {
-      onPresetsChange([...selectedPresets, presetId]);
+  const handleFileUpload = async (file: File) => {
+    try {
+      let text = '';
+      
+      if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+        text = await file.text();
+      } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/api/pdf/extract', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to extract PDF text');
+        }
+        
+        const data = await response.json();
+        text = data.text;
+      } else {
+        const fileText = await file.text();
+        text = fileText;
+      }
+      
+      if (text.trim()) {
+        onCustomUpload(text);
+        onStyleModeChange('custom');
+        toast({
+          title: "Custom Database Loaded",
+          description: `Uploaded "${file.name}" - text will be semantically bleached and used as your style database.`,
+        });
+      } else {
+        throw new Error('No text content found in file');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Upload Error",
+        description: error.message || "Failed to process uploaded file",
+        variant: "destructive",
+      });
     }
   };
 
-  const handlePresetRemove = (presetId: string) => {
-    onPresetsChange(selectedPresets.filter(id => id !== presetId));
-  };
-
-
-
-  const handleStyleSampleSelect = (sampleId: string) => {
-    const sample = writingSamples.find(s => s.id === sampleId);
-    if (sample) {
-      setSelectedSampleId(sample.id);
-      onStyleSampleSelect(sample.content);
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleFileUpload(files[0]);
     }
   };
 
-  const groupedPresets = instructionPresets.reduce((acc, preset) => {
-    if (!acc[preset.category]) {
-      acc[preset.category] = [];
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileUpload(files[0]);
     }
-    acc[preset.category].push(preset);
-    return acc;
-  }, {} as Record<string, any[]>);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleCustomClick = () => {
+    if (customDatabaseLoaded) {
+      onStyleModeChange('custom');
+    } else {
+      fileInputRef.current?.click();
+    }
+  };
+
+  const modeButtons = [
+    {
+      mode: 'academic' as StyleMode,
+      label: 'ACADEMIC',
+      sublabel: '200 sentences',
+      icon: GraduationCap,
+      description: 'Formal academic writing style with philosophical and analytical patterns',
+    },
+    {
+      mode: 'personal' as StyleMode,
+      label: 'PERSONAL',
+      sublabel: '66 sentences',
+      icon: User,
+      description: 'Conversational personal writing style with informal patterns',
+    },
+  ];
 
   return (
-    <aside className="w-80 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
-      <ScrollArea className="h-full">
-        <div className="p-4">
-          {/* Instruction Presets Section */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <i className="fas fa-sliders-h mr-2 text-primary"></i>
-              Instruction Presets
-            </h3>
-            
-            <div className="space-y-3">
-              <Select onValueChange={handlePresetSelect}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Add instruction preset..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {Object.entries(groupedPresets).map(([category, presets]) => (
-                    <div key={category}>
-                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                        {category}
-                      </div>
-                      {presets.map((preset) => (
-                        <SelectItem 
-                          key={preset.id} 
-                          value={preset.id}
-                          disabled={selectedPresets.includes(preset.id)}
-                        >
-                          <div className="flex flex-col items-start">
-                            <span className="font-medium">{preset.name}</span>
-                            <span className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                              {preset.description}
-                            </span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </div>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              {/* Selected Presets Display */}
-              {selectedPresets.length > 0 && (
-                <div className="bg-gray-50 border rounded-lg p-3">
-                  <div className="text-sm font-medium text-gray-900 mb-2">
-                    Selected Presets ({selectedPresets.length})
-                  </div>
-                  <div className="space-y-2">
-                    {selectedPresets.map((presetId) => {
-                      const preset = instructionPresets.find(p => p.id === presetId);
-                      return preset ? (
-                        <div key={presetId} className="flex items-center justify-between bg-white border rounded px-2 py-1">
-                          <div className="flex-1">
-                            <span className="text-sm font-medium">{preset.name}</span>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500"
-                            onClick={() => handlePresetRemove(presetId)}
-                          >
-                            ×
-                          </Button>
-                        </div>
-                      ) : null;
-                    })}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-2 text-xs h-6 px-2"
-                    onClick={() => onPresetsChange([])}
-                  >
-                    Clear All
-                  </Button>
+    <aside className="w-72 bg-white shadow-lg border-r border-gray-200 flex flex-col" data-testid="left-sidebar">
+      <ScrollArea className="flex-1">
+        <div className="p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Style Mode</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Select a style database for dynamic sentence matching
+          </p>
+          
+          <div className="space-y-3">
+            {modeButtons.map(({ mode, label, sublabel, icon: Icon, description }) => (
+              <button
+                key={mode}
+                onClick={() => onStyleModeChange(mode)}
+                data-testid={`style-mode-${mode}`}
+                className={`
+                  w-full h-16 px-4 rounded-lg border-2 transition-all duration-200
+                  flex items-center gap-4 text-left
+                  ${styleMode === mode 
+                    ? 'border-blue-500 bg-blue-50 shadow-md' 
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
+                `}
+              >
+                <div className={`
+                  w-10 h-10 rounded-lg flex items-center justify-center
+                  ${styleMode === mode ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'}
+                `}>
+                  <Icon className="w-5 h-5" />
                 </div>
-              )}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`font-semibold ${styleMode === mode ? 'text-blue-700' : 'text-gray-900'}`}>
+                      {label}
+                    </span>
+                    {styleMode === mode && (
+                      <Check className="w-4 h-4 text-blue-500" />
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-500">{sublabel}</span>
+                </div>
+              </button>
+            ))}
 
-
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className={`
+                w-full min-h-16 px-4 py-3 rounded-lg border-2 transition-all duration-200
+                flex items-center gap-4 text-left cursor-pointer
+                ${isDragging 
+                  ? 'border-green-500 bg-green-50 border-dashed' 
+                  : styleMode === 'custom' && customDatabaseLoaded
+                    ? 'border-green-500 bg-green-50 shadow-md'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 border-dashed'}
+              `}
+              onClick={handleCustomClick}
+              data-testid="style-mode-custom"
+            >
+              <div className={`
+                w-10 h-10 rounded-lg flex items-center justify-center
+                ${styleMode === 'custom' && customDatabaseLoaded 
+                  ? 'bg-green-500 text-white' 
+                  : isDragging 
+                    ? 'bg-green-400 text-white'
+                    : 'bg-gray-100 text-gray-600'}
+              `}>
+                {customDatabaseLoaded ? <FileText className="w-5 h-5" /> : <Upload className="w-5 h-5" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className={`font-semibold ${
+                    styleMode === 'custom' && customDatabaseLoaded 
+                      ? 'text-green-700' 
+                      : 'text-gray-900'
+                  }`}>
+                    CUSTOM
+                  </span>
+                  {styleMode === 'custom' && customDatabaseLoaded && (
+                    <Check className="w-4 h-4 text-green-500" />
+                  )}
+                </div>
+                <span className="text-xs text-gray-500">
+                  {customDatabaseLoaded 
+                    ? 'Custom database loaded' 
+                    : isDragging 
+                      ? 'Drop file here...'
+                      : 'Upload your own text'}
+                </span>
+              </div>
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.pdf,.doc,.docx"
+            onChange={handleFileInputChange}
+            className="hidden"
+            data-testid="custom-file-input"
+          />
 
-          {/* Writing Style Samples Section */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <i className="fas fa-book mr-2 text-primary"></i>
-              Writing Samples
-            </h3>
-            <div className="space-y-3">
-              <Select value={selectedSampleId} onValueChange={handleStyleSampleSelect}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Choose a writing sample..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {getCategories().map((category) => {
-                    const categorySamples = getSamplesByCategory(category);
-                    const categoryCount = getCategoryCounts()[category];
-                    return (
-                      <div key={category}>
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                          {category} ({categoryCount})
-                        </div>
-                        {categorySamples.map((sample) => (
-                          <SelectItem key={sample.id} value={sample.id}>
-                            <div className="flex flex-col items-start">
-                              <span className="font-medium">{sample.name}</span>
-                              <span className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                {sample.preview}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-              
-              {selectedSampleId && (
-                <div className="bg-gray-50 border rounded-lg p-3">
-                  <div className="text-sm">
-                    <div className="font-medium text-gray-900 mb-2">
-                      {writingSamples.find(s => s.id === selectedSampleId)?.name}
-                    </div>
-                    <div className="text-gray-600 text-xs leading-relaxed max-h-24 overflow-y-auto">
-                      {writingSamples.find(s => s.id === selectedSampleId)?.preview}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-6 px-2 flex-1"
-                      onClick={() => {
-                        const sample = writingSamples.find(s => s.id === selectedSampleId);
-                        if (sample) onStyleSampleSelect(sample.content);
-                      }}
-                    >
-                      Send to Style Box (B)
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-6 px-2 flex-1"
-                      onClick={() => {
-                        const sample = writingSamples.find(s => s.id === selectedSampleId);
-                        if (sample) onContentSampleSelect(sample.content);
-                      }}
-                    >
-                      Send to Content Box (C)
-                    </Button>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-2 text-xs h-6 px-2 w-full"
-                    onClick={() => {
-                      setSelectedSampleId("");
-                      onStyleSampleSelect("");
-                    }}
-                  >
-                    Clear Sample
-                  </Button>
-                </div>
-              )}
-            </div>
+          <div className="mt-8 p-4 bg-gray-50 rounded-lg border">
+            <h3 className="text-sm font-medium text-gray-900 mb-2">How it works</h3>
+            <ul className="text-xs text-gray-600 space-y-2">
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 font-bold">1.</span>
+                <span>Your input text is split into sentences</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 font-bold">2.</span>
+                <span>Each sentence is matched by word count to database sentences</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 font-bold">3.</span>
+                <span>A custom style sample is dynamically assembled</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 font-bold">4.</span>
+                <span>Output length matches input length exactly</span>
+              </li>
+            </ul>
           </div>
         </div>
       </ScrollArea>

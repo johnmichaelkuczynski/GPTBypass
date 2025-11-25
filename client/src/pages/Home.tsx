@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import LeftSidebar from "@/components/LeftSidebar";
 import TextBox from "@/components/TextBox";
@@ -9,9 +9,10 @@ import DownloadModal from "@/components/DownloadModal";
 import ChatInterface from "@/components/ChatInterface";
 import ApiKeyManager from "@/components/ApiKeyManager";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { writingSamples } from "@/lib/writingSamples";
+import { StyleMode, DatabaseSentence } from "@/lib/sentenceDatabases";
+import { constructStyleSample } from "@/lib/styleMatching";
 import type { TextChunk, RewriteRequest, RewriteResponse } from "@shared/schema";
 
 export default function Home() {
@@ -21,39 +22,79 @@ export default function Home() {
   const [outputText, setOutputText] = useState("");
   const [customInstructions, setCustomInstructions] = useState("");
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
-  const [selectedStyleSample, setSelectedStyleSample] = useState<string>("");
   const [showApiKeyManager, setShowApiKeyManager] = useState(false);
   
-  // Content mixing state
+  const [styleMode, setStyleMode] = useState<StyleMode>('academic');
+  const [customDatabase, setCustomDatabase] = useState<DatabaseSentence[]>([]);
+  const [customDatabaseLoaded, setCustomDatabaseLoaded] = useState(false);
+  
   const [contentMixText, setContentMixText] = useState("");
   const [mixingMode, setMixingMode] = useState<'style' | 'content' | 'both'>('style');
   
-  // AI Detection scores
   const [inputAiScore, setInputAiScore] = useState<number | null>(null);
   const [styleAiScore, setStyleAiScore] = useState<number | null>(null);
   const [outputAiScore, setOutputAiScore] = useState<number | null>(null);
   
-  // Chunking state
   const [inputChunks, setInputChunks] = useState<TextChunk[]>([]);
   const [selectedChunkIds, setSelectedChunkIds] = useState<string[]>([]);
   const [showChunkModal, setShowChunkModal] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   
-  // Processing state
   const [lastJobId, setLastJobId] = useState<string | null>(null);
   
   const { toast } = useToast();
 
-  // Set default style sample on component mount
-  useEffect(() => {
-    const defaultSample = writingSamples.find(sample => sample.id === "formal-functional-relationships");
-    if (defaultSample && !selectedStyleSample) {
-      setSelectedStyleSample(defaultSample.content);
-      setStyleText(defaultSample.content);
-    }
-  }, []);
+  const dynamicStyleSample = useMemo(() => {
+    if (!inputText.trim()) return '';
+    
+    const result = constructStyleSample(
+      inputText,
+      styleMode,
+      styleMode === 'custom' ? customDatabase : undefined
+    );
+    
+    return result.styleSample;
+  }, [inputText, styleMode, customDatabase]);
 
-  // Text analysis mutation
+  useEffect(() => {
+    if (dynamicStyleSample) {
+      setStyleText(dynamicStyleSample);
+    }
+  }, [dynamicStyleSample]);
+
+  const bleachTextMutation = useMutation({
+    mutationFn: async (text: string) => {
+      return await apiRequest("/api/bleach-text", {
+        method: "POST",
+        body: { text }
+      });
+    },
+    onSuccess: (data) => {
+      const bleachedSentences: DatabaseSentence[] = data.sentences.map((s: any) => ({
+        id: s.id,
+        text: s.text,
+        wordCount: s.wordCount,
+      }));
+      setCustomDatabase(bleachedSentences);
+      setCustomDatabaseLoaded(true);
+      toast({
+        title: "Custom Database Ready",
+        description: `${bleachedSentences.length} sentences bleached and ready for style matching.`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Bleaching Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCustomUpload = (text: string) => {
+    bleachTextMutation.mutate(text);
+  };
+
   const analyzeTextMutation = useMutation({
     mutationFn: async (text: string) => {
       return await apiRequest("/api/analyze-text", {
@@ -81,7 +122,6 @@ export default function Home() {
     },
   });
 
-  // Rewrite mutation
   const rewriteMutation = useMutation({
     mutationFn: async (request: RewriteRequest) => {
       return await apiRequest("/api/rewrite", {
@@ -107,7 +147,6 @@ export default function Home() {
     },
   });
 
-  // Re-rewrite mutation
   const reRewriteMutation = useMutation({
     mutationFn: async (params: { jobId: string; customInstructions?: string; selectedPresets?: string[]; provider?: string }) => {
       return await apiRequest(`/api/re-rewrite/${params.jobId}`, {
@@ -144,39 +183,19 @@ export default function Home() {
     } else {
       setInputAiScore(null);
       setInputChunks([]);
+      setStyleText("");
     }
   };
 
   const handleStyleTextChange = (text: string) => {
     setStyleText(text);
-    if (text.trim()) {
-      analyzeTextMutation.mutate(text);
-    } else {
-      setStyleAiScore(null);
-    }
   };
 
-  const handleStyleSampleSelect = (content: string) => {
-    setSelectedStyleSample(content);
-    handleStyleTextChange(content);
-  };
-
-  const handleStyleUpload = (content: string, type: 'style' | 'content') => {
-    if (type === 'style') {
-      setStyleText(content);
-      if (content.trim()) {
-        analyzeTextMutation.mutate(content);
-      }
-      setMixingMode('style');
-    } else {
-      setContentMixText(content);
-      setMixingMode(contentMixText ? 'both' : 'content');
+  const handleStyleModeChange = (mode: StyleMode) => {
+    setStyleMode(mode);
+    if (mode !== 'custom') {
+      setCustomDatabaseLoaded(false);
     }
-    
-    toast({
-      title: "Upload Complete",
-      description: `${type === 'style' ? 'Style sample' : 'Content reference'} has been added successfully.`,
-    });
   };
 
   const handleGenerateRewrite = () => {
@@ -260,6 +279,7 @@ export default function Home() {
             <button 
               onClick={() => setShowApiKeyManager(false)}
               className="text-blue-600 hover:text-blue-800 flex items-center"
+              data-testid="back-to-app-button"
             >
               <i className="fas fa-arrow-left mr-2"></i>
               Back to App
@@ -281,15 +301,10 @@ export default function Home() {
       
       <div className="flex h-screen pt-16">
         <LeftSidebar
-          selectedPresets={selectedPresets}
-          onPresetsChange={setSelectedPresets}
-          selectedStyleSample={selectedStyleSample}
-          onStyleSampleSelect={handleStyleSampleSelect}
-          onContentSampleSelect={(content) => {
-            setContentMixText(content);
-            setMixingMode(styleText.trim() ? 'both' : 'content');
-            toast({ description: "Writing sample sent to Content Box successfully!" });
-          }}
+          styleMode={styleMode}
+          onStyleModeChange={handleStyleModeChange}
+          onCustomUpload={handleCustomUpload}
+          customDatabaseLoaded={customDatabaseLoaded}
         />
         
         <main className="flex-1 overflow-y-auto">
@@ -314,20 +329,21 @@ export default function Home() {
                   setInputAiScore(null);
                   setInputChunks([]);
                   setSelectedChunkIds([]);
+                  setStyleText("");
                 }}
                 onEnterSubmit={handleGenerateRewrite}
                 canSubmit={!!inputText.trim()}
               />
               
               <TextBox
-                title="Style Sample (Box B)"
+                title={`Style Sample (Box B) - ${styleMode.toUpperCase()}`}
                 icon="fas fa-palette"
-                placeholder="Paste or upload a sample of human-written text whose style you want to mimic..."
+                placeholder="Style sample will be dynamically generated based on your input text..."
                 value={styleText}
                 onChange={handleStyleTextChange}
                 aiScore={styleAiScore}
-                isLoading={analyzeTextMutation.isPending}
-                supportFileUpload
+                isLoading={bleachTextMutation.isPending}
+                readOnly
                 onClear={() => {
                   setStyleText("");
                   setStyleAiScore(null);
@@ -360,7 +376,7 @@ export default function Home() {
                 icon="fas fa-download"
                 placeholder="Rewritten text will appear here..."
                 value={outputText}
-                onChange={() => {}} // Read-only
+                onChange={() => {}}
                 aiScore={outputAiScore}
                 isLoading={isProcessing}
                 readOnly
@@ -376,7 +392,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Main Controls */}
             <CustomInstructions
               value={customInstructions}
               onChange={setCustomInstructions}
@@ -389,7 +404,6 @@ export default function Home() {
               onClearAll={handleClearAll}
             />
 
-            {/* Chat Interface */}
             <div className="mt-8 mb-8">
               <ChatInterface 
                 inputText={inputText}

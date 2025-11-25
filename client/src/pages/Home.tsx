@@ -15,7 +15,7 @@ import { writingSamples } from "@/lib/writingSamples";
 import type { TextChunk, RewriteRequest, RewriteResponse } from "@shared/schema";
 
 export default function Home() {
-  const [provider, setProvider] = useState<string>("anthropic");
+  const [provider, setProvider] = useState<string>("grok");
   const [inputText, setInputText] = useState("");
   const [styleText, setStyleText] = useState("");
   const [outputText, setOutputText] = useState("");

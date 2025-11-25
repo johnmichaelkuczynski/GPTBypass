@@ -44,25 +44,39 @@ export default function Home() {
   
   const { toast } = useToast();
 
-  // Set default style sample on component mount (no GPTZero analysis for style samples)
+  // Set default style on mount (academic)
   useEffect(() => {
-    const loadDefaultStyle = async () => {
-      if (!selectedStyleSample) {
-        try {
-          const response = await fetch('/api/style-samples/academic');
-          if (response.ok) {
-            const data = await response.json();
-            setSelectedStyleSample("academic");
-            setStyleText(data.content);
-            // Don't analyze style samples - they're reference text, not user content
-          }
-        } catch (error) {
-          console.error('Failed to load default style sample:', error);
+    if (!selectedStyleSample) {
+      setSelectedStyleSample("academic");
+    }
+  }, []);
+
+  // Generate Frankenstein sample when input text changes AND a style is selected
+  useEffect(() => {
+    const generateFrankenstein = async () => {
+      if (!inputText.trim() || !selectedStyleSample || selectedStyleSample === "custom") {
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/frankenstein-sample', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inputText, styleId: selectedStyleSample })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setStyleText(data.content);
         }
+      } catch (error) {
+        console.error('Failed to generate Frankenstein sample:', error);
       }
     };
-    loadDefaultStyle();
-  }, []);
+    
+    const debounceTimer = setTimeout(generateFrankenstein, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [inputText, selectedStyleSample]);
 
   // Text analysis mutation
   const analyzeTextMutation = useMutation({
@@ -168,28 +182,24 @@ export default function Home() {
   };
 
   const handleStyleSampleSelect = async (sampleId: string) => {
-    try {
-      const response = await fetch(`/api/style-samples/${sampleId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setSelectedStyleSample(sampleId);
-        // Set style text directly without triggering GPTZero analysis
-        setStyleText(data.content);
-        setStyleAiScore(null); // Clear any previous score - style samples don't need AI detection
-        toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style loaded successfully!` });
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to load style sample",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load style sample",
-        variant: "destructive",
-      });
+    if (sampleId === "custom") {
+      setSelectedStyleSample("custom");
+      setStyleText("");
+      setStyleAiScore(null);
+      toast({ description: "Enter your own style sample in Box B" });
+      return;
+    }
+    
+    setSelectedStyleSample(sampleId);
+    setStyleAiScore(null);
+    
+    // If there's input text, the useEffect will generate the Frankenstein sample
+    // If no input text yet, clear the style box
+    if (!inputText.trim()) {
+      setStyleText("");
+      toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected. Enter text in Box A to see matched sentences.` });
+    } else {
+      toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected!` });
     }
   };
 

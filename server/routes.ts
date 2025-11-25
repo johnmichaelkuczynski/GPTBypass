@@ -144,6 +144,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Generate Frankenstein sample - matches style sentences to input sentence lengths
+  app.post("/api/frankenstein-sample", async (req, res) => {
+    try {
+      const { inputText, styleId } = req.body;
+      
+      if (!inputText || !styleId) {
+        return res.status(400).json({ message: "inputText and styleId are required" });
+      }
+      
+      const fullStyleSample = getSampleById(styleId);
+      if (!fullStyleSample) {
+        return res.status(404).json({ message: "Style sample not found" });
+      }
+      
+      // Import Frankenstein logic
+      const { buildFrankensteinSample } = await import("../shared/frankenstein");
+      const frankensteinSample = buildFrankensteinSample(inputText, fullStyleSample);
+      
+      res.json({ content: frankensteinSample });
+    } catch (error: any) {
+      console.error('Frankenstein sample error:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Rewrite text endpoint
   app.post("/api/rewrite", async (req, res) => {
     try {

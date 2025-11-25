@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { instructionPresets } from "@/lib/instructionPresets";
-import { writingSamples } from "@/lib/writingSamples";
+import { BookOpen, User, FileText } from "lucide-react";
 
 interface LeftSidebarProps {
   selectedPresets: string[];
@@ -22,7 +22,6 @@ export default function LeftSidebar({
   onStyleSampleSelect,
   onContentSampleSelect
 }: LeftSidebarProps) {
-  const [selectedSampleId, setSelectedSampleId] = useState<string>("academic");
 
   const handlePresetSelect = (presetId: string) => {
     if (!selectedPresets.includes(presetId)) {
@@ -32,11 +31,6 @@ export default function LeftSidebar({
 
   const handlePresetRemove = (presetId: string) => {
     onPresetsChange(selectedPresets.filter(id => id !== presetId));
-  };
-
-  const handleStyleSampleSelect = (sampleId: string) => {
-    setSelectedSampleId(sampleId);
-    onStyleSampleSelect(sampleId);
   };
 
   const groupedPresets = instructionPresets.reduce((acc, preset) => {
@@ -129,61 +123,63 @@ export default function LeftSidebar({
 
           <Separator className="my-6" />
 
-          {/* Writing Style Samples Section */}
+          {/* Writing Style Buttons Section */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <i className="fas fa-book mr-2 text-primary"></i>
               Writing Style
             </h3>
+            <Label className="text-sm text-gray-600 block mb-4">
+              Click a button to load style into Box B
+            </Label>
+            
             <div className="space-y-3">
-              <Label className="text-sm text-gray-600">
-                Choose a preset style or paste your own in Box B
-              </Label>
-              <Select value={selectedSampleId} onValueChange={handleStyleSampleSelect}>
-                <SelectTrigger className="w-full" data-testid="select-style-sample">
-                  <SelectValue placeholder="Choose a writing style..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {writingSamples.map((sample) => (
-                    <SelectItem key={sample.id} value={sample.id} data-testid={`style-sample-${sample.id}`}>
-                      <div className="flex flex-col items-start">
-                        <span className="font-medium">{sample.name}</span>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          {sample.preview}
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              {selectedSampleId && (
-                <div className="bg-gray-50 border rounded-lg p-3">
-                  <div className="text-sm">
-                    <div className="font-medium text-gray-900 mb-2">
-                      {writingSamples.find(s => s.id === selectedSampleId)?.name} Style Selected
-                    </div>
-                    <div className="text-gray-600 text-xs leading-relaxed">
-                      {writingSamples.find(s => s.id === selectedSampleId)?.preview}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 mt-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-7 px-3 flex-1"
-                      onClick={() => onStyleSampleSelect(selectedSampleId)}
-                      data-testid="button-send-style"
-                    >
-                      Load to Style Box (B)
-                    </Button>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Style length auto-adjusts to match your input length
-                  </p>
+              {/* Academic Button */}
+              <Button
+                variant="outline"
+                className="w-full h-auto py-4 px-4 flex items-center justify-start gap-3 hover:bg-blue-50 hover:border-blue-300"
+                onClick={() => onStyleSampleSelect("academic")}
+                data-testid="button-academic-style"
+              >
+                <BookOpen className="h-5 w-5 text-blue-600" />
+                <div className="text-left">
+                  <div className="font-semibold">Academic</div>
+                  <div className="text-xs text-gray-500">Formal, structured argumentation</div>
                 </div>
-              )}
+              </Button>
+
+              {/* Personal Button */}
+              <Button
+                variant="outline"
+                className="w-full h-auto py-4 px-4 flex items-center justify-start gap-3 hover:bg-green-50 hover:border-green-300"
+                onClick={() => onStyleSampleSelect("personal")}
+                data-testid="button-personal-style"
+              >
+                <User className="h-5 w-5 text-green-600" />
+                <div className="text-left">
+                  <div className="font-semibold">Personal</div>
+                  <div className="text-xs text-gray-500">Casual, conversational tone</div>
+                </div>
+              </Button>
+
+              {/* Custom Style Sample Button */}
+              <Button
+                variant="outline"
+                className="w-full h-auto py-4 px-4 flex items-center justify-start gap-3 hover:bg-purple-50 hover:border-purple-300"
+                onClick={() => onContentSampleSelect("custom")}
+                data-testid="button-custom-style"
+              >
+                <FileText className="h-5 w-5 text-purple-600" />
+                <div className="text-left">
+                  <div className="font-semibold">Style Sample</div>
+                  <div className="text-xs text-gray-500">Paste your own text in Box B</div>
+                </div>
+              </Button>
             </div>
+            
+            <p className="text-xs text-gray-500 mt-4 italic">
+              Style length auto-adjusts to match your input
+            </p>
           </div>
         </div>
       </ScrollArea>

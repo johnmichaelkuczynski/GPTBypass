@@ -314,21 +314,12 @@ export default function Home() {
           onPresetsChange={setSelectedPresets}
           selectedStyleSample={selectedStyleSample}
           onStyleSampleSelect={handleStyleSampleSelect}
-          onContentSampleSelect={async (sampleId) => {
-            try {
-              const response = await fetch(`/api/style-samples/${sampleId}`);
-              if (response.ok) {
-                const data = await response.json();
-                setContentMixText(data.content);
-                setMixingMode(styleText.trim() ? 'both' : 'content');
-                toast({ description: "Writing sample sent to Content Box successfully!" });
-              }
-            } catch (error) {
-              toast({
-                title: "Error",
-                description: "Failed to load content sample",
-                variant: "destructive",
-              });
+          onContentSampleSelect={(sampleId) => {
+            if (sampleId === "custom") {
+              setStyleText("");
+              setStyleAiScore(null);
+              setSelectedStyleSample("");
+              toast({ description: "Box B cleared - paste your own style sample!" });
             }
           }}
         />

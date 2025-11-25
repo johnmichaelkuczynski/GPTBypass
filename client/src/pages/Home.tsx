@@ -47,7 +47,7 @@ export default function Home() {
   // Set default style sample on component mount
   useEffect(() => {
     if (!selectedStyleSample) {
-      setSelectedStyleSample("academic");
+      handleStyleSampleSelect("academic");
     }
   }, []);
 
@@ -156,11 +156,12 @@ export default function Home() {
 
   const handleStyleSampleSelect = (sampleId: string) => {
     setSelectedStyleSample(sampleId);
-    // Clear custom style text when selecting a predefined sample
+    // For Academic/Personal, clear the text box - backend handles the full sample
     if (sampleId === 'academic' || sampleId === 'personal') {
       setStyleText('');
       setStyleAiScore(null);
     }
+    // For Custom, user will paste their own text in Box B
   };
 
   const handleStyleUpload = (content: string, type: 'style' | 'content') => {
@@ -322,22 +323,50 @@ export default function Home() {
                 canSubmit={!!inputText.trim()}
               />
               
-              <TextBox
-                title="Style Sample (Box B)"
-                icon="fas fa-palette"
-                placeholder="Paste or upload a sample of human-written text whose style you want to mimic..."
-                value={styleText}
-                onChange={handleStyleTextChange}
-                aiScore={styleAiScore}
-                isLoading={analyzeTextMutation.isPending}
-                supportFileUpload
-                onClear={() => {
-                  setStyleText("");
-                  setStyleAiScore(null);
-                }}
-                onEnterSubmit={handleGenerateRewrite}
-                canSubmit={!!inputText.trim()}
-              />
+              <div className="flex flex-col h-full">
+                {/* Style Mode Indicator */}
+                {(selectedStyleSample === 'academic' || selectedStyleSample === 'personal') && (
+                  <div className="bg-blue-100 border border-blue-300 rounded-t-lg px-3 py-2 text-sm text-blue-800 font-medium">
+                    <i className="fas fa-check-circle mr-2"></i>
+                    Using {selectedStyleSample === 'academic' ? 'Academic' : 'Personal'} style sample
+                    <span className="text-xs ml-2 text-blue-600">(sentences will be matched to your input)</span>
+                  </div>
+                )}
+                {selectedStyleSample === 'custom' && !styleText.trim() && (
+                  <div className="bg-yellow-100 border border-yellow-300 rounded-t-lg px-3 py-2 text-sm text-yellow-800 font-medium">
+                    <i className="fas fa-edit mr-2"></i>
+                    Custom mode: Paste your style sample below
+                  </div>
+                )}
+                <div className={`flex-1 ${(selectedStyleSample === 'academic' || selectedStyleSample === 'personal' || (selectedStyleSample === 'custom' && !styleText.trim())) ? 'rounded-t-none' : ''}`}>
+                  <TextBox
+                    title="Style Sample (Box B)"
+                    icon="fas fa-palette"
+                    placeholder={
+                      selectedStyleSample === 'custom' 
+                        ? "Paste or upload your custom style sample..."
+                        : "Style sample will be automatically applied during rewrite..."
+                    }
+                    value={styleText}
+                    onChange={(text) => {
+                      handleStyleTextChange(text);
+                      if (text.trim()) {
+                        setSelectedStyleSample('custom');
+                      }
+                    }}
+                    aiScore={styleAiScore}
+                    isLoading={analyzeTextMutation.isPending}
+                    supportFileUpload={selectedStyleSample === 'custom'}
+                    readOnly={selectedStyleSample !== 'custom'}
+                    onClear={() => {
+                      setStyleText("");
+                      setStyleAiScore(null);
+                    }}
+                    onEnterSubmit={handleGenerateRewrite}
+                    canSubmit={!!inputText.trim()}
+                  />
+                </div>
+              </div>
               
               <TextBox
                 title="Content Reference (Box C)"

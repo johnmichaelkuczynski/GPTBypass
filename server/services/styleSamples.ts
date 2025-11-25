@@ -20,6 +20,35 @@ function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(w => w.length > 0).length;
 }
 
+function splitIntoSentences(text: string): string[] {
+  return text
+    .split(/(?<=[.!?])\s+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+}
+
+function getSentenceWordCount(sentence: string): number {
+  return sentence.trim().split(/\s+/).filter(w => w.length > 0).length;
+}
+
+function findBestMatchingSentence(targetWordCount: number, styleSentences: string[]): string {
+  if (styleSentences.length === 0) return '';
+  
+  let bestMatch = styleSentences[0];
+  let bestDiff = Math.abs(getSentenceWordCount(bestMatch) - targetWordCount);
+  
+  for (const sentence of styleSentences) {
+    const diff = Math.abs(getSentenceWordCount(sentence) - targetWordCount);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestMatch = sentence;
+    }
+    if (diff === 0) break;
+  }
+  
+  return bestMatch;
+}
+
 export function getStyleSample(sampleType: 'academic' | 'personal'): string {
   if (!academicSample || !personalSample) {
     loadSamples();
@@ -27,28 +56,23 @@ export function getStyleSample(sampleType: 'academic' | 'personal'): string {
   return sampleType === 'academic' ? (academicSample || '') : (personalSample || '');
 }
 
-export function matchStyleToInputLength(styleText: string, inputText: string): string {
-  const inputWordCount = countWords(inputText);
-  const styleWordCount = countWords(styleText);
+export function matchSentenceLengths(styleText: string, inputText: string): string {
+  const inputSentences = splitIntoSentences(inputText);
+  const styleSentences = splitIntoSentences(styleText);
   
-  if (inputWordCount === 0 || styleWordCount === 0) {
+  if (inputSentences.length === 0 || styleSentences.length === 0) {
     return styleText;
   }
   
-  const styleWords = styleText.trim().split(/\s+/);
+  const matchedSentences: string[] = [];
   
-  if (styleWordCount >= inputWordCount) {
-    return styleWords.slice(0, inputWordCount).join(' ');
+  for (const inputSentence of inputSentences) {
+    const targetWordCount = getSentenceWordCount(inputSentence);
+    const matchingSentence = findBestMatchingSentence(targetWordCount, styleSentences);
+    matchedSentences.push(matchingSentence);
   }
   
-  const repetitionsNeeded = Math.ceil(inputWordCount / styleWordCount);
-  const repeatedWords: string[] = [];
-  
-  for (let i = 0; i < repetitionsNeeded; i++) {
-    repeatedWords.push(...styleWords);
-  }
-  
-  return repeatedWords.slice(0, inputWordCount).join(' ');
+  return matchedSentences.join(' ');
 }
 
 export function prepareStyleSample(
@@ -66,7 +90,7 @@ export function prepareStyleSample(
     styleText = getStyleSample('academic');
   }
   
-  return matchStyleToInputLength(styleText, inputText);
+  return matchSentenceLengths(styleText, inputText);
 }
 
 loadSamples();

@@ -10,13 +10,19 @@ export const writingSamples: WritingSample[] = [
     id: "academic",
     name: "Academic",
     preview: "Formal, structured academic writing style with philosophical depth...",
-    category: "Style"
+    category: "Preset"
   },
   {
     id: "personal",
     name: "Personal",
     preview: "Casual, conversational personal writing style...",
-    category: "Style"
+    category: "Preset"
+  },
+  {
+    id: "custom",
+    name: "Custom",
+    preview: "Paste your own style sample in Box B...",
+    category: "Custom"
   }
 ];
 

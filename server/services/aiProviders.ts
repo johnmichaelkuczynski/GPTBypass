@@ -122,9 +122,7 @@ which, though logically equivalent, seem to confirmationally equivalent, in that
 A number of very contrived solutions to this paradox have been proposed, all of which either deny that there is a paradox or invent ad hoc systems of logic to validate the 'solution' in question. 
 But the real solution is clear. First of all, it is only principled generalizations that can be confirmed. Supposing that you assert (i) with the intention of affirming a principled as opposed to an accidental generalization, you are saying that instances of the property of being a raven grounds or causes instances of blackness. Read thus, (i) is most certainly not equivalent with (ii) or with any variation thereof. Be it noted that while there is a natural nomic or causal reading of (i), there is no such reading of (ii). Also be it noted that it is only principled as opposed to accidental generalizations that can be confirmed. "All metal expands when heated" can be confirmed but not "all objects in Smith's pocket expand when heated." In general, when read as principled and therefore confirmable generalization, "all x's are y's" has nomic or causal content is therefore not equivalent with "all non-y's are non-x's." Case closed on the Raven Paradox.`;
 
-  const inputWordCount = params.inputText.trim().split(/\s+/).filter(w => w.length > 0).length;
-
-  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample. CRITICAL: Keep your rewrite approximately the same length as the original text (approximately ${inputWordCount} words, +/- 10%).\n\nStyle sample:\n"${styleSample}"\n\n`;
+  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample:\n"${styleSample}"\n\n`;
 
   if (hasContent) {
     prompt += `Judiciously integrate relevant ideas, examples, and details from the following content reference to enrich the rewrite:\n"${params.contentMixText}"\n\n`;
@@ -133,7 +131,7 @@ But the real solution is clear. First of all, it is only principled generalizati
   // <<< PRESETS/APPLIED INSTRUCTIONS HERE >>>
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `Text to rewrite (${inputWordCount} words - your output should be similar length):\n"${params.inputText}"`;
+  prompt += `Text to rewrite:\n"${params.inputText}"`;
   return prompt;
 }
 
@@ -143,6 +141,7 @@ export interface RewriteParams {
   contentMixText?: string;
   customInstructions?: string;
   selectedPresets?: string[];
+  mixingMode?: 'style' | 'content' | 'both';
 }
 
 export class AIProviderService {

@@ -1,23 +1,31 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { instructionPresets } from "@/lib/instructionPresets";
-import { GraduationCap, User } from "lucide-react";
+import { writingSamples, getCategories, getSamplesByCategory, getCategoryCounts } from "@/lib/writingSamples";
 
 interface LeftSidebarProps {
   selectedPresets: string[];
   onPresetsChange: (presets: string[]) => void;
   selectedStyleSample: string;
-  onStyleSampleSelect: (styleId: string) => void;
+  onStyleSampleSelect: (content: string) => void;
+  onContentSampleSelect: (content: string) => void;
 }
 
 export default function LeftSidebar({ 
   selectedPresets, 
   onPresetsChange, 
   selectedStyleSample,
-  onStyleSampleSelect
+  onStyleSampleSelect,
+  onContentSampleSelect
 }: LeftSidebarProps) {
+  const [selectedSampleId, setSelectedSampleId] = useState<string>("formal-functional-relationships");
+
   const handlePresetSelect = (presetId: string) => {
     if (!selectedPresets.includes(presetId)) {
       onPresetsChange([...selectedPresets, presetId]);
@@ -26,6 +34,16 @@ export default function LeftSidebar({
 
   const handlePresetRemove = (presetId: string) => {
     onPresetsChange(selectedPresets.filter(id => id !== presetId));
+  };
+
+
+
+  const handleStyleSampleSelect = (sampleId: string) => {
+    const sample = writingSamples.find(s => s.id === sampleId);
+    if (sample) {
+      setSelectedSampleId(sample.id);
+      onStyleSampleSelect(sample.content);
+    }
   };
 
   const groupedPresets = instructionPresets.reduce((acc, preset) => {
@@ -113,63 +131,96 @@ export default function LeftSidebar({
                   </Button>
                 </div>
               )}
+
+
             </div>
           </div>
 
           <Separator className="my-6" />
 
-          {/* Writing Style Selection - Two Clear Buttons */}
+          {/* Writing Style Samples Section */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <i className="fas fa-book mr-2 text-primary"></i>
-              Writing Style
+              Writing Samples
             </h3>
             <div className="space-y-3">
-              <button
-                onClick={() => onStyleSampleSelect("academic")}
-                data-testid="style-button-academic"
-                className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all duration-200 ${
-                  selectedStyleSample === "academic"
-                    ? "bg-blue-600 border-blue-600 text-white shadow-lg"
-                    : "bg-white border-gray-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50"
-                }`}
-              >
-                <GraduationCap className={`w-6 h-6 ${selectedStyleSample === "academic" ? "text-white" : "text-blue-600"}`} />
-                <div className="text-left flex-1">
-                  <div className={`font-semibold ${selectedStyleSample === "academic" ? "text-white" : "text-gray-900"}`}>
-                    Academic
+              <Select value={selectedSampleId} onValueChange={handleStyleSampleSelect}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Choose a writing sample..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {getCategories().map((category) => {
+                    const categorySamples = getSamplesByCategory(category);
+                    const categoryCount = getCategoryCounts()[category];
+                    return (
+                      <div key={category}>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                          {category} ({categoryCount})
+                        </div>
+                        {categorySamples.map((sample) => (
+                          <SelectItem key={sample.id} value={sample.id}>
+                            <div className="flex flex-col items-start">
+                              <span className="font-medium">{sample.name}</span>
+                              <span className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                {sample.preview}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              
+              {selectedSampleId && (
+                <div className="bg-gray-50 border rounded-lg p-3">
+                  <div className="text-sm">
+                    <div className="font-medium text-gray-900 mb-2">
+                      {writingSamples.find(s => s.id === selectedSampleId)?.name}
+                    </div>
+                    <div className="text-gray-600 text-xs leading-relaxed max-h-24 overflow-y-auto">
+                      {writingSamples.find(s => s.id === selectedSampleId)?.preview}
+                    </div>
                   </div>
-                  <div className={`text-xs ${selectedStyleSample === "academic" ? "text-blue-100" : "text-gray-500"}`}>
-                    Formal, professional tone
+                  <div className="flex items-center gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-6 px-2 flex-1"
+                      onClick={() => {
+                        const sample = writingSamples.find(s => s.id === selectedSampleId);
+                        if (sample) onStyleSampleSelect(sample.content);
+                      }}
+                    >
+                      Send to Style Box (B)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-6 px-2 flex-1"
+                      onClick={() => {
+                        const sample = writingSamples.find(s => s.id === selectedSampleId);
+                        if (sample) onContentSampleSelect(sample.content);
+                      }}
+                    >
+                      Send to Content Box (C)
+                    </Button>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 text-xs h-6 px-2 w-full"
+                    onClick={() => {
+                      setSelectedSampleId("");
+                      onStyleSampleSelect("");
+                    }}
+                  >
+                    Clear Sample
+                  </Button>
                 </div>
-                {selectedStyleSample === "academic" && (
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
-                )}
-              </button>
-
-              <button
-                onClick={() => onStyleSampleSelect("personal")}
-                data-testid="style-button-personal"
-                className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all duration-200 ${
-                  selectedStyleSample === "personal"
-                    ? "bg-green-600 border-green-600 text-white shadow-lg"
-                    : "bg-white border-gray-200 text-gray-700 hover:border-green-300 hover:bg-green-50"
-                }`}
-              >
-                <User className={`w-6 h-6 ${selectedStyleSample === "personal" ? "text-white" : "text-green-600"}`} />
-                <div className="text-left flex-1">
-                  <div className={`font-semibold ${selectedStyleSample === "personal" ? "text-white" : "text-gray-900"}`}>
-                    Personal
-                  </div>
-                  <div className={`text-xs ${selectedStyleSample === "personal" ? "text-green-100" : "text-gray-500"}`}>
-                    Casual, conversational tone
-                  </div>
-                </div>
-                {selectedStyleSample === "personal" && (
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
-                )}
-              </button>
+              )}
             </div>
           </div>
         </div>

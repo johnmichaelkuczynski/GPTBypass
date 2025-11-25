@@ -7,7 +7,6 @@ import { textChunkerService } from "./services/textChunker";
 import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
-import { getStyleSample } from "./services/styleSamples";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -137,41 +136,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Input text and provider are required" });
       }
 
-      // Get input word count for length-matching style sample
-      const inputWordCount = rewriteRequest.inputText.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
-      
-      // Get the style sample that matches the input length
-      const styleId = rewriteRequest.styleId || 'academic';
-      const styleText = getStyleSample(styleId, inputWordCount);
-      
-      console.log(`📝 Using ${styleId} style sample (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
-
       // Analyze input text
       const inputAnalysis = await gptZeroService.analyzeText(rewriteRequest.inputText);
       
       // Create rewrite job
       const rewriteJob = await storage.createRewriteJob({
         inputText: rewriteRequest.inputText,
-        styleText: styleText,
+        styleText: rewriteRequest.styleText,
         contentMixText: rewriteRequest.contentMixText,
         customInstructions: rewriteRequest.customInstructions,
         selectedPresets: rewriteRequest.selectedPresets,
         provider: rewriteRequest.provider,
         chunks: [],
         selectedChunkIds: rewriteRequest.selectedChunkIds,
-        mixingMode: 'style',
+        mixingMode: rewriteRequest.mixingMode,
         inputAiScore: inputAnalysis.aiScore,
         status: "processing",
       });
 
       try {
-        // Perform rewrite with length-matched style sample
+        // Perform rewrite
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: styleText,
+          styleText: rewriteRequest.styleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,
+          mixingMode: rewriteRequest.mixingMode,
         });
 
         // Analyze output text

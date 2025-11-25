@@ -83,18 +83,19 @@ export interface WritingSample {
 }
 
 export interface AIProviderConfig {
-  provider: 'openai' | 'anthropic' | 'deepseek' | 'perplexity' | 'grok';
+  provider: 'openai' | 'anthropic' | 'deepseek' | 'perplexity';
   model?: string;
 }
 
 export interface RewriteRequest {
   inputText: string;
-  styleId?: string;
+  styleText?: string;
   contentMixText?: string;
   customInstructions?: string;
   selectedPresets?: string[];
   provider: string;
   selectedChunkIds?: string[];
+  mixingMode?: 'style' | 'content' | 'both';
 }
 
 export interface RewriteResponse {

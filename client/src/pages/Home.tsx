@@ -172,6 +172,15 @@ export default function Home() {
       return;
     }
 
+    if (styleType === 'custom' && !styleText.trim()) {
+      toast({
+        title: "Style Sample Required",
+        description: "Please provide a custom style sample in Box B, or switch to Academic/Personal mode",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const request: RewriteRequest = {
       inputText: inputChunks.length > 0 && selectedChunkIds.length > 0
         ? inputChunks

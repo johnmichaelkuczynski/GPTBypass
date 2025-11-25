@@ -85,7 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('File upload error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -123,7 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Text analysis error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -135,6 +135,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate request
       if (!rewriteRequest.inputText || !rewriteRequest.provider) {
         return res.status(400).json({ message: "Input text and provider are required" });
+      }
+
+      // Validate custom mode has style text
+      if (rewriteRequest.styleType === 'custom' && !rewriteRequest.styleText?.trim()) {
+        return res.status(400).json({ message: "Custom style requires a style sample text" });
       }
 
       // Analyze input text
@@ -208,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error('Rewrite error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -250,11 +255,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Perform re-rewrite
         const rewrittenText = await aiProviderService.rewrite(provider || originalJob.provider, {
           inputText: originalJob.outputText,
-          styleText: originalJob.styleText,
-          contentMixText: originalJob.contentMixText,
-          customInstructions: customInstructions || originalJob.customInstructions,
-          selectedPresets: selectedPresets || originalJob.selectedPresets,
-          mixingMode: originalJob.mixingMode,
+          styleText: originalJob.styleText || undefined,
+          contentMixText: originalJob.contentMixText || undefined,
+          customInstructions: customInstructions || originalJob.customInstructions || undefined,
+          selectedPresets: selectedPresets || originalJob.selectedPresets || undefined,
+          mixingMode: originalJob.mixingMode || undefined,
         });
 
         // Analyze new output
@@ -284,7 +289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error('Re-rewrite error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -301,7 +306,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(job);
     } catch (error) {
       console.error('Get job error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -312,7 +317,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(jobs);
     } catch (error) {
       console.error('List jobs error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
@@ -332,7 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     } catch (error) {
       console.error('Set keys error:', error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 

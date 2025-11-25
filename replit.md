@@ -6,12 +6,24 @@ GPT Bypass is a collaborative AI text rewriting application designed to transfor
 
 ## Recent Changes (November 2025)
 
+**Custom Style Sample with Semantic Bleaching (November 25, 2025)**
+- Added third style option: Custom Style, allowing users to paste their own writing samples (e.g., passages from Dickens, Orwell)
+- Implemented semantic bleaching service (server/services/semanticBleacher.ts):
+  - Uses AI to replace content words (nouns, verbs, adjectives, proper names) with placeholders (X, Y, Z, A, B, C...)
+  - Preserves function words, punctuation, sentence structure to capture style patterns without semantic content
+  - Bleached samples help bypass AI detection while maintaining style characteristics
+- Intelligent length adjustment for custom samples:
+  - If input text > custom sample: repeats the bleached sample until it matches input length
+  - If input text < custom sample: trims the bleached sample to match input length
+- Three distinct toggle buttons in left sidebar: Academic (blue), Personal (green), Custom (purple)
+- Frontend validation prevents submission when custom style is selected but textarea is empty
+
 **Simplified Style System with Length Matching (November 25, 2025)**
 - Replaced all previous style samples with just TWO options: Academic and Personal
 - Style samples loaded from server/data/academic-style.txt and server/data/personal-style.txt
 - Implemented intelligent length-matching: server extracts a portion of the style sample matching the input word count
 - Added explicit length preservation in AI prompts: output keeps approximately the same word count as input (+/- 10%)
-- Updated UI to 3-column layout with style selection via dropdown in left sidebar
+- Updated UI to 3-column layout with style selection via buttons in left sidebar
 - Uses styleId instead of styleText throughout the application
 
 **Grok (Zhi 5) as Default Provider (November 25, 2025)**

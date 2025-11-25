@@ -195,13 +195,31 @@ export default function Home() {
     setSelectedStyleSample(sampleId);
     setStyleAiScore(null);
     
-    // If there's input text, the useEffect will generate the Frankenstein sample
-    // If no input text yet, clear the style box
+    // If there's input text, generate the Frankenstein sample immediately
     if (!inputText.trim()) {
       setStyleText("");
       toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected. Enter text in Box A to see matched sentences.` });
     } else {
-      toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected!` });
+      // Directly call API to generate Frankenstein sample
+      try {
+        const response = await fetch('/api/frankenstein-sample', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inputText, styleId: sampleId })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setStyleText(data.content);
+          toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style matched to your input!` });
+        }
+      } catch (error) {
+        console.error('Failed to generate Frankenstein sample:', error);
+        toast({ 
+          description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected!`,
+          variant: "destructive"
+        });
+      }
     }
   };
 

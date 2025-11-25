@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { PlayCircle } from "lucide-react";
+import { PlayCircle, Mail } from "lucide-react";
 
 interface HeaderProps {
   provider: string;
@@ -18,6 +18,17 @@ export default function Header({ provider, onProviderChange }: HeaderProps) {
             <span className="text-sm text-gray-500 font-medium">AI Text Rewriter</span>
           </div>
           <div className="flex items-center space-x-4">
+            <a href="mailto:contact@zhisystems.ai">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold"
+                data-testid="button-contact-us"
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                Contact Us
+              </Button>
+            </a>
             <Link href="/video-instructions">
               <Button 
                 variant="default" 

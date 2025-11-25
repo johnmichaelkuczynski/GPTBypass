@@ -2,28 +2,287 @@ export interface WritingSample {
   id: string;
   name: string;
   preview: string;
+  content: string;
   category: string;
 }
 
 export const writingSamples: WritingSample[] = [
+  // PLACEHOLDER SAMPLES - Semantically bleached for optimal AI detection bypass
+  
   {
-    id: "academic",
-    name: "Academic",
-    preview: "Formal, structured academic writing style with philosophical depth...",
-    category: "Preset"
+    id: "formal-functional-relationships",
+    name: "Formal and Functional Relationships",
+    preview: "There are two broad types of relationships: formal and functional...",
+    content: "There are two broad types of relationships: formal and functional. Formal relationships hold between descriptions. A description is any statement that can be true or false. Example of a formal relationship: The description that a shape is a square cannot be true unless the description that it has four equal sides is true. Therefore, a shape's being a square depends on its having four equal sides. Functional relationships hold between events or conditions. (An event is anything that happens in time.) Example of a functional relationship: A plant cannot grow without water. Therefore, a plant's growth depends on its receiving water. The first type is structural, i.e., it holds between statements about features. The second is operational, i.e., it holds between things in the world as they act or change. Descriptions as objects of consideration. The objects of evaluation are descriptions. Something is not evaluated unless it is described, and it is not described unless it can be stated. One can notice non-descriptions — sounds, objects, movements — but in the relevant sense one evaluates descriptions of them. Relationships not known through direct observation. Some relationships are known, not through direct observation, but through reasoning. Such relationships are structural, as opposed to observational. Examples of structural relationships are: If A, then A or B. All tools require some form of use. Nothing can be both moving and perfectly still. There are no rules without conditions. 1 obviously expresses a relationship; 2–4 do so less obviously, as their meanings are: 2*. A tool's being functional depends on its being usable. 3*. An object's being both moving and still depends on contradictory conditions, which cannot occur together. 4*. The existence of rules depends on the existence of conditions to which they apply. Structural truth and structural understanding. Structural understanding is always understanding of relationships. Observational understanding can be either direct or indirect; the same is true of structural understanding.",
+    category: "Placeholder"
   },
   {
-    id: "personal",
-    name: "Personal",
-    preview: "Casual, conversational personal writing style...",
-    category: "Preset"
+    id: "alternative-accounts-explanatory-efficiency",
+    name: "Alternative Accounts and Explanatory Efficiency",
+    preview: "A continuation of the earlier case will make it clear what this means...",
+    content: "A continuation of the earlier case will make it clear what this means and why it matters. Why doesn't the X change under the given conditions? Because, says the standard account, the key Y remained in place. But, the skeptic will counter, perhaps we can discard that account; perhaps there's an alternative that fits the Z equally well. But, I would respond, even granting for argument's sake that such an alternative exists, it doesn't follow that it avoids more gaps than the one it replaces. It doesn't follow that it is comparable from a trade-off standpoint to the original—that it reduces as many issues as the old view while introducing no more new ones. In fact, the opposite often holds. Consider the alternative mentioned earlier. The cost of that account—meaning what new puzzles it creates—is vastly greater than its value—meaning what old puzzles it removes. It would be difficult to devise an account inconsistent with the conventional one that, while still matching the relevant evidence, is equally efficient in explanatory terms. You can test this for yourself. If there is reason to think even one such account exists, it is not because it has ever been produced. That reason, if it exists, must be purely theoretical. And for reasons soon to be made clear, no such purely theoretical reason can justify accepting it. But there is a further difficulty for this—or, by a similar line of thought, for any non-standard—replacement of the conventional view. It is not at all clear that, once the relevant details are considered, the replacement is even logically possible. Taken on its own, a substitute account may describe a situation that seems coherent. It may not be contradictory in the strict sense. But that alone is not enough for it to serve as a viable model of the relevant information. Think of the range of underlying A that would have to be set aside. Setting them aside, if possible at all, would create ripple effects. Consider the various B that would be altered, the balances disrupted, the exchanges prevented. Those interactions do not only sustain the single feature in question. Removing them would have many other consequences—events unrelated to the specific aim of the new model. And there is no assurance that these other consequences would be compatible, even in a purely formal sense, with the data the new account is supposed to capture as well as the conventional one it seeks to replace.",
+    category: "Placeholder"
   },
   {
-    id: "custom",
-    name: "Custom",
-    preview: "Paste your own style sample in Box B...",
-    category: "Custom"
+    id: "rational-belief-underlying-structures",
+    name: "Rational Belief and Underlying Structures",
+    preview: "When would it become rational to believe that, next time...",
+    content: `When would it become rational to believe that, next time, you're more likely than not to get this as opposed to that outcome—that, for example, you're especially likely to get a X? This belief becomes rational when, and only when, you have reason to believe that a X-outcome is favored by the structures involved in the setup. And that belief, in its turn, is rational if you know that circumstances at all like the following obtain:
+*The objects are Y-attracted to the X-spot.
+*On any given occasion, you have an unconscious intention to produce a X (even though you have no conscious intention of doing this), and you're such a talented operator that, if you can produce a X if it is your (subconscious) intention to do so.
+*The X-spot is much bigger than any of the other spots. In fact, it takes up so much space on the device that the remaining spaces are too small for the item to fit into them.
+
+You are rational to believe that you'll continue to get Xs to the extent that your having thus far gotten multiple Xs in a row gives you reason to believe there to be some underlying structure favoring that outcome. And to the extent that a long run of X-outcomes doesn't give you such a reason, you are irrational to believe that you're any more (or any less) likely to get a X than you are any other outcome. So, no matter how many consecutive Xs you get, if you know with certainty that there is no underlying structure that would favor such an outcome, then you have no more reason to expect a X than you do a Y or a Z. Put pedantically, it is only insofar as you have reason to believe in such a structure that you have reason to expect something that has the property of being an item produced by you to have the property of landing in the X-spot.
+
+Your knowing of many As that are Bs and of none that are not doesn't necessarily give you any reason to believe that the next A you encounter will be a B; it gives you such a reason only insofar as it gives you a reason to believe in some structure or mechanism that disposes As to be Bs. If you know on independent grounds that there is no such mechanism, no run of As that are Bs, no matter how long, gives you a reason to think that the next A will be a B.
+
+Thus, any case of prediction by enumeration that isn't an instance of the gambler's fallacy involves the positing some mechanism or law that, were it to exist, would explain a certain pattern—it involves, in other words, a case of inference to the best explanation. The best explanation of the fact that all known As are Bs is that, thanks to some mechanism or, in any case, principled connection of some kind or other, a thing's being an A disposes it to be a B. Hume's argument assumes that it is only through prediction by enumeration that the past is any guide to the future. It assumes that, so far as we have any reason to believe that future As will be Bs, it is that past As have been Bs. But this assumption is dead wrong. The fact that past As were Bs, is not, in and of itself, reason to hold that future As will be Bs; it is such a reason only to the extent that it suggests some mechanism that disposes As to be Bs.`,
+    category: "Placeholder"
+  },
+  {
+    id: "hume-induction-logic-explanation",
+    name: "Hume, Induction, and the Logic of Explanation",
+    preview: "We haven't yet refuted the A—we've only taken the first step...",
+    content: `We haven't yet refuted the A—we've only taken the first step towards doing so.
+The B could defend his view against what we've said thus far by saying the following: Suppose that, to explain why all Cs thus far known are Ds, you posit some underlying structure or law that disposes Cs to be Ds. Unless you think that nature is uniform, you have no right to expect that connection to continue to hold. But if, in order to deal with this, you suppose that nature is uniform, then you're caught in the vicious circle that I described.
+HR is correct. One is indeed caught in a vicious circle if, in order to show the legitimacy of inductive inference, one assumes UP; and the reason is that, just as B says, UP can be known, if at all, only on inductive grounds. But in making an inductive inference, one doesn't assume UP and, moreover, one doesn't assume anything that, like UP, can be known only on inductive grounds. What one assumes is that explanations are supposed to eliminate causal anomalies—that they are supposed to reduce the number of them and to limit the scope of those that aren't eliminated. What one assumes, then, is that it is inherent in the very concept of explanation that, other things being equal, T1 is a better explanation than T2 if T1 generates fewer anomalies than T2. The purpose of explanation is to minimize the breadth and depth of what must be taken for granted. The more a proposed theory requires you to say: "things just happen that way; there's no explaining it," the less successful an explanation it is.
+Here's an illustration. On Monday night, you park your X in the usual place, viz. right in front of your house, which is in a quiet residential neighborhood. As usual, you make sure that you lock the X and turn the X-alarm on. You also put an almost, but not quite, indestructible device (popularly known as "The Club") on the steering-wheel that locks it into place, making the X undriveable. Given where your home is in relation to where the X is parked, you'd almost certainly hear the X-alarm if it went off. As it happens, you hear nothing all night. And you know that you didn't sleep any more deeply than usual—that, for example, you weren't in a particularly deep drug-induced slumber—and, in general, that you weren't made less sensitive to noise than you usually are. Nonetheless, on Tuesday morning, the X is gone.
+What are the various possible explanations of this? There are infinitely many; but here are three.
+(E1) Using his or her super powers to bypass the security measures you took, some superhero-like creature made off with the X, making little or no noise and leaving few or no clues.
+(E2) As you were sleeping, the laws of physics changed in such a way that hitherto noisy processes (e.g., those that occur when X-alarms go off) are no longer noisy.
+(E3) Your good friend Larry—who, despite his numerous convictions for X-theft, simply radiates trustworthiness and decency, and to whom, without so much as a touch of anxiety, you therefore gave copies of all your keys—made off with the X.
+Each of E1 and E2 replaces the mystery of how your X could be noiselessly stolen with a far greater mystery. In fact, each creates a whole network of deep mysteries. E3 is not free from sin either. In general, you are a good judge of character. In any case, that's what you believe and that's what others tell you; and your judgments about people have generally been borne out by subsequent events. You've never been as convinced of anyone's integrity as you are of Larry's. Without being morose or censorious, he exudes a decency and centeredness that you've never even seen in a head of state, let alone an X-thief. But, of course, E3 is hands down the best explanation.`,
+    category: "Placeholder"
+  },
+  {
+    id: "explanatory-goodness",
+    name: "Explanatory Goodness",
+    preview: "For an explanation to be good isn't for it to be correct...",
+    content: `For an explanation to be good isn't for it to be correct.
+Sometimes the right explanations are bad ones.
+A story will make this clear.
+I'm on a X. The Y is doing Z. A mystery! "What on Earth does he have to do Z about?" I ask myself. His job is so A, and his life must therefore be such a B. But then I remember that, just a minute ago, a C gave him fifty D as an E. So I have my explanation: "he just came into a lot of F."
+But here is the very different explanation tendered by my seatmate Gus, who, in addition to being G, is also completely H. "The Y is a I. This morning he J somebody who, by coincidence, had the name K. K (the L, not the M) is on the D. So when the Y saw those D, he immediately thought of that morning's J. The J was a particularly enjoyable one; the Y is remembering the fun he had, and that's why he's doing Z."
+Gus and I have access to the same empirical data. (Gus hasn't read the Y's diary; he doesn't know the Y any more intimately than I do; and so on.) And Gus doesn't have some sort of psychic gift that would give him access to otherwise unknowable facts about the Y's mind that would legitimize his explanation. Indeed, a belief that he has such a gift isn't even among Gus's many delusions. Nor does he have any good reason; even if, for argumentative purposes, we grant him his delusions; to believe what he believes. But Gus is right. His explanation is correct down to the last detail.
+Given that it turned out to be correct, should we say that, despite first appearances, Gus's explanation is not a bad one? No! It's a datum that it's bad. It's a bad explanation that turned out to be correct. Thus, for an explanation to be a good one isn't for it to be correct.
+But a short extension of our story illustrates the even stronger principle that for an explanation to be a good one isn't even for it to be likely to be correct. Let W be the real world and let W∗ be a hypothetical world where we have the exact same experiences that we have in W, but in which the Guss of the world are always right. In W∗, it's because P is personally Q R to millions of S that they suddenly appear in T round the globe; it's because the U is personally V W that they disappear from under X; and so on.
+Explanatory goodness is a relationship, not between explanations and reality, but between explanation and data. The relations that hold in W∗ between theory and data coincide with those holding in W. That's why the ones that are wrong in W∗ are no less good on that account. What is it that, in W∗, makes wrong explanations be good? In general, what is the relationship that good theories bear with respect to the data?`,
+    category: "Placeholder"
+  },
+  {
+    id: "knowledge-vs-awareness",
+    name: "Knowledge vs Awareness",
+    preview: "A is conceptually articulated B...",
+    content: `A is conceptually articulated B.
+In order for me to C that my D are uncomfortably E, I need to have the concepts F, G, H, etc.
+I do not need to have these concepts; or, arguably, any concepts; to be J of the uncomfortable K in my D.
+My C of that L is a conceptualization of my J of that state of affairs.
+Equivalently, there are two kinds of J: M and N.
+My O perception of the P in front of me is a case of N J, as is my J of the K of my D.
+My C that there is a P in front of me is a case of M-J, as is my C that my D are uncomfortably E.
+L, not Q, the objects of R.
+S are N J-s.
+The contents of such J-s must be converted into T if they are to be R-ed.
+This is because it is L that are R-ed, and L are true T.
+"But don't we R U?" it will be objected. "Don't we R V and W?"
+To R some X or Y x is to R why it is a L that x occurred.
+One is J of V and W.
+One R-s the corresponding L.
+Z relations known through S.
+Z relations can be C-ed only through one's senses (through sight, touch, etc.) and through real-time J of one's own AA processes.
+In other words, Z relations can only be C-ed BB; and C of them is therefore BB.
+All CC knowledge DD but not vice versa.
+CC L are necessarily C-ed through EE, and C of such L is therefore DD.
+But not all DD C is CC C.
+I notice that you look FF and on that basis C that you didn't get enough GG.
+That C is DD but non-CC.
+HH and CC C.
+A HH is given by a T that, if true, describes some relatively comprehensive fact about the structure of the II.
+CC C is either
+(i) C of such a HH (e.g. your C of JJ) or
+(ii) C that is derived from C of such a HH (e.g. your C that, the laws of KK being what they are and LL x's state of MM being what it is, x will NN with OO y in approximately two hours).
+All C justified true belief but not vice versa.
+If you C it, then
+(i) You believe it,
+(ii) It is true, and
+(iii) Your reasons for believing it are legitimate.
+At the same time, given only that it's true and that you are justified in believing it, it doesn't follow that you C it.
+A broken PP is right twice a day.
+If your belief that it's QQ is based on the read-out of a broken PP, it isn't C, even if that PP happens to be right and, in addition, you C it to be relatively reliable.
+Your belief would have been C had you acquired it by virtue of being en rapport with the relevant RR; and the reason it wasn't C is that it was not so acquired.
+For you to be en rapport with those RR is for you to be linked to them by structures that are SS-transmissive, as opposed to merely TT-generative.
+T the objects of belief.
+The objects of C are T.
+(It isn't C-ed unless it's believed and it isn't believed unless it's a T.)
+One can be J of non-T, e.g. UU, VV, WW, but one does not in the relevant sense C them.
+Rather, one C L about them.`,
+    category: "Placeholder"
+  },
+  {
+    id: "loser-paradox",
+    name: "The Loser Paradox",
+    preview: "People who are at the bottom of a A are far less likely to spurn that A...",
+    content: `People who are at the bottom of a A are far less likely to spurn that A than they are to use it against people who are trying to climb the ranks of that A.
+The person who never B from C may in some contexts claim that a D is worthless, but he is unlikely to act accordingly.
+When he comes across someone without a D who is trying to make something of himself, he is likely to pounce on that person, claiming he is an un-E F.
+Explanation: G want others to share their H, and if that involves hyper-valuing the very people or institutions that put them in that H, then so be it.`,
+    category: "Placeholder"
+  },
+  {
+    id: "indie-writer-paradox",
+    name: "Indie Writer Paradox",
+    preview: "People don't give good A to B who do not already have positive A...",
+    content: `People don't give good A to B who do not already have positive A.
+Analysis: This is a veridical paradox, in the sense that it describes an actual vicious circle and does not represent a logical blunder.
+An independent C is by definition one who does not have a D apparatus behind him, and such a C depends on uncoerced positive A.
+But people are extremely reluctant to give good A to C who are not popular already or who do not have the weight of some institution behind them.
+This circle can be broken by C who mass-produce E, but there is no real way for other C to break it.
+This is a special form of the F Paradox.`,
+    category: "Placeholder"
+  },
+  {
+    id: "paradox-of-connectedness",
+    name: "Paradox of Connectedness",
+    preview: "A technology is supposed to B us but separates us...",
+    content: `A technology is supposed to B us but separates us into self-contained, non-interacting units.
+Solution: A technology is not supposed to B us C-ly.
+On the contrary, it is supposed to B us in such a way that we can D without having to E C-ly.
+And that is what it does.
+It B-s us F-ly while G-ing us C-ly.`,
+    category: "Placeholder"
+  },
+  {
+    id: "analysis-paralysis-paradox",
+    name: "Analysis Paralysis Paradox",
+    preview: "Given that there is almost always a more A course of action...",
+    content: `Given that there is almost always a more A course of action, the ability to identify A courses of action may lead to a failure to act.
+Solution: There is a difference between B and C.
+B answers the question: What is it objectively possible to do?
+C answers the question: What do my limited resources of D, E and B make it incumbent on me to do?
+And the second answer breaks any deadlocks created by the first.`,
+    category: "Placeholder"
+  },
+  {
+    id: "wittgenstein-rule-following",
+    name: "Wittgenstein on Rule Following",
+    preview: "Any given A complies with many different B-s...",
+    content: `Any given A complies with many different B-s, and there is therefore no good reason to say of a given C that it is a C of following this as opposed to that B.
+So any putative case of following a given B might equally reasonably be seen as a case of following some other, incompatible B, and there is therefore no good reason to regard any C as a case of following any given B.
+The solution: Taken in isolation, a given C can be interpreted as a C of compliance with any given one of a plurality of incompatible B-s.
+If you say "X" when I ask you "what is Y?", I cannot on the basis alone rule out the possibility that you took "what is Y?" and "X" to mean, respectively, "P" and "Q."
+But if that is what you meant, there will be independent evidence for it, meaning that there will be some reason independently of this context to believe that you take those symbols to have those meanings.`,
+    category: "Placeholder"
+  },
+  {
+    id: "soft-communism-education-paradox",
+    name: "Soft Communism and the Paradox of American Education",
+    preview: "The more A that the B invests in C, the worse D C is...",
+    content: `The more A that the B invests in C, the worse D C is.
+Explanation: In the B, when A is poured into C, it is not to improve C but is rather to provide incompetent people with fake employment as E administrators or F.
+So with each new wave of C funding, a bloated, entrenched and incompetent cadre of C bureaucrats becomes even more bloated, entrenched and incompetent, with predictably adverse effects on G-learning.
+In the B, when A is poured into public H, it isn't about improving C.
+It is about creating straw government jobs at the expense of real private sector jobs.`,
+    category: "Placeholder"
+  },
+  {
+    id: "obsessive-compulsive-paradox",
+    name: "Obsessive-compulsive's Paradox",
+    preview: "If the A doesn't give in to his B-s, he suffers...",
+    content: `If the A doesn't give in to his B-s, he suffers.
+If he does give in to them, they get worse.
+Solution: If the A fights his B-s, they wither and go away.`,
+    category: "Placeholder"
+  },
+  {
+    id: "personal-1",
+    name: "Personal 1",
+    preview: "Most of the A that people with B face are how to live with the C...",
+    content: `Most of the A that people with B face are how to live with the C of D emotions caused by E.
+They get stuck in a cycle of F because their emotions cause them to take actions that are not in alignment with their beliefs about who they are.
+Trying to cope with that F is really exhausting.
+If you had a G or H upbringing, you will at some point need to relive those painful times with the guidance of a I.
+But rather than thinking of the J process as starting way below others and having to work for years just to get to the starting gate, it can be easier to let go of the idea of living like everyone else and accepting that yours may be a life that will have its main focus on J.
+Immersing yourself in J through K, participating in L, M or N modalities, O step, P, Q or R can make for a very rewarding journey through life even if you never get "better" enough to stop working on yourself.
+But you are very lucky that you were born now.
+People have always had B, but in the last decade or two somebody figured out a way to teach people with B how to regulate their emotions.
+S is a brilliant, phenomenal resource that you can use to overcome a life-crippling disability.
+Many people who use S skills on a daily basis lose the diagnosis and live normal happy F-free lives.
+I know S is expensive and may not be available to you, but if you can't get into a treatment program order the S workbook and try to get a loved one to help you work through it.
+Or find an online S self-help group or if there isn't one start one.
+Having been dealt a really hard hand of cards may not be your first choice.
+But living a life devoted to J is very meaningful, and it will give you a depth and a sense of humility that very few people attain.`,
+    category: "Personal"
+  },
+  {
+    id: "personal-2",
+    name: "Personal 2",
+    preview: "Most of the A people with B run into are how to live with the C...",
+    content: `Most of the A people with B run into are how to live with the C of D emotions triggered by E.
+They get trapped in a loop of F because those emotions push them to do things that don't match who they think they are.
+Trying to handle that F is completely draining.
+If you grew up G or H, at some point you'll have to re-live those rough moments with someone trained to guide you.
+But instead of seeing the J process as starting miles behind everyone else and grinding for years just to reach the normal line, it's often easier to drop the fantasy of living like most people and accept that your life might center on J.
+Throwing yourself into J through K, hanging out on L, M stuff, N-step, O, P, Q or whatever works can turn into a really rich way to live even if you never get "fixed" enough to quit working on yourself.
+But you're honestly lucky to be alive right now.
+People have always had B, but only in the last ten–twenty years did someone finally crack how to teach them to settle their emotions.
+That system is flat-out brilliant and life-changing; tons of people who use its tricks every day drop the label completely and end up with regular, happy, F-free lives.
+I know the full program costs a fortune and might not even be around where you are, but if you can't get in, just grab the workbook and rope a friend or family member into doing it with you.
+Or hunt down an online self-help group; if none exists, start one.
+Getting handed a brutal deck of cards wasn't what you would've picked.
+But a life built around J ends up feeling deeply meaningful and gives you a kind of depth and quiet humility almost nobody else ever touches.`,
+    category: "Personal"
+  },
+  {
+    id: "personal-3",
+    name: "Personal 3",
+    preview: "Of course you can but think of it like Stockholm syndrome...",
+    content: `Of course you can but think of it like Stockholm syndrome. Especially untreated it will be your whole life consumed by them.
+
+There's probably little time away from them. The abandonment reflex can be so severe they will follow you in the home in case you don't leave them.
+
+It's probably wise to get a job with no interface with the outside world. So WFH can be a benefit. Video conferencing provide them with a link so they can check in on your fake infidelities. Always remember if the subject becomes non work related mention that the borderline is the centre of your attention forever.
+
+The house must be limited in objects to prevent any escalation of said objects. Only put up photos of them everywhere and no one else.
+
+it might be worth installing a sound proof room so they have access to an area where they can rage free.
+
+try and keep sharp objects in a safe.
+
+access to your bank accounts and cars limited. Or keep a burner bank account where you can pay for every day life out of it without being questioned.
+
+If they're left alone in their own thoughts then there's every possibility deep pool of crazy comes out and the delusional paranoia can set in so allow plenty of time to talk through a reality that has zero existence.
+
+The above sounds ridiculous and that's pretty much what you sign up too. So yeah it doesn't always happen but if you prepare for the most extreme at least you know what to expect.
+
+If however you want to live a life where you grow and reach your full potential then don't even think about moving in with a borderline.`,
+    category: "Personal"
   }
 ];
 
-export const defaultStyleSample = "academic";
+export function getSamplesByCategory(category: string): WritingSample[] {
+  return writingSamples.filter(sample => sample.category === category);
+}
+
+export function getAllCategories(): string[] {
+  const categories = new Set(writingSamples.map(sample => sample.category));
+  return Array.from(categories);
+}
+
+export function getCategories(): string[] {
+  const categories = new Set(writingSamples.map(sample => sample.category));
+  return Array.from(categories);
+}
+
+export function getCategoryCounts(): Record<string, number> {
+  const counts: Record<string, number> = {};
+  writingSamples.forEach(sample => {
+    counts[sample.category] = (counts[sample.category] || 0) + 1;
+  });
+  return counts;
+}
+
+export function getSampleById(id: string): WritingSample | undefined {
+  return writingSamples.find(sample => sample.id === id);
+}
+
+export const DEFAULT_STYLE_SAMPLE_ID = "formal-functional-relationships";

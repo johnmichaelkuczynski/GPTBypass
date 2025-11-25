@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { instructionPresets } from "@/lib/instructionPresets";
-import { defaultStyleSample } from "@/lib/writingSamples";
+import { writingSamples, getCategories, getSamplesByCategory, getCategoryCounts } from "@/lib/writingSamples";
 
 interface LeftSidebarProps {
   selectedPresets: string[];
   onPresetsChange: (presets: string[]) => void;
   selectedStyleSample: string;
-  onStyleSampleSelect: (sampleId: string) => void;
-  onContentSampleSelect: (sampleId: string) => void;
+  onStyleSampleSelect: (content: string) => void;
+  onContentSampleSelect: (content: string) => void;
 }
 
 export default function LeftSidebar({ 
@@ -21,7 +24,7 @@ export default function LeftSidebar({
   onStyleSampleSelect,
   onContentSampleSelect
 }: LeftSidebarProps) {
-  const [selectedSampleId, setSelectedSampleId] = useState<string>(defaultStyleSample);
+  const [selectedSampleId, setSelectedSampleId] = useState<string>("formal-functional-relationships");
 
   const handlePresetSelect = (presetId: string) => {
     if (!selectedPresets.includes(presetId)) {
@@ -33,9 +36,14 @@ export default function LeftSidebar({
     onPresetsChange(selectedPresets.filter(id => id !== presetId));
   };
 
+
+
   const handleStyleSampleSelect = (sampleId: string) => {
-    setSelectedSampleId(sampleId);
-    onStyleSampleSelect(sampleId);
+    const sample = writingSamples.find(s => s.id === sampleId);
+    if (sample) {
+      setSelectedSampleId(sample.id);
+      onStyleSampleSelect(sample.content);
+    }
   };
 
   const groupedPresets = instructionPresets.reduce((acc, preset) => {
@@ -123,79 +131,97 @@ export default function LeftSidebar({
                   </Button>
                 </div>
               )}
+
+
             </div>
           </div>
 
           <Separator className="my-6" />
 
-          {/* Writing Style Selection Section */}
+          {/* Writing Style Samples Section */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <i className="fas fa-book mr-2 text-primary"></i>
-              Writing Style
+              Writing Samples
             </h3>
-            <p className="text-sm text-gray-500 mb-4">Click a button to load style into Box B</p>
-            
-            <div className="space-y-2">
-              {/* Academic Button */}
-              <button
-                onClick={() => handleStyleSampleSelect('academic')}
-                className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                  selectedSampleId === 'academic' 
-                    ? 'bg-blue-50 border-blue-300' 
-                    : 'bg-white border-gray-200 hover:bg-gray-50'
-                }`}
-                data-testid="button-style-academic"
-              >
-                <div className="flex items-start">
-                  <i className={`fas fa-graduation-cap mt-0.5 mr-3 ${selectedSampleId === 'academic' ? 'text-blue-600' : 'text-gray-400'}`}></i>
-                  <div>
-                    <div className="font-medium text-gray-900">Academic</div>
-                    <div className="text-xs text-gray-500">Formal, structured argumentation</div>
+            <div className="space-y-3">
+              <Select value={selectedSampleId} onValueChange={handleStyleSampleSelect}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Choose a writing sample..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {getCategories().map((category) => {
+                    const categorySamples = getSamplesByCategory(category);
+                    const categoryCount = getCategoryCounts()[category];
+                    return (
+                      <div key={category}>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                          {category} ({categoryCount})
+                        </div>
+                        {categorySamples.map((sample) => (
+                          <SelectItem key={sample.id} value={sample.id}>
+                            <div className="flex flex-col items-start">
+                              <span className="font-medium">{sample.name}</span>
+                              <span className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                {sample.preview}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              
+              {selectedSampleId && (
+                <div className="bg-gray-50 border rounded-lg p-3">
+                  <div className="text-sm">
+                    <div className="font-medium text-gray-900 mb-2">
+                      {writingSamples.find(s => s.id === selectedSampleId)?.name}
+                    </div>
+                    <div className="text-gray-600 text-xs leading-relaxed max-h-24 overflow-y-auto">
+                      {writingSamples.find(s => s.id === selectedSampleId)?.preview}
+                    </div>
                   </div>
-                </div>
-              </button>
-
-              {/* Personal Button */}
-              <button
-                onClick={() => handleStyleSampleSelect('personal')}
-                className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                  selectedSampleId === 'personal' 
-                    ? 'bg-blue-50 border-blue-300' 
-                    : 'bg-white border-gray-200 hover:bg-gray-50'
-                }`}
-                data-testid="button-style-personal"
-              >
-                <div className="flex items-start">
-                  <i className={`fas fa-user mt-0.5 mr-3 ${selectedSampleId === 'personal' ? 'text-blue-600' : 'text-gray-400'}`}></i>
-                  <div>
-                    <div className="font-medium text-gray-900">Personal</div>
-                    <div className="text-xs text-gray-500">Casual, conversational tone</div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-6 px-2 flex-1"
+                      onClick={() => {
+                        const sample = writingSamples.find(s => s.id === selectedSampleId);
+                        if (sample) onStyleSampleSelect(sample.content);
+                      }}
+                    >
+                      Send to Style Box (B)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-6 px-2 flex-1"
+                      onClick={() => {
+                        const sample = writingSamples.find(s => s.id === selectedSampleId);
+                        if (sample) onContentSampleSelect(sample.content);
+                      }}
+                    >
+                      Send to Content Box (C)
+                    </Button>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 text-xs h-6 px-2 w-full"
+                    onClick={() => {
+                      setSelectedSampleId("");
+                      onStyleSampleSelect("");
+                    }}
+                  >
+                    Clear Sample
+                  </Button>
                 </div>
-              </button>
-
-              {/* Custom Style Sample Button */}
-              <button
-                onClick={() => handleStyleSampleSelect('custom')}
-                className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                  selectedSampleId === 'custom' 
-                    ? 'bg-blue-50 border-blue-300' 
-                    : 'bg-white border-gray-200 hover:bg-gray-50'
-                }`}
-                data-testid="button-style-custom"
-              >
-                <div className="flex items-start">
-                  <i className={`fas fa-edit mt-0.5 mr-3 ${selectedSampleId === 'custom' ? 'text-blue-600' : 'text-gray-400'}`}></i>
-                  <div>
-                    <div className="font-medium text-gray-900">Style Sample</div>
-                    <div className="text-xs text-gray-500">Paste your own text in Box B</div>
-                  </div>
-                </div>
-              </button>
+              )}
             </div>
-
-            <p className="text-xs text-gray-400 mt-3 italic">Style length auto-adjusts to match your input</p>
           </div>
         </div>
       </ScrollArea>

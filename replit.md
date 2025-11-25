@@ -6,12 +6,14 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 
 ## Recent Changes (January 2025)
 
-**Semantically Bleached Style Samples (November 25, 2025)**
-- Replaced 5 Epistemology and Content-Neutral samples with "placeholder" versions for improved AI detection bypass
-- Updated samples: Rational Belief, Hume/Induction, Explanatory Goodness, Knowledge vs Awareness, Alternative Accounts
-- Placeholders (X, Y, Z, A, B, etc.) replace domain-specific terms while preserving sentence structure and rhythm
-- Maintains identical punctuation, discourse patterns, and argumentative flow as originals
-- These bleached versions are more effective as style references because AI detectors focus on structure not semantics
+**Simplified Style Sample System with Auto-Length Matching (November 25, 2025)**
+- Replaced all writing samples with just 2 options: Academic and Personal
+- Implemented automatic length-matching: style sample is repeated or trimmed to match input text length
+- Server-side style storage in server/data/academic-sample.txt and personal-sample.txt
+- New styleSamples service with adjustStyleToInputLength function for length matching
+- API endpoint GET /api/style-samples/:id serves style sample content
+- Style box (Box B) still accepts custom user styles (e.g., Dickens passages)
+- This ensures output matches input length rather than style sample length
 
 **Database Integration (October 21, 2025)**
 - PostgreSQL database provisioned with Neon serverless connection
@@ -105,11 +107,14 @@ Preferred communication style: Simple, everyday language.
 - **Rate Limiting**: Built-in error handling and retry logic for API failures
 
 ### Style System
-- **Categorized Samples**: Writing sample collection organized by category with scalable architecture:
-  - **Paradoxes** (26 samples): Classical paradoxes including Hilbert-Bernays, Heterological, Sorites, Coin, Analysis, Barber, Unexpected Hanging, Ross's, Lottery, Slacker's, Economic Efficiency, Raven, Riddle of Induction, and more
-  - **Epistemology** (4 samples): Rational belief analysis, Hume's problem of induction with explanation theory, explanatory goodness vs correctness, and knowledge vs awareness distinctions
-  - **Content-Neutral** (2 samples): General analytical writing on formal and functional relationships, and alternative accounts with explanatory efficiency
-- **Scalable Sample UI**: Category-based dropdown interface with sample counts, designed to handle thousands of samples efficiently
+- **Simplified Sample Selection**: Just 2 preset styles - Academic and Personal
+  - **Academic**: Formal academic writing with structured argumentation and analytical tone
+  - **Personal**: Casual personal writing with conversational and informal tone
+- **Auto-Length Matching**: Style samples automatically adjust to match input text length
+  - Repeats style sample if input is longer
+  - Trims style sample if input is shorter
+- **Custom Style Support**: Users can paste any custom text (e.g., Dickens passages) into Box B for bespoke style matching
+- **Server-Side Storage**: Style samples stored in server/data/ for consistent delivery via API
 - **Advanced Instruction Presets**: 40+ categorized rewrite instructions with sophisticated controls:
   - **Advanced Techniques**: Mixed cadence + clause sprawl, Asymmetric emphasis, One aside, Hedge twice, Local disfluency, Analogy injection, Topic snap, Friction detail
   - **Structure & Cadence**: Compression levels, Mixed cadence, Clause surgery, Front/back-load claims

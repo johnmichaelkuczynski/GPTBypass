@@ -56,13 +56,10 @@ const PRESET_TEXT: Record<string,string> = {
   "Hedge once": "Use exactly one hedge: probably/roughly/more or less.",
   "Drop intensifiers": "Remove 'very/clearly/obviously/significantly'.",
   "Low-heat voice": "Prefer plain verbs; avoid showy synonyms.",
-  "One aside": "Allow one short parenthetical or em-dash aside; strictly factual.",
   "Concrete benchmark": "Replace one vague scale with a testable one (e.g., 'enough to X').",
   "Swap generic example": "If the source has an example, make it slightly more specific; else skip.",
   "Metric nudge": "Replace 'more/better' with a minimal, source-safe comparator (e.g., 'more than last case').",
-  "Asymmetric emphasis": "Linger on the main claim; compress secondary points sharply.",
   "Cull repeats": "Delete duplicated sentences/ideas; keep the strongest instance.",
-  "Topic snap": "Allow one abrupt focus change; no recap.",
   "No lists": "Output as continuous prose; remove bullets/numbering.",
   "No meta": "No prefaces/apologies/phrases like 'as requested'.",
   "Exact nouns": "Replace ambiguous pronouns with exact nouns.",
@@ -110,35 +107,41 @@ function buildRewritePrompt(params: {
 }): string {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
-  const styleSample = hasStyle ? params.styleText! : "";
+  
+  let prompt = "";
+  
+  if (hasStyle) {
+    prompt = `You must rewrite the INPUT TEXT below. 
 
-  let prompt = `You are rewriting text to bypass AI detection. Your task:
+IMPORTANT: Keep ALL the facts, meaning, and topic from the INPUT TEXT. 
+Only change HOW it is written to match the writing style of the STYLE SAMPLE.
 
-CRITICAL RULES:
-1. KEEP the EXACT SAME content, meaning, topics, and story from the input text
-2. ONLY change the WRITING STYLE to match the style sample
-3. Do NOT replace the subject matter - if the input is about a bad day, the output must be about that same bad day
-4. Mimic ONLY these style elements from the style sample:
-   - Sentence length and rhythm patterns
-   - Word choice complexity (simple vs formal)
-   - Punctuation habits
-   - Tone (casual, formal, conversational)
-   - How ideas connect and flow
+STYLE SAMPLE (copy the sentence patterns, word choices, and rhythm - but NOT the topic):
+"""
+${params.styleText}
+"""
 
 `;
-
-  if (hasStyle) {
-    prompt += `STYLE SAMPLE (copy ONLY the writing style, NOT the content):\n"${styleSample}"\n\n`;
   }
 
   if (hasContent) {
-    prompt += `CONTENT REFERENCE (you may integrate relevant ideas from this):\n"${params.contentMixText}"\n\n`;
+    prompt += `You may also integrate relevant ideas from this CONTENT REFERENCE:
+"""
+${params.contentMixText}
+"""
+
+`;
   }
 
-  // <<< PRESETS/APPLIED INSTRUCTIONS HERE >>>
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `INPUT TEXT TO REWRITE (keep this content, change only the style):\n"${params.inputText}"\n\nRewrite the input text now, preserving its content while adopting the writing style:`;
+  prompt += `INPUT TEXT (rewrite this - keep its meaning, change only the style):
+"""
+${params.inputText}
+"""
+
+Rewritten text:`;
+
   return prompt;
 }
 

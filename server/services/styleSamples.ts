@@ -4,9 +4,6 @@ import * as path from 'path';
 const ACADEMIC_SAMPLE_PATH = path.join(process.cwd(), 'server/data/academic-sample.txt');
 const PERSONAL_SAMPLE_PATH = path.join(process.cwd(), 'server/data/personal-sample.txt');
 
-let academicSampleCache: string | null = null;
-let personalSampleCache: string | null = null;
-
 function loadSample(filePath: string): string {
   try {
     return fs.readFileSync(filePath, 'utf-8');
@@ -17,17 +14,11 @@ function loadSample(filePath: string): string {
 }
 
 export function getAcademicSample(): string {
-  if (!academicSampleCache) {
-    academicSampleCache = loadSample(ACADEMIC_SAMPLE_PATH);
-  }
-  return academicSampleCache;
+  return loadSample(ACADEMIC_SAMPLE_PATH);
 }
 
 export function getPersonalSample(): string {
-  if (!personalSampleCache) {
-    personalSampleCache = loadSample(PERSONAL_SAMPLE_PATH);
-  }
-  return personalSampleCache;
+  return loadSample(PERSONAL_SAMPLE_PATH);
 }
 
 export function getSampleById(id: string): string {

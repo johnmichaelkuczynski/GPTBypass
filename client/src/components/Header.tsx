@@ -1,14 +1,15 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { PlayCircle, Mail } from "lucide-react";
+import { PlayCircle } from "lucide-react";
 
 interface HeaderProps {
   provider: string;
   onProviderChange: (provider: string) => void;
+  onShowApiKeys?: () => void;
 }
 
-export default function Header({ provider, onProviderChange }: HeaderProps) {
+export default function Header({ provider, onProviderChange, onShowApiKeys }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b border-gray-200 z-40">
       <div className="max-w-full mx-auto px-6 py-4">
@@ -18,17 +19,6 @@ export default function Header({ provider, onProviderChange }: HeaderProps) {
             <span className="text-sm text-gray-500 font-medium">AI Text Rewriter</span>
           </div>
           <div className="flex items-center space-x-4">
-            <a href="mailto:contact@zhisystems.ai">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold"
-                data-testid="button-contact-us"
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                Contact Us
-              </Button>
-            </a>
             <Link href="/video-instructions">
               <Button 
                 variant="default" 
@@ -55,6 +45,13 @@ export default function Header({ provider, onProviderChange }: HeaderProps) {
                 </SelectContent>
               </Select>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={onShowApiKeys}
+            >
+              <i className="fas fa-key mr-2"></i>API Keys
+            </Button>
           </div>
         </div>
       </div>

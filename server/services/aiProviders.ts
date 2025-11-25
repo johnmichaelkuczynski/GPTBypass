@@ -122,40 +122,16 @@ which, though logically equivalent, seem to confirmationally equivalent, in that
 A number of very contrived solutions to this paradox have been proposed, all of which either deny that there is a paradox or invent ad hoc systems of logic to validate the 'solution' in question. 
 But the real solution is clear. First of all, it is only principled generalizations that can be confirmed. Supposing that you assert (i) with the intention of affirming a principled as opposed to an accidental generalization, you are saying that instances of the property of being a raven grounds or causes instances of blackness. Read thus, (i) is most certainly not equivalent with (ii) or with any variation thereof. Be it noted that while there is a natural nomic or causal reading of (i), there is no such reading of (ii). Also be it noted that it is only principled as opposed to accidental generalizations that can be confirmed. "All metal expands when heated" can be confirmed but not "all objects in Smith's pocket expand when heated." In general, when read as principled and therefore confirmable generalization, "all x's are y's" has nomic or causal content is therefore not equivalent with "all non-y's are non-x's." Case closed on the Raven Paradox.`;
 
-  const inputWordCount = params.inputText.trim().split(/\s+/).filter(w => w.length > 0).length;
-
-  let prompt = `You are a human writer. Your task is to rewrite the text below so it reads as if written by the SAME HUMAN AUTHOR who wrote the style sample.
-
-CRITICAL STYLE REQUIREMENTS - You MUST copy these EXACT patterns from the style sample:
-1. SENTENCE STRUCTURE: Copy the exact sentence lengths, clause patterns, and punctuation rhythms from the style sample
-2. VOCABULARY: Use the same level of formality, word choices, and phrasing patterns as the style sample
-3. RHYTHM & FLOW: Match the cadence - if the style sample has long complex sentences, use those. If short punchy sentences, use those.
-4. QUIRKS & IMPERFECTIONS: Copy any grammatical quirks, unusual phrasing, or stylistic "imperfections" from the style sample
-5. TRANSITIONS: Use the same types of transitions and connective phrases as the style sample
-6. VOICE: Match the authorial voice - formal/casual, confident/hedging, direct/meandering
-
-DO NOT:
-- Sound like AI (no "delves into", "multifaceted", "comprehensive", "it's important to note", "in conclusion")
-- Use overly smooth or polished language if the style sample doesn't
-- Add unnecessary qualifiers or hedging unless the style sample does
-- Create perfect parallel structure unless the style sample does
-
-STYLE SAMPLE (study this carefully and mimic its EXACT patterns):
-"${styleSample}"
-
-LENGTH: Keep your rewrite approximately ${inputWordCount} words (+/- 10%).
-
-`;
+  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample:\n"${styleSample}"\n\n`;
 
   if (hasContent) {
-    prompt += `CONTENT TO INTEGRATE: Weave in relevant ideas from this reference naturally:\n"${params.contentMixText}"\n\n`;
+    prompt += `Judiciously integrate relevant ideas, examples, and details from the following content reference to enrich the rewrite:\n"${params.contentMixText}"\n\n`;
   }
 
+  // <<< PRESETS/APPLIED INSTRUCTIONS HERE >>>
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `TEXT TO REWRITE (preserve the meaning, transform the style to match the sample above):\n"${params.inputText}"
-
-OUTPUT ONLY THE REWRITTEN TEXT. No explanations, no meta-commentary.`;
+  prompt += `Text to rewrite:\n"${params.inputText}"`;
   return prompt;
 }
 
@@ -165,6 +141,7 @@ export interface RewriteParams {
   contentMixText?: string;
   customInstructions?: string;
   selectedPresets?: string[];
+  mixingMode?: 'style' | 'content' | 'both';
 }
 
 export class AIProviderService {

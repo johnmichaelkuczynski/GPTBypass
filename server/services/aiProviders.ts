@@ -153,55 +153,39 @@ function buildRewritePrompt(params: {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
   const inputWordCount = params.inputText.split(/\s+/).filter(w => w.length > 0).length;
-  const inputSentences = splitIntoSentences(params.inputText);
   
   const frankensteinSample = hasStyle 
     ? buildFrankensteinSample(params.inputText, params.styleText!)
     : "";
   
-  let prompt = `STRICT REWRITE TASK - Content preservation is mandatory.
+  let prompt = `Paraphrase the following text. You MUST keep the exact same meaning - every fact, name, and claim must remain.
 
-INPUT TEXT (${inputWordCount} words, ${inputSentences.length} sentences):
-"""
+TEXT TO PARAPHRASE:
 ${params.inputText}
-"""
 
 `;
 
   if (hasStyle) {
-    prompt += `STYLE TEMPLATE (${inputSentences.length} sentences matched by length to your input):
-Each sentence below corresponds to one input sentence. Use its structure as a template.
-"""
+    prompt += `When paraphrasing, mimic the sentence structures and rhythms from this writing sample:
 ${frankensteinSample}
-"""
-
-INSTRUCTIONS:
-For each input sentence, rewrite it using the STRUCTURE of the corresponding style template sentence:
-- Copy the sentence pattern (how it begins, clause order, punctuation)
-- Keep ALL facts/content from the input sentence
-- Match the approximate word count of each input sentence
 
 `;
   }
 
   if (hasContent) {
-    prompt += `OPTIONAL ENRICHMENT - You may weave in ideas from:
-"""
-${params.contentMixText}
-"""
+    prompt += `You may incorporate ideas from: ${params.contentMixText}
 
 `;
   }
 
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `STRICT RULES:
-1. Output must contain EVERY fact from the input
-2. Output must be ${inputWordCount} words (±10%)
-3. Do NOT use content/topics from the style template
-4. Do NOT drop or add facts
+  prompt += `Requirements:
+- Keep ALL original facts and meaning
+- Output should be approximately ${inputWordCount} words
+- Only change how sentences are structured, not what they say
 
-OUTPUT (rewritten text only):`;
+Paraphrased text:`;
 
   return prompt;
 }

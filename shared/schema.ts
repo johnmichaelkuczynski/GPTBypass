@@ -90,6 +90,7 @@ export interface AIProviderConfig {
 export interface RewriteRequest {
   inputText: string;
   styleId?: string;
+  customStyleText?: string;
   contentMixText?: string;
   customInstructions?: string;
   selectedPresets?: string[];

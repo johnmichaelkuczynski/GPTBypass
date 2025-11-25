@@ -2,21 +2,26 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { instructionPresets } from "@/lib/instructionPresets";
-import { GraduationCap, User } from "lucide-react";
+import { GraduationCap, User, PenTool, X } from "lucide-react";
 
 interface LeftSidebarProps {
   selectedPresets: string[];
   onPresetsChange: (presets: string[]) => void;
   selectedStyleSample: string;
   onStyleSampleSelect: (styleId: string) => void;
+  customStyleText: string;
+  onCustomStyleTextChange: (text: string) => void;
 }
 
 export default function LeftSidebar({ 
   selectedPresets, 
   onPresetsChange, 
   selectedStyleSample,
-  onStyleSampleSelect
+  onStyleSampleSelect,
+  customStyleText,
+  onCustomStyleTextChange
 }: LeftSidebarProps) {
   const handlePresetSelect = (presetId: string) => {
     if (!selectedPresets.includes(presetId)) {
@@ -170,6 +175,62 @@ export default function LeftSidebar({
                   <div className="w-3 h-3 bg-white rounded-full"></div>
                 )}
               </button>
+
+              {/* Custom Style Sample Input */}
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => onStyleSampleSelect("custom")}
+                  data-testid="style-button-custom"
+                  className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all duration-200 mb-3 ${
+                    selectedStyleSample === "custom"
+                      ? "bg-purple-600 border-purple-600 text-white shadow-lg"
+                      : "bg-white border-gray-200 text-gray-700 hover:border-purple-300 hover:bg-purple-50"
+                  }`}
+                >
+                  <PenTool className={`w-6 h-6 ${selectedStyleSample === "custom" ? "text-white" : "text-purple-600"}`} />
+                  <div className="text-left flex-1">
+                    <div className={`font-semibold ${selectedStyleSample === "custom" ? "text-white" : "text-gray-900"}`}>
+                      Custom Style
+                    </div>
+                    <div className={`text-xs ${selectedStyleSample === "custom" ? "text-purple-100" : "text-gray-500"}`}>
+                      Paste your own writing sample
+                    </div>
+                  </div>
+                  {selectedStyleSample === "custom" && (
+                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                  )}
+                </button>
+
+                {selectedStyleSample === "custom" && (
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Textarea
+                        placeholder="Paste a writing sample (e.g., a passage from your favorite author). The app will automatically process it to match your input length..."
+                        value={customStyleText}
+                        onChange={(e) => onCustomStyleTextChange(e.target.value)}
+                        data-testid="input-custom-style"
+                        className="min-h-[200px] max-h-[400px] resize-y text-sm leading-relaxed"
+                      />
+                      {customStyleText && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2 h-6 w-6 p-0 text-gray-400 hover:text-red-500"
+                          onClick={() => onCustomStyleTextChange("")}
+                          data-testid="button-clear-custom-style"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {customStyleText && (
+                      <div className="text-xs text-purple-600 bg-purple-50 rounded-lg p-2">
+                        {customStyleText.trim().split(/\s+/).filter(w => w.length > 0).length} words • Will be semantically processed
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

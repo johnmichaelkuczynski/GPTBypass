@@ -16,6 +16,7 @@ export default function Home() {
   const [provider, setProvider] = useState<string>("grok");
   const [inputText, setInputText] = useState("");
   const [styleId, setStyleId] = useState<string>("academic");
+  const [customStyleText, setCustomStyleText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [customInstructions, setCustomInstructions] = useState("");
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
@@ -152,6 +153,7 @@ export default function Home() {
             .join('\n\n')
         : inputText,
       styleId: styleId,
+      customStyleText: styleId === "custom" && customStyleText.trim() ? customStyleText.trim() : undefined,
       contentMixText: contentMixText.trim() || undefined,
       customInstructions: customInstructions.trim() || undefined,
       selectedPresets: selectedPresets.length > 0 ? selectedPresets : undefined,
@@ -190,12 +192,14 @@ export default function Home() {
     setContentMixText("");
     setOutputText("");
     setCustomInstructions("");
+    setCustomStyleText("");
     setInputAiScore(null);
     setOutputAiScore(null);
     setInputChunks([]);
     setSelectedChunkIds([]);
     setLastJobId(null);
     setSelectedPresets([]);
+    setStyleId("academic");
     toast({
       title: "Cleared",
       description: "All content has been cleared successfully.",
@@ -217,6 +221,8 @@ export default function Home() {
           onPresetsChange={setSelectedPresets}
           selectedStyleSample={styleId}
           onStyleSampleSelect={handleStyleSelect}
+          customStyleText={customStyleText}
+          onCustomStyleTextChange={setCustomStyleText}
         />
         
         <main className="flex-1 overflow-y-auto">

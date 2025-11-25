@@ -1,0 +1,200 @@
+1. "No!" - 1 word
+2. "I ask myself." - 3 words
+3. "HR is correct." - 3 words
+4. "Here's an illustration." - 3 words
+5. "I'm on a X." - 4 words
+6. "But Gus is right." - 4 words
+7. "S are N J-s." - 4 words
+8. "The Y is doing Z." - 5 words
+9. "One R-s the corresponding L." - 5 words
+10. "Z relations known through S." - 5 words
+11. "A is conceptually articulated B." - 5 words
+12. "Formal relationships hold between descriptions." - 5 words
+13. "Consider the alternative mentioned earlier." - 5 words
+14. "But this assumption is dead wrong." - 6 words
+15. "That C is DD but non-CC." - 6 words
+16. "The objects of C are T." - 6 words
+17. "Rather, one C L about them." - 6 words
+18. "It's a datum that it's bad." - 6 words
+19. "And that is what it does." - 6 words
+20. "The objects of evaluation are descriptions." - 6 words
+21. "In fact, the opposite often holds." - 6 words
+22. "You can test this for yourself." - 6 words
+23. "A story will make this clear." - 7 words
+24. "There are no rules without conditions." - 7 words
+25. "One is J of V and W." - 8 words
+26. "All CC knowledge DD but not vice versa." - 8 words
+27. "E3 is not free from sin either." - 8 words
+28. "Sometimes the right explanations are bad ones." - 8 words
+29. "It B-s us F-ly while G-ing us C-ly." - 8 words
+30. "Functional relationships hold between events or conditions." - 8 words
+31. "All tools require some form of use." - 8 words
+32. "Structural understanding is always understanding of relationships." - 8 words
+33. "But not all DD C is CC C." - 9 words
+34. "All C justified true belief but not vice versa." - 9 words
+35. "There are infinitely many; but here are three." - 9 words
+36. "Nonetheless, on Tuesday morning, the X is gone." - 9 words
+37. "As it happens, you hear nothing all night." - 9 words
+38. "What are the various possible explanations of this?" - 9 words
+39. "A broken PP is right twice a day." - 9 words
+40. "Solution: There is a difference between B and C." - 9 words
+41. "Such relationships are structural, as opposed to observational." - 9 words
+42. "Nothing can be both moving and perfectly still." - 9 words
+43. "(An event is anything that happens in time.)" - 9 words
+44. "and "X" to mean, respectively, "P" and "Q."" - 9 words
+45. "In general, you are a good judge of character." - 10 words
+46. "This is a special form of the F Paradox." - 10 words
+47. "Solution: A technology is not supposed to B us C-ly." - 10 words
+48. "Therefore, a plant's growth depends on its receiving water." - 10 words
+49. "A tool's being functional depends on its being usable." - 10 words
+50. "Why doesn't the X change under the given conditions?" - 10 words
+51. "That reason, if it exists, must be purely theoretical." - 10 words
+52. "It may not be contradictory in the strict sense." - 10 words
+53. "His explanation is correct down to the last detail." - 10 words
+54. "It's a bad explanation that turned out to be correct." - 10 words
+55. "Equivalently, there are two kinds of J: M and N." - 11 words
+56. "There are two broad types of relationships: formal and functional." - 11 words
+57. "Gus and I have access to the same empirical data." - 11 words
+58. "B answers the question: What is it objectively possible to do?" - 11 words
+59. "Only the semantic content has been replaced with neutral placeholders." - 11 words
+60. "In fact, each creates a whole network of deep mysteries." - 11 words
+61. "But, of course, E3 is hands down the best explanation." - 11 words
+62. ""What on Earth does he have to do Z about?"" - 11 words
+63. "For an explanation to be good isn't for it to be correct." - 13 words
+64. "And the second answer breaks any deadlocks created by the first." - 12 words
+65. "A description is any statement that can be true or false." - 12 words
+66. "Example of a functional relationship: A plant cannot grow without water." - 12 words
+67. "Examples of structural relationships are: If A, then A or B." - 12 words
+68. "Because, says the standard account, the key Y remained in place." - 12 words
+69. "Setting them aside, if possible at all, would create ripple effects." - 12 words
+70. "Those B do not only sustain the single E in question." - 12 words
+71. "What is it that, in W∗, makes wrong explanations be good?" - 12 words
+72. "Some relationships are known, not through direct observation, but through reasoning." - 12 words
+73. "On Monday night, you park your X in the usual place, viz." - 12 words
+74. "This morning he J somebody who, by coincidence, had the name K." - 12 words
+75. "So I have my explanation: "he just came into a lot of F."" - 13 words
+76. "The first type is structural, i.e., it holds between statements about features." - 13 words
+77. "right in front of your house, which is in a quiet residential neighborhood." - 14 words
+78. "This is because it is L that are R-ed, and L are true T." - 14 words
+79. "Therefore, a shape's being a square depends on its having four equal sides." - 14 words
+80. "So when the Y saw those D, he immediately thought of that morning's J." - 14 words
+81. "People don't give good A to B who do not already have positive A." - 14 words
+82. "We haven't yet refuted the A—we've only taken the first step towards doing so." - 15 words
+83. "Taken on its own, a substitute account may describe a situation that seems coherent." - 15 words
+84. "Consider the various B that would be altered, the C disrupted, the D prevented." - 15 words
+85. "His job is so A, and his life must therefore be such a B." - 15 words
+86. "(It isn't C-ed unless it's believed and it isn't believed unless it's a T.)" - 15 words
+87. "A technology is supposed to B us but separates us into self-contained, non-interacting units." - 15 words
+88. "CC L are necessarily C-ed through EE, and C of such L is therefore DD." - 15 words
+89. "The existence of rules depends on the existence of conditions to which they apply." - 15 words
+90. "You've never been as convinced of anyone's integrity as you are of Larry's." - 15 words
+91. "His job is so A, and his life must therefore be such a B." - 15 words
+92. "Think of the range of underlying A that would have to be set aside." - 16 words
+93. "Indeed, a belief that he has such a gift isn't even among Gus's many delusions." - 16 words
+94. "Thus, for an explanation to be a good one isn't for it to be correct." - 16 words
+95. "Explanatory goodness is a relationship, not between explanations and reality, but between explanation and data." - 16 words
+96. "In general, what is the relationship that good theories bear with respect to the data?" - 16 words
+97. "The contents of such J-s must be converted into T if they are to be R-ed." - 16 words
+98. "As usual, you make sure that you lock the X and turn the X-alarm on." - 16 words
+99. "Removing them would have many other consequences—events unrelated to the specific aim of the new model." - 16 words
+100. "1 obviously expresses a relationship; 2–4 do so less obviously, as their meanings are: 2*." - 16 words
+101. "An object's being both moving and still depends on contradictory conditions, which cannot occur together." - 16 words
+102. "Observational understanding can be either direct or indirect; the same is true of structural understanding." - 16 words
+103. "Here is the fully bleached, placeholder-only version of the long Hume/induction/car-theft sample you just used." - 17 words
+104. "The relations that hold in W∗ between theory and data coincide with those holding in W." - 17 words
+105. "My C of that L is a conceptualization of my J of that state of affairs." - 17 words
+106. "I notice that you look FF and on that basis C that you didn't get enough GG." - 17 words
+107. "In other words, Z relations can only be C-ed BB; and C of them is therefore BB." - 17 words
+108. "That's why the ones that are wrong in W∗ are no less good on that account." - 18 words
+109. "To R some X or Y x is to R why it is a L that x occurred." - 18 words
+110. "The second is operational, i.e., it holds between things in the world as they act or change." - 18 words
+111. "Something is not evaluated unless it is described, and it is not described unless it can be stated." - 18 words
+112. "A continuation of the earlier case will make it clear what this means and why it matters." - 18 words
+113. "And for reasons soon to be made clear, no such purely theoretical reason can justify accepting it." - 18 words
+114. "The purpose of explanation is to minimize the breadth and depth of what must be taken for granted." - 19 words
+115. "It is not at all clear that, once the relevant details are considered, the replacement is even logically possible." - 19 words
+116. "But that alone is not enough for it to serve as a viable model of the relevant information." - 19 words
+117. "But then I remember that, just a minute ago, a C gave him fifty D as an E." - 19 words
+118. "Unless you think that nature is uniform, you have no right to expect that connection to continue to hold." - 20 words
+119. "One can notice non-descriptions — sounds, objects, movements — but in the relevant sense one evaluates descriptions of them." - 20 words
+120. "Hume's argument assumes that it is only through prediction by enumeration that the past is any guide to the future." - 21 words
+121. "Each of E1 and E2 replaces the mystery of how your X could be noiselessly stolen with a far greater mystery." - 21 words
+122. "One can be J of non-T, e.g. UU, VV, WW, but one does not in the relevant sense C them." - 21 words
+123. "The cost of that account—meaning what new puzzles it creates—is vastly greater than its value—meaning what old puzzles it removes." - 21 words
+124. "If there is reason to think even one such account exists, it is not because it has ever been produced." - 21 words
+125. "C answers the question: What do my limited resources of D, E and B make it incumbent on me to do?" - 21 words
+126. "In order for me to C that my D are uncomfortably E, I need to have the concepts F, G, H, etc." - 22 words
+127. "(Gus hasn't read the Y's diary; he doesn't know the Y any more intimately than I do; and so on.)" - 22 words
+128. "A HH is given by a T that, if true, describes some relatively comprehensive fact about the structure of the II." - 22 words
+129. "But, the skeptic will counter, perhaps we can discard that account; perhaps there's an alternative that fits the Z equally well." - 22 words
+130. "But here is the very different explanation tendered by my seatmate Gus, who, in addition to being G, is also completely H." - 23 words
+131. "Nor does he have any good reason; even if, for argumentative purposes, we grant him his delusions; to believe what he believes." - 23 words
+132. "This circle can be broken by C who mass-produce E, but there is no real way for other C to break it." - 23 words
+133. "Every single punctuation mark, asterisk, parenthesis, em-dash, list structure, sentence length, and discourse rhythm is 100 % identical to the original." - 23 words
+134. "But there is a further difficulty for this—or, by a similar line of thought, for any non-standard—replacement of the conventional view." - 23 words
+135. "The J was a particularly enjoyable one; the Y is remembering the fun he had, and that's why he's doing Z." - 24 words
+136. "Given that it turned out to be correct, should we say that, despite first appearances, Gus's explanation is not a bad one?" - 24 words
+137. "If you C it, then (i) You believe it, (ii) It is true, and (iii) Your reasons for believing it are legitimate." - 24 words
+138. "I do not need to have these concepts; or, arguably, any concepts; to be J of the uncomfortable K in my D." - 24 words
+139. "Z relations can be C-ed only through one's senses (through sight, touch, etc.) and through real-time J of one's own AA processes." - 24 words
+140. "On the contrary, it is supposed to B us in such a way that we can D without having to E C-ly." - 24 words
+141. "The person who never B from C may in some contexts claim that a D is worthless, but he is unlikely to act accordingly." - 25 words
+142. "Analysis: This is a veridical paradox, in the sense that it describes an actual vicious circle and does not represent a logical blunder." - 25 words
+143. "Given where your home is in relation to where the X is parked, you'd almost certainly hear the X-alarm if it went off." - 25 words
+144. "At the same time, given only that it's true and that you are justified in believing it, it doesn't follow that you C it." - 27 words
+145. "An independent C is by definition one who does not have a D apparatus behind him, and such a C depends on uncoerced positive A." - 27 words
+146. "My C that there is a P in front of me is a case of M-J, as is my C that my D are uncomfortably E." - 27 words
+147. "The more a proposed theory requires you to say: "things just happen that way; there's no explaining it," the less successful an explanation it is." - 27 words
+148. "But if, in order to deal with this, you suppose that nature is uniform, then you're caught in the vicious circle that I described." - 27 words
+149. "This belief becomes rational when, and only when, you have reason to believe that a X-outcome is favored by the structures involved in the setup." - 27 words
+150. "Without being morose or censorious, he exudes a decency and centeredness that you've never even seen in a head of state, let alone an X-thief." - 27 words
+151. "In fact, it takes up so much space on the device that the remaining spaces are too small for the item to fit into them." - 27 words
+152. "It assumes that, so far as we have any reason to believe that future As will be Bs, it is that past As have been Bs." - 28 words
+153. "But in making an inductive inference, one doesn't assume UP and, moreover, one doesn't assume anything that, like UP, can be known only on inductive grounds." - 28 words
+154. "You also put an almost, but not quite, indestructible device (popularly known as "The Club") on the steering-wheel that locks it into place, making the X undriveable." - 28 words
+155. "In any case, that's what you believe and that's what others tell you; and your judgments about people have generally been borne out by subsequent events." - 28 words
+156. "It would be difficult to devise an account inconsistent with the conventional one that, while still matching the relevant evidence, is equally efficient in explanatory terms." - 28 words
+157. "And Gus doesn't have some sort of psychic gift that would give him access to otherwise unknowable facts about the Y's mind that would legitimize his explanation." - 29 words
+158. "The solution: Taken in isolation, a given C can be interpreted as a C of compliance with any given one of a plurality of incompatible B-s." - 29 words
+159. "If you say "X" when I ask you "what is Y?", I cannot on the basis alone rule out the possibility that you took "what is Y?"" - 29 words
+160. "Example of a formal relationship: The description that a shape is a square cannot be true unless the description that it has four equal sides is true." - 29 words
+161. "But, I would respond, even granting for argument's sake that such an alternative exists, it doesn't follow that it avoids more gaps than the one it replaces." - 29 words
+162. "And that belief, in its turn, is rational if you know that circumstances at all like the following obtain: *The objects are Y-attracted to the X-spot." - 29 words
+163. "Given that there is almost always a more A course of action, the ability to identify A courses of action may lead to a failure to act." - 29 words
+164. "My O perception of the P in front of me is a case of N J, as is my J of the K of my D." - 30 words
+165. "For you to be en rapport with those RR is for you to be linked to them by structures that are SS-transmissive, as opposed to merely TT-generative." - 30 words
+166. "Explanation: G want others to share their H, and if that involves hyper-valuing the very people or institutions that put them in that H, then so be it." - 30 words
+167. "But people are extremely reluctant to give good A to C who are not popular already or who do not have the weight of some institution behind them." - 31 words
+168. "It doesn't follow that it is comparable from a trade-off standpoint to the original—that it reduces as many issues as the old view while introducing no more new ones." - 31 words
+169. "What one assumes is that explanations are supposed to eliminate causal anomalies—that they are supposed to reduce the number of them and to limit the scope of those that aren't eliminated." - 32 words
+170. "(E2) As you were sleeping, the laws of physics changed in such a way that hitherto noisy processes (e.g., those that occur when X-alarms go off) are no longer noisy." - 32 words
+171. "When he comes across someone without a D who is trying to make something of himself, he is likely to pounce on that person, claiming he is an un-E F." - 33 words
+172. "(E1) Using his or her super powers to bypass the security measures you took, some superhero-like creature made off with the X, making little or no noise and leaving few or no clues." - 34 words
+173. "But a short extension of our story illustrates the even stronger principle that for an explanation to be a good one isn't even for it to be likely to be correct." - 34 words
+174. "When would it become rational to believe that, next time, you're more likely than not to get this as opposed to that outcome—that, for example, you're especially likely to get a X?" - 35 words
+175. "What one assumes, then, is that it is inherent in the very concept of explanation that, other things being equal, T1 is a better explanation than T2 if T1 generates fewer anomalies than T2." - 37 words
+176. "Any given A complies with many different B-s, and there is therefore no good reason to say of a given C that it is a C of following this as opposed to that B." - 37 words
+177. "Your belief would have been C had you acquired it by virtue of being en rapport with the relevant RR; and the reason it wasn't C is that it was not so acquired." - 37 words
+178. "People who are at the bottom of a A are far less likely to spurn that A than they are to use it against people who are trying to climb the ranks of that A." - 38 words
+179. "And you know that you didn't sleep any more deeply than usual—that, for example, you weren't in a particularly deep drug-induced slumber—and, in general, that you weren't made less sensitive to noise than you usually are." - 39 words
+180. "If your belief that it's QQ is based on the read-out of a broken PP, it isn't C, even if that PP happens to be right and, in addition, you C it to be relatively reliable." - 39 words
+181. "Let W be the real world and let W∗ be a hypothetical world where we have the exact same experiences that we have in W, but in which the Guss of the world are always right." - 40 words
+182. "But if that is what you meant, there will be independent evidence for it, meaning that there will be some reason independently of this context to believe that you take those symbols to have those meanings." - 40 words
+183. "… (the rest of the original text continues in exactly the same bleached form, but I'll stop here to keep it manageable; let me know if you need the remaining ~60 % of it bleached as well)" - 40 words
+184. "(E3) Your good friend Larry—who, despite his numerous convictions for X-theft, simply radiates trustworthiness and decency, and to whom, without so much as a touch of anxiety, you therefore gave copies of all your keys—made off with the X." - 41 words
+185. "In W∗, it's because P is personally Q R to millions of S that they suddenly appear in T round the globe; it's because the U is personally V W that they disappear from under X; and so on." - 41 words
+186. "If you know on independent grounds that there is no such mechanism, no run of As that are Bs, no matter how long, gives you a reason to think that the next A will be a B." - 41 words
+187. "And to the extent that a long run of X-outcomes doesn't give you such a reason, you are irrational to believe that you're any more (or any less) likely to get a X than you are any other outcome." - 42 words
+188. "You are rational to believe that you'll continue to get Xs to the extent that your having thus far gotten multiple Xs in a row gives you reason to believe there to be some underlying structure favoring that outcome." - 43 words
+189. "And there is no assurance that these other consequences would be compatible, even in a purely formal sense, with the data the new account is supposed to capture as well as the conventional one it seeks to replace." - 43 words
+190. "The best explanation of the fact that all known As are Bs is that, thanks to some mechanism or, in any case, principled connection of some kind or other, a thing's being an A disposes it to be a B." - 44 words
+191. "The B could defend his view against what we've said thus far by saying the following: Suppose that, to explain why all Cs thus far known are Ds, you posit some underlying structure or law that disposes Cs to be Ds." - 44 words
+192. "One is indeed caught in a vicious circle if, in order to show the legitimacy of inductive inference, one assumes UP; and the reason is that, just as B says, UP can be known, if at all, only on inductive grounds." - 45 words
+193. "The fact that past As were Bs, is not, in and of itself, reason to hold that future As will be Bs; it is such a reason only to the extent that it suggests some mechanism that disposes As to be Bs." - 46 words
+194. "So any putative case of following a given B might equally reasonably be seen as a case of following some other, incompatible B, and there is therefore no good reason to regard any C as a case of following any given B." - 48 words
+195. "Thus, any case of prediction by enumeration that isn't an instance of the gambler's fallacy involves the positing some mechanism or law that, were it to exist, would explain a certain pattern—it involves, in other words, a case of inference to the best explanation." - 48 words
+196. "So, no matter how many consecutive Xs you get, if you know with certainty that there is no underlying structure that would favor such an outcome, then you have no more reason to expect a X than you do a Y or a Z." - 48 words
+197. "Put pedantically, it is only insofar as you have reason to believe in such a structure that you have reason to expect something that has the property of being an item produced by you to have the property of landing in the X-spot." - 48 words
+198. "*On any given occasion, you have an unconscious intention to produce a X (even though you have no conscious intention of doing this), and you're such a talented operator that, if you can produce a X if it is your (subconscious) intention to do so." - 52 words
+199. "Your knowing of many As that are Bs and of none that are not doesn't necessarily give you any reason to believe that the next A you encounter will be a B; it gives you such a reason only insofar as it gives you a reason to believe in some structure or mechanism that disposes As to be Bs." - 65 words
+200. "CC C is either (i) C of such a HH (e.g. your C of JJ) or (ii) C that is derived from C of such a HH (e.g. your C that, the laws of KK being what they are and LL x's state of MM being what it is, x will NN with OO y in approximately two hours)." - 71 words

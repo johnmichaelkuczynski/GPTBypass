@@ -206,6 +206,7 @@ export class AIProviderService {
   }
 
   async rewriteWithPerplexity(params: RewriteParams): Promise<string> {
+    console.log("🔥 CALLING PERPLEXITY API - Input length:", params.inputText?.length || 0);
     const prompt = buildRewritePrompt({
       inputText: params.inputText,
       styleText: params.styleText,
@@ -213,32 +214,37 @@ export class AIProviderService {
       selectedPresets: params.selectedPresets,
       customInstructions: params.customInstructions,
     });
+    console.log("🔥 User prompt length:", prompt.length);
     
     try {
+      console.log("🔥 About to make Perplexity API call...");
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY || process.env.PERPLEXITY_API_KEY_ENV_VAR || "default_key"}`,
+          'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY || "default_key"}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: "llama-3.1-sonar-small-128k-online",
+          model: "sonar",
           messages: [
             { role: "user", content: prompt }
           ],
           temperature: 0.7,
           max_tokens: 4000,
-          stream: false,
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Perplexity API error: ${response.statusText}`);
+        const errorBody = await response.text();
+        console.error("🔥 PERPLEXITY API ERROR RESPONSE:", errorBody);
+        throw new Error(`Perplexity API error: ${response.status} ${response.statusText} - ${errorBody}`);
       }
 
       const data = await response.json();
+      console.log("🔥 Perplexity response received, length:", data.choices[0].message.content?.length || 0);
       return this.cleanMarkup(data.choices[0].message.content || "");
-    } catch (error) {
+    } catch (error: any) {
+      console.error("🔥 PERPLEXITY API ERROR:", error);
       throw new Error(`Perplexity API error: ${error.message}`);
     }
   }

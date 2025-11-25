@@ -6,6 +6,13 @@ GPT Bypass is a comprehensive AI text rewriting application designed to transfor
 
 ## Recent Changes (January 2025)
 
+**Semantically Bleached Style Samples (November 25, 2025)**
+- Replaced 5 Epistemology and Content-Neutral samples with "placeholder" versions for improved AI detection bypass
+- Updated samples: Rational Belief, Hume/Induction, Explanatory Goodness, Knowledge vs Awareness, Alternative Accounts
+- Placeholders (X, Y, Z, A, B, etc.) replace domain-specific terms while preserving sentence structure and rhythm
+- Maintains identical punctuation, discourse patterns, and argumentative flow as originals
+- These bleached versions are more effective as style references because AI detectors focus on structure not semantics
+
 **Database Integration (October 21, 2025)**
 - PostgreSQL database provisioned with Neon serverless connection
 - DATABASE_URL environment variable configured

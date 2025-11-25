@@ -44,7 +44,7 @@ export default function Home() {
   
   const { toast } = useToast();
 
-  // Set default style sample on component mount
+  // Set default style sample on component mount (no GPTZero analysis for style samples)
   useEffect(() => {
     const loadDefaultStyle = async () => {
       if (!selectedStyleSample) {
@@ -54,6 +54,7 @@ export default function Home() {
             const data = await response.json();
             setSelectedStyleSample("academic");
             setStyleText(data.content);
+            // Don't analyze style samples - they're reference text, not user content
           }
         } catch (error) {
           console.error('Failed to load default style sample:', error);
@@ -172,7 +173,9 @@ export default function Home() {
       if (response.ok) {
         const data = await response.json();
         setSelectedStyleSample(sampleId);
-        handleStyleTextChange(data.content);
+        // Set style text directly without triggering GPTZero analysis
+        setStyleText(data.content);
+        setStyleAiScore(null); // Clear any previous score - style samples don't need AI detection
         toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style loaded successfully!` });
       } else {
         toast({

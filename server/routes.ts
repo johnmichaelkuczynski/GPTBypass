@@ -83,7 +83,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         aiScore: gptZeroResult.aiScore,
         needsChunking: processedFile.wordCount > 500,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('File upload error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -198,13 +198,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
-        // Use styleText directly - it's already the Frankenstein sample from Box B
-        // DO NOT call adjustStyleToInputLength - that destroys the matched sentences
+        // Adjust style text to match input length
+        let adjustedStyleText = rewriteRequest.styleText;
+        if (adjustedStyleText && rewriteRequest.inputText) {
+          adjustedStyleText = adjustStyleToInputLength(adjustedStyleText, rewriteRequest.inputText);
+        }
         
         // Perform rewrite
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: rewriteRequest.styleText,
+          styleText: adjustedStyleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,
@@ -239,7 +242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         throw error;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Rewrite error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -315,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateRewriteJob(rewriteJob.id, { status: "failed" });
         throw error;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Re-rewrite error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -332,7 +335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.json(job);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Get job error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -343,7 +346,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const jobs = await storage.listRewriteJobs();
       res.json(jobs);
-    } catch (error) {
+    } catch (error: any) {
       console.error('List jobs error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -363,7 +366,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("🔑 API Keys updated successfully");
       res.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Set keys error:', error);
       res.status(500).json({ message: error.message });
     }

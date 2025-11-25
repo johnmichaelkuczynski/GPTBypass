@@ -4,18 +4,7 @@
 
 GPT Bypass is a comprehensive AI text rewriting application designed to transform AI-generated content to bypass detection tools. The system provides surgical style mimicking capabilities using multiple AI providers (OpenAI, Anthropic, DeepSeek, Perplexity) and integrates with GPTZero for AI detection scoring. Users can upload documents, apply style samples, customize rewrite instructions, and process text through intelligent chunking for large documents.
 
-## Recent Changes (November 2025)
-
-**Smart Sentence-Matching System (November 25, 2025)**
-- Replaced all style samples with just two options: Academic and Personal (stored server-side: 75k and 109k words)
-- Implemented automatic sentence-matching that ensures output length matches input length
-- For each input sentence, the system finds a similar-length sentence from the style sample
-- Assembles matched sentences to create a custom style sample before rewriting
-- Added styleMatcher.ts service for sentence matching logic
-- Simplified UI to show only Academic/Personal/Custom radio options in left sidebar
-- Custom mode requires user to provide style sample in Box B
-- Both frontend and backend validate custom mode has style text before rewriting
-- CRITICAL: Existing rewrite logic in aiProviders.ts preserved unchanged - only style sample preparation changes
+## Recent Changes (January 2025)
 
 **Semantically Bleached Style Samples (November 25, 2025)**
 - Replaced 5 Epistemology and Content-Neutral samples with "placeholder" versions for improved AI detection bypass
@@ -116,11 +105,11 @@ Preferred communication style: Simple, everyday language.
 - **Rate Limiting**: Built-in error handling and retry logic for API failures
 
 ### Style System
-- **Smart Sentence-Matching**: Automatic system that matches input sentence lengths with style sample sentences
-- **Two Built-in Styles**: Academic (75k words) and Personal (109k words) stored server-side
-- **Custom Style Support**: Users can provide their own style samples for custom matching
-- **Sentence Length Parity**: Ensures output length matches input length by matching sentences of similar lengths
-- **Server-side Processing**: styleMatcher.ts service handles all sentence matching before AI rewriting
+- **Categorized Samples**: Writing sample collection organized by category with scalable architecture:
+  - **Paradoxes** (26 samples): Classical paradoxes including Hilbert-Bernays, Heterological, Sorites, Coin, Analysis, Barber, Unexpected Hanging, Ross's, Lottery, Slacker's, Economic Efficiency, Raven, Riddle of Induction, and more
+  - **Epistemology** (4 samples): Rational belief analysis, Hume's problem of induction with explanation theory, explanatory goodness vs correctness, and knowledge vs awareness distinctions
+  - **Content-Neutral** (2 samples): General analytical writing on formal and functional relationships, and alternative accounts with explanatory efficiency
+- **Scalable Sample UI**: Category-based dropdown interface with sample counts, designed to handle thousands of samples efficiently
 - **Advanced Instruction Presets**: 40+ categorized rewrite instructions with sophisticated controls:
   - **Advanced Techniques**: Mixed cadence + clause sprawl, Asymmetric emphasis, One aside, Hedge twice, Local disfluency, Analogy injection, Topic snap, Friction detail
   - **Structure & Cadence**: Compression levels, Mixed cadence, Clause surgery, Front/back-load claims

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import LeftSidebar from "@/components/LeftSidebar";
 import TextBox from "@/components/TextBox";
@@ -7,9 +7,11 @@ import CustomInstructions from "@/components/CustomInstructions";
 import ChunkSelectionModal from "@/components/ChunkSelectionModal";
 import DownloadModal from "@/components/DownloadModal";
 import ChatInterface from "@/components/ChatInterface";
+import ApiKeyManager from "@/components/ApiKeyManager";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { writingSamples } from "@/lib/writingSamples";
 import type { TextChunk, RewriteRequest, RewriteResponse } from "@shared/schema";
 
 export default function Home() {
@@ -19,7 +21,8 @@ export default function Home() {
   const [outputText, setOutputText] = useState("");
   const [customInstructions, setCustomInstructions] = useState("");
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
-  const [styleType, setStyleType] = useState<'academic' | 'personal' | 'custom'>('academic');
+  const [selectedStyleSample, setSelectedStyleSample] = useState<string>("");
+  const [showApiKeyManager, setShowApiKeyManager] = useState(false);
   
   // Content mixing state
   const [contentMixText, setContentMixText] = useState("");
@@ -40,6 +43,15 @@ export default function Home() {
   const [lastJobId, setLastJobId] = useState<string | null>(null);
   
   const { toast } = useToast();
+
+  // Set default style sample on component mount
+  useEffect(() => {
+    const defaultSample = writingSamples.find(sample => sample.id === "formal-functional-relationships");
+    if (defaultSample && !selectedStyleSample) {
+      setSelectedStyleSample(defaultSample.content);
+      setStyleText(defaultSample.content);
+    }
+  }, []);
 
   // Text analysis mutation
   const analyzeTextMutation = useMutation({
@@ -144,6 +156,11 @@ export default function Home() {
     }
   };
 
+  const handleStyleSampleSelect = (content: string) => {
+    setSelectedStyleSample(content);
+    handleStyleTextChange(content);
+  };
+
   const handleStyleUpload = (content: string, type: 'style' | 'content') => {
     if (type === 'style') {
       setStyleText(content);
@@ -172,15 +189,6 @@ export default function Home() {
       return;
     }
 
-    if (styleType === 'custom' && !styleText.trim()) {
-      toast({
-        title: "Style Sample Required",
-        description: "Please provide a custom style sample in Box B, or switch to Academic/Personal mode",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const request: RewriteRequest = {
       inputText: inputChunks.length > 0 && selectedChunkIds.length > 0
         ? inputChunks
@@ -188,8 +196,7 @@ export default function Home() {
             .map(chunk => chunk.content)
             .join('\n\n')
         : inputText,
-      styleType,
-      styleText: styleType === 'custom' ? (styleText.trim() || undefined) : undefined,
+      styleText: styleText.trim() || undefined,
       contentMixText: contentMixText.trim() || undefined,
       customInstructions: customInstructions.trim() || undefined,
       selectedPresets: selectedPresets.length > 0 ? selectedPresets : undefined,
@@ -245,19 +252,44 @@ export default function Home() {
 
   const isProcessing = rewriteMutation.isPending || reRewriteMutation.isPending;
 
+  if (showApiKeyManager) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6">
+            <button 
+              onClick={() => setShowApiKeyManager(false)}
+              className="text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              <i className="fas fa-arrow-left mr-2"></i>
+              Back to App
+            </button>
+          </div>
+          <ApiKeyManager onKeysUpdated={() => setShowApiKeyManager(false)} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
       <Header 
         provider={provider} 
         onProviderChange={setProvider}
+        onShowApiKeys={() => setShowApiKeyManager(true)}
       />
       
       <div className="flex h-screen pt-16">
         <LeftSidebar
           selectedPresets={selectedPresets}
           onPresetsChange={setSelectedPresets}
-          selectedStyleType={styleType}
-          onStyleTypeChange={setStyleType}
+          selectedStyleSample={selectedStyleSample}
+          onStyleSampleSelect={handleStyleSampleSelect}
+          onContentSampleSelect={(content) => {
+            setContentMixText(content);
+            setMixingMode(styleText.trim() ? 'both' : 'content');
+            toast({ description: "Writing sample sent to Content Box successfully!" });
+          }}
         />
         
         <main className="flex-1 overflow-y-auto">

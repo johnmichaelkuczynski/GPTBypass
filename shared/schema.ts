@@ -78,18 +78,18 @@ export interface WritingSample {
   id: string;
   name: string;
   preview: string;
+  content: string;
   category: string;
 }
 
 export interface AIProviderConfig {
-  provider: 'openai' | 'anthropic' | 'deepseek' | 'perplexity' | 'grok';
+  provider: 'openai' | 'anthropic' | 'deepseek' | 'perplexity';
   model?: string;
 }
 
 export interface RewriteRequest {
   inputText: string;
   styleText?: string;
-  styleType?: 'academic' | 'personal' | 'custom';
   contentMixText?: string;
   customInstructions?: string;
   selectedPresets?: string[];

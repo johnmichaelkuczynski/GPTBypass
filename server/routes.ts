@@ -7,7 +7,6 @@ import { textChunkerService } from "./services/textChunker";
 import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
-import { matchSentences } from "./services/styleMatcher";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -85,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('File upload error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -123,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Text analysis error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -137,30 +136,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Input text and provider are required" });
       }
 
-      // Validate custom mode has style text
-      if (rewriteRequest.styleType === 'custom' && !rewriteRequest.styleText?.trim()) {
-        return res.status(400).json({ message: "Custom style requires a style sample text" });
-      }
-
       // Analyze input text
       const inputAnalysis = await gptZeroService.analyzeText(rewriteRequest.inputText);
-      
-      // AUTOMATIC SENTENCE MATCHING: Build style text from matched sentences
-      let matchedStyleText = rewriteRequest.styleText || '';
-      const styleType = rewriteRequest.styleType || 'academic';
-      
-      if (styleType === 'academic' || styleType === 'personal') {
-        matchedStyleText = matchSentences(rewriteRequest.inputText, styleType);
-        console.log(`🔥 STYLE MATCHER: Built ${matchedStyleText.length} chars of matched style text from ${styleType} sample`);
-      } else if (styleType === 'custom' && rewriteRequest.styleText) {
-        matchedStyleText = matchSentences(rewriteRequest.inputText, 'custom', rewriteRequest.styleText);
-        console.log(`🔥 STYLE MATCHER: Built ${matchedStyleText.length} chars of matched style text from custom sample`);
-      }
       
       // Create rewrite job
       const rewriteJob = await storage.createRewriteJob({
         inputText: rewriteRequest.inputText,
-        styleText: matchedStyleText,
+        styleText: rewriteRequest.styleText,
         contentMixText: rewriteRequest.contentMixText,
         customInstructions: rewriteRequest.customInstructions,
         selectedPresets: rewriteRequest.selectedPresets,
@@ -173,10 +155,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
-        // Perform rewrite with matched style text
+        // Perform rewrite
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: matchedStyleText,
+          styleText: rewriteRequest.styleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,
@@ -213,7 +195,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error('Rewrite error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -255,11 +237,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Perform re-rewrite
         const rewrittenText = await aiProviderService.rewrite(provider || originalJob.provider, {
           inputText: originalJob.outputText,
-          styleText: originalJob.styleText || undefined,
-          contentMixText: originalJob.contentMixText || undefined,
-          customInstructions: customInstructions || originalJob.customInstructions || undefined,
-          selectedPresets: selectedPresets || originalJob.selectedPresets || undefined,
-          mixingMode: originalJob.mixingMode || undefined,
+          styleText: originalJob.styleText,
+          contentMixText: originalJob.contentMixText,
+          customInstructions: customInstructions || originalJob.customInstructions,
+          selectedPresets: selectedPresets || originalJob.selectedPresets,
+          mixingMode: originalJob.mixingMode,
         });
 
         // Analyze new output
@@ -289,7 +271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error('Re-rewrite error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -306,7 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(job);
     } catch (error) {
       console.error('Get job error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -317,7 +299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(jobs);
     } catch (error) {
       console.error('List jobs error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -337,7 +319,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     } catch (error) {
       console.error('Set keys error:', error);
-      res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+      res.status(500).json({ message: error.message });
     }
   });
 

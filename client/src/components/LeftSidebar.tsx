@@ -125,61 +125,45 @@ export default function LeftSidebar({
 
           {/* Writing Style Buttons Section */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
               <i className="fas fa-book mr-2 text-primary"></i>
               Writing Style
             </h3>
-            <Label className="text-sm text-gray-600 block mb-4">
-              Click a button to load style into Box B
-            </Label>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Academic Button */}
               <Button
                 variant="outline"
-                className="w-full h-auto py-4 px-4 flex items-center justify-start gap-3 hover:bg-blue-50 hover:border-blue-300"
+                className="w-full h-auto py-2 px-2 flex items-center justify-start gap-2 hover:bg-blue-50 hover:border-blue-300"
                 onClick={() => onStyleSampleSelect("academic")}
                 data-testid="button-academic-style"
               >
-                <BookOpen className="h-5 w-5 text-blue-600" />
-                <div className="text-left">
-                  <div className="font-semibold">Academic</div>
-                  <div className="text-xs text-gray-500">Formal, structured argumentation</div>
-                </div>
+                <BookOpen className="h-4 w-4 flex-shrink-0 text-blue-600" />
+                <span className="text-sm font-medium">Academic</span>
               </Button>
 
               {/* Personal Button */}
               <Button
                 variant="outline"
-                className="w-full h-auto py-4 px-4 flex items-center justify-start gap-3 hover:bg-green-50 hover:border-green-300"
+                className="w-full h-auto py-2 px-2 flex items-center justify-start gap-2 hover:bg-green-50 hover:border-green-300"
                 onClick={() => onStyleSampleSelect("personal")}
                 data-testid="button-personal-style"
               >
-                <User className="h-5 w-5 text-green-600" />
-                <div className="text-left">
-                  <div className="font-semibold">Personal</div>
-                  <div className="text-xs text-gray-500">Casual, conversational tone</div>
-                </div>
+                <User className="h-4 w-4 flex-shrink-0 text-green-600" />
+                <span className="text-sm font-medium">Personal</span>
               </Button>
 
               {/* Custom Style Sample Button */}
               <Button
                 variant="outline"
-                className="w-full h-auto py-4 px-4 flex items-center justify-start gap-3 hover:bg-purple-50 hover:border-purple-300"
+                className="w-full h-auto py-2 px-2 flex items-center justify-start gap-2 hover:bg-purple-50 hover:border-purple-300"
                 onClick={() => onContentSampleSelect("custom")}
                 data-testid="button-custom-style"
               >
-                <FileText className="h-5 w-5 text-purple-600" />
-                <div className="text-left">
-                  <div className="font-semibold">Style Sample</div>
-                  <div className="text-xs text-gray-500">Paste your own text in Box B</div>
-                </div>
+                <FileText className="h-4 w-4 flex-shrink-0 text-purple-600" />
+                <span className="text-sm font-medium">Custom</span>
               </Button>
             </div>
-            
-            <p className="text-xs text-gray-500 mt-4 italic">
-              Style length auto-adjusts to match your input
-            </p>
           </div>
         </div>
       </ScrollArea>

@@ -42,7 +42,7 @@ export default function LeftSidebar({
   }, {} as Record<string, any[]>);
 
   return (
-    <aside className="w-80 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
+    <aside className="w-48 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
       <ScrollArea className="h-full">
         <div className="p-4">
           {/* Instruction Presets Section */}

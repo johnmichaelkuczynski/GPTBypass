@@ -360,7 +360,7 @@ export default function Home() {
         
         <main className="flex-1 overflow-y-auto">
           <div className="p-6">
-            <div className="grid grid-cols-4 gap-4 mb-6" style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}>
+            <div className="grid grid-cols-3 gap-6 mb-6" style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}>
               <TextBox
                 title="Input Text (Box A)"
                 icon="fas fa-upload"
@@ -388,7 +388,7 @@ export default function Home() {
               <TextBox
                 title="Style Sample (Box B)"
                 icon="fas fa-palette"
-                placeholder="Click Academic or Personal in the sidebar, then this box will show matched style sentences..."
+                placeholder="Click Academic or Personal in sidebar to generate matched style sentences..."
                 value={styleText}
                 onChange={handleStyleTextChange}
                 aiScore={styleAiScore}
@@ -404,30 +404,11 @@ export default function Home() {
               />
               
               <TextBox
-                title="Content Reference (Box C)"
-                icon="fas fa-layer-group"
-                placeholder="Paste or upload content you want to blend with your text..."
-                value={contentMixText}
-                onChange={(text) => {
-                  setContentMixText(text);
-                  setMixingMode(text.trim() ? (styleText.trim() ? 'both' : 'content') : 'style');
-                }}
-                isLoading={analyzeTextMutation.isPending}
-                supportFileUpload
-                onClear={() => {
-                  setContentMixText("");
-                  setMixingMode(styleText.trim() ? 'style' : 'style');
-                }}
-                onEnterSubmit={handleGenerateRewrite}
-                canSubmit={!!inputText.trim()}
-              />
-              
-              <TextBox
-                title="Rewritten Output (Box D)"
+                title="Rewritten Output"
                 icon="fas fa-download"
                 placeholder="Rewritten text will appear here..."
                 value={outputText}
-                onChange={() => {}} // Read-only
+                onChange={() => {}}
                 aiScore={outputAiScore}
                 isLoading={isProcessing}
                 readOnly

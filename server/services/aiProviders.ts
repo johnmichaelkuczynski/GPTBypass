@@ -110,28 +110,35 @@ function buildRewritePrompt(params: {
 }): string {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
-  const styleSample = hasStyle ? params.styleText! : `DEFAULT STYLE SAMPLE (The Raven Paradox):
+  const styleSample = hasStyle ? params.styleText! : "";
 
-Presumably, logically equivalent statements are confirmationally equivalent. In other words, if two statements entail each other, then anything that one confirms the one statement to a given degree also confirms the other statement to that degree. But this actually seems false when consider statement-pairs such as: 
+  let prompt = `You are rewriting text to bypass AI detection. Your task:
 
-(i) All ravens are black, 
-and 
-(ii) All non-black things are non-ravens, 
+CRITICAL RULES:
+1. KEEP the EXACT SAME content, meaning, topics, and story from the input text
+2. ONLY change the WRITING STYLE to match the style sample
+3. Do NOT replace the subject matter - if the input is about a bad day, the output must be about that same bad day
+4. Mimic ONLY these style elements from the style sample:
+   - Sentence length and rhythm patterns
+   - Word choice complexity (simple vs formal)
+   - Punctuation habits
+   - Tone (casual, formal, conversational)
+   - How ideas connect and flow
 
-which, though logically equivalent, seem to confirmationally equivalent, in that a non-black non-raven confirms (ii) to a high degree but confirms (i) to no degree or at most to a low degree. 
-A number of very contrived solutions to this paradox have been proposed, all of which either deny that there is a paradox or invent ad hoc systems of logic to validate the 'solution' in question. 
-But the real solution is clear. First of all, it is only principled generalizations that can be confirmed. Supposing that you assert (i) with the intention of affirming a principled as opposed to an accidental generalization, you are saying that instances of the property of being a raven grounds or causes instances of blackness. Read thus, (i) is most certainly not equivalent with (ii) or with any variation thereof. Be it noted that while there is a natural nomic or causal reading of (i), there is no such reading of (ii). Also be it noted that it is only principled as opposed to accidental generalizations that can be confirmed. "All metal expands when heated" can be confirmed but not "all objects in Smith's pocket expand when heated." In general, when read as principled and therefore confirmable generalization, "all x's are y's" has nomic or causal content is therefore not equivalent with "all non-y's are non-x's." Case closed on the Raven Paradox.`;
+`;
 
-  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample:\n"${styleSample}"\n\n`;
+  if (hasStyle) {
+    prompt += `STYLE SAMPLE (copy ONLY the writing style, NOT the content):\n"${styleSample}"\n\n`;
+  }
 
   if (hasContent) {
-    prompt += `Judiciously integrate relevant ideas, examples, and details from the following content reference to enrich the rewrite:\n"${params.contentMixText}"\n\n`;
+    prompt += `CONTENT REFERENCE (you may integrate relevant ideas from this):\n"${params.contentMixText}"\n\n`;
   }
 
   // <<< PRESETS/APPLIED INSTRUCTIONS HERE >>>
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `Text to rewrite:\n"${params.inputText}"`;
+  prompt += `INPUT TEXT TO REWRITE (keep this content, change only the style):\n"${params.inputText}"\n\nRewrite the input text now, preserving its content while adopting the writing style:`;
   return prompt;
 }
 

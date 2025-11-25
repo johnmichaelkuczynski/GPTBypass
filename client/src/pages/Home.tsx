@@ -388,7 +388,7 @@ export default function Home() {
               <TextBox
                 title="Style Sample (Box B)"
                 icon="fas fa-palette"
-                placeholder="Paste or upload a sample of human-written text whose style you want to mimic..."
+                placeholder="Click Academic or Personal in the sidebar, then this box will show matched style sentences..."
                 value={styleText}
                 onChange={handleStyleTextChange}
                 aiScore={styleAiScore}
@@ -397,6 +397,7 @@ export default function Home() {
                 onClear={() => {
                   setStyleText("");
                   setStyleAiScore(null);
+                  setSelectedStyleSample("custom");
                 }}
                 onEnterSubmit={handleGenerateRewrite}
                 canSubmit={!!inputText.trim()}

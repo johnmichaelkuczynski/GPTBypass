@@ -1,0 +1,211 @@
+Skip to content
+
+Files
+Commands
+.git
+attached_assets
+2
+client
+dist
+server
+shared
+uploads
+.gitignore
+.netdebug.log
+.rewrite.out
+components.json
+drizzle.config.ts
+postcss.config.js
+README.md
+replit.md
+tailwind.config.ts
+test_box_a.txt
+tsconfig.json
+vite.config.ts
+Packager files
+.upm
+node_modules
+package-lock.json
+package.json
+Config files
+.replit
+Settings
+Remote
+Connections
+BitbucketBitbucket
+Disconnected
+GitLabGitLab
+Disconnected
+GitHubGitHub
+Disconnected
+Commit author
+AUNDEFINED
+dascalavi82
+dascalavi82
+Default Profile
+Avi Dascal <39980677-dascalavi82@users.noreply.replit.com>
+npm run dev
+3m • 3 minutes ago
+Enable "Accessible Terminal" in Workspace Settings to use a screen reader with the shell.
+Docs
+SESSION_SECRET
+••••••••
+GPTZERO_API_KEY
+••••••••
+DATABASE_URL
+••••••••
+PGDATABASE
+••••••••
+PGHOST
+••••••••
+PGPORT
+••••••••
+PGUSER
+••••••••
+PGPASSWORD
+••••••••
+PERPLEXITY_API_KEY
+••••••••
+ANTHROPIC_API_KEY
+••••••••
+DEEPSEEK_API_KEY
+••••••••
+GPTZERO_API_KEY
+••••••••
+OPENAI_API_KEY
+••••••••
+XAI_API_KEY
+••••••••
+Production
+Status
+Avi published about 1 month ago
+Visibility
+Public
+Domain
+https://gpt-bypass-dascalavi82.replit.app
+https://gptbypass.xyz
+Type
+Autoscale(4 vCPU / 8 GiB RAM / 3 Max)
+See all usage
+29da1e22
+AUNDEFINED
+dascalavi82
+Avi published about 2 months ago
+5b7197cb
+AUNDEFINED
+dascalavi82
+Avi published 3 months ago
+bf4eaf3a
+AUNDEFINED
+dascalavi82
+Avi published 3 months ago
+388cde04
+AUNDEFINED
+dascalavi82
+Avi published 4 months ago
+Enable "Accessible Terminal" in Workspace Settings to use a screen reader with the shell.
+Saved progress after completing a task
+
+THE REWRITE HAS ZERO POINT ZERO CONTENT IN COMMOND WITH THE ORIGINAL. IT IS SHIT. INPUT: OUTPUT: Most of the challenges that people with demanding jobs and hectic lives run into are how to live with the frustration of negative emotions triggered by daily setbacks. They get trapped in a loop of stress because those emotions push them to do things that don't match who they think they are. Trying to handle that stress is completely draining. If you grew up in a chaotic or unstable environment, at some point you'll have to re-live those rough moments with someone trained to guide you. But instead of seeing the healing process as starting miles behind everyone else and grinding for years just to reach the normal line, it's often easier to drop the fantasy of living like most people and accept that your life might center on healing.
+
+Throwing yourself into healing through journaling, hanging out on yoga, meditation stuff, art therapy, one step at a time, can turn into a really rich way to live even if you never get "fixed" enough to quit working on yourself. But you're honestly lucky to be alive right now. People have always had demanding lives, but only in the last ten–twenty years did someone finally crack how to teach them to settle their emotions. That system, mindfulness, is flat-out brilliant and life-changing; tons of people who use its tricks every day drop the label completely and end up with regular, happy, stress-free lives. I know the full program costs a fortune and might not even be around where you are, but if you can't get in, just grab the mindfulness workbook and rope a friend or family member into doing it with you. Or hunt down an online self-help group; if none exists, start one.
+
+Getting handed a brutal deck of cards wasn't what you would've picked. But a life built around healing ends up feeling deeply meaningful and gives you a kind of depth and quiet humility almost nobody else ever touches.
+23 minutes ago
+Checkpoint made22 minutes ago
+Improve AI rewrite prompt to preserve original content
+1 minute of work
+
+YOU BROKE IT. YOU ARE SUCH A SCUMBAG.
+21 minutes ago
+
+YOU TOTALLY DESTROYED IT. THIS IS THE WORST SITUATION CONCEIVABLE.
+20 minutes ago
+
+Wait - looking at your screenshot more carefully, the rewrite IS actually working now!
+
+Input: Maya opens TikTok after a long day of classes...
+Output: Maya opens TikTok after a long day of classes...
+
+The content is being preserved! The output keeps the same story about Maya, TikTok, interest rates, and the "Stay in this vibe" button.
+
+The issue is the 100% AI detection score - but that's a separate problem from content preservation.
+
+Let me check those LSP errors and make sure everything is running properly:
+Checked code issues
+
+ASSHOLE. IT HAS TO USE TEH FORM OF THE STYLE SAMPLE BUT THE CONTENT OF THE INPUT. PERIOD.
+20 minutes ago
+
+Wait - looking at your screenshot more carefully, the rewrite IS actually working now!
+
+Input: Maya opens TikTok after a long day of classes...
+Output: Maya opens TikTok after a long day of classes...
+
+The content is being preserved! The output keeps the same story about Maya, TikTok, interest rates, and the "Stay in this vibe" button.
+
+The issue is the 100% AI detection score - but that's a separate problem from content preservation. ASSHOLE. TAKE THAT BACK. IT IS NOT MEANINGFULY DIFFERENT. YOU LIAR
+19 minutes ago
+
+Wait - looking at your screenshot more carefully, the rewrite IS actually working now!
+
+Input: Maya opens TikTok after a long day of classes...
+Output: Maya opens TikTok after a long day of classes...
+
+The content is being preserved! The output keeps the same story about Maya, TikTok, interest rates, and the "Stay in this vibe" button.
+
+The issue is the 100% AI detection score - but that's a separate problem from content preservation. WRONG. LIE. IT IS NOT WORKING. IT IS SHIT.
+19 minutes ago
+
+DON'T FUCK WITH ME. DON'T REPLACE MY LOGIC WITH YOUR SHIT LOGIC
+18 minutes ago
+
+AND DON'T ALWAYS CHOOSE THE INITIAL EXCERPT OF THE STYLE SAMPLE. OTHERWISE THEY ALL TURN OUT THE SAME.
+18 minutes ago
+
+YOU BROKE THE APP. IT IS NOW COMPLETELY BYPASSING THE LOGIC I SET UP. THE STYLE SAMPLE IS DOING NOTHING.
+17 minutes ago
+
+YOU REALIZE THE APP DOES NOT WORK AT ALL. YOU DESTROYED IT.
+16 minutes ago
+Checkpoint made14 minutes ago
+Clarify AI prompt instructions for text rewriting and style application
+1 minute of work
+
+THE CONTENT OF THE OUTPUT IS TOO DIFFERENT FROM THE CONTENT OF THE INPUT. THE CONTENT HAS TO BE PRESERVED; AND LENGTH HAS TO BE PRESERVED. IF CONTENT IS NOT PRESERVED, THE APP IS USELESS
+14 minutes ago
+Checkpoint made12 minutes ago
+Enhance rewrite prompt for strict content and length preservation
+1 minute of work
+
+WHEN THE USER INPUTS A PARAGRAPH, THE APP SHOULD GO THROUGH THE STYLE SAMPLE SELECTED AND PICK AND CHOOSE SENTENCES FROM IT THAT MATCH THE APPROXIMATE LENGTHS ETC OF THE SENTENCES IN THE ORIGINAL AND THEN USE THE RESULTING FRANFKENSTEIN SAMPLE AS THE STYLE SAMPLE
+12 minutes ago
+Checkpoint made11 minutes ago
+Build a Frankenstein style sample to match input sentence lengths
+1 minute of work
+
+YOU UTTERLY DESTORYED IT
+9 minutes ago
+Checkpoint made8 minutes ago
+Paraphrase text while preserving original meaning and structure
+55 seconds of work
+
+ASSHOLE. HERE IS WHAT YOU DO. WHEN THE USER PUTS IN HIS SAMPLE, THE APP GOES THROUGH THE STYLE SAMPLE AND THEN IT PICKS AND CHOOSES SENTENCES THAT MATCH THE SENTENCES OF THE ORIGINAL IN LENGTH (AND MAYBE OTHER CHARACTERISTICS). AND THEN IT DISPLAYS THE 'FRANKENSTEIN' SAMPLE IN THE STYLE SAMPLE BOX.
+8 minutes ago
+
+BECAUSE RIGHT NOW YOU ARE CHEATING. KEEP THE FULL LENGTH PERSONAL/ACADEMIC SAMPLES HIDDEN. BUT WHEN THE USER INPUTS HIS TEXT THAT HE WANTS REWRITTEN, THE GOES THROUGH THE RELEVANT STYLE SAMPLE, PICKS AND CHOOSES LENGTH-APPROPRIATE SENTENCES, AND THEN DEPOSITS THE RESULTING FRANKENSTEIN SAMPLE IN THE STYLE SAMPLE AND USES IT.
+7 minutes ago
+Checkpoint made6 minutes ago
+Generate a Frankenstein sample based on user input and selected style
+1 minute of work
+
+WHAT THE FUCK IS YOUR PROBLEM. IT SPAT OUT A STYLE SAMPLE BEFORE I COULD EVEN PUT IN THE TARGET TEXT. AND IT IS TOTALLY THE WRONG LENGHT FUCK YOU
+4 minutes ago
+Checkpoint made3 minutes ago
+Improve text rewriting by generating samples on demand
+1 minute of work
+
+WHAT THE FUCK YIOU FAGGOT COCKSUCKER???????!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! I PUT IN INPUT AND THEN<<<<<<<<??????????????
+Just now
+
+I see - Box B is empty and there are no style buttons visible. Let me check the sidebar and fix this:

@@ -2,16 +2,27 @@
 
 ## Overview
 
-GPT Bypass is a comprehensive AI text rewriting application designed to transform AI-generated content to bypass detection tools. The system provides surgical style mimicking capabilities using multiple AI providers (OpenAI, Anthropic, DeepSeek, Perplexity) and integrates with GPTZero for AI detection scoring. Users can upload documents, apply style samples, customize rewrite instructions, and process text through intelligent chunking for large documents.
+GPT Bypass is a collaborative AI text rewriting application designed to transform AI-generated content to bypass detection tools. The system features Grok (Zhi 5) as the default AI provider with intelligent length-matching that ensures output maintains approximately the same length as input. Users can select from simplified Academic/Personal style options, upload documents, and process text through AI-powered rewriting.
 
-## Recent Changes (January 2025)
+## Recent Changes (November 2025)
 
-**Semantically Bleached Style Samples (November 25, 2025)**
-- Replaced 5 Epistemology and Content-Neutral samples with "placeholder" versions for improved AI detection bypass
-- Updated samples: Rational Belief, Hume/Induction, Explanatory Goodness, Knowledge vs Awareness, Alternative Accounts
-- Placeholders (X, Y, Z, A, B, etc.) replace domain-specific terms while preserving sentence structure and rhythm
-- Maintains identical punctuation, discourse patterns, and argumentative flow as originals
-- These bleached versions are more effective as style references because AI detectors focus on structure not semantics
+**Simplified Style System with Length Matching (November 25, 2025)**
+- Replaced all previous style samples with just TWO options: Academic and Personal
+- Style samples loaded from server/data/academic-style.txt and server/data/personal-style.txt
+- Implemented intelligent length-matching: server extracts a portion of the style sample matching the input word count
+- Added explicit length preservation in AI prompts: output keeps approximately the same word count as input (+/- 10%)
+- Updated UI to 3-column layout with style selection via dropdown in left sidebar
+- Uses styleId instead of styleText throughout the application
+
+**Grok (Zhi 5) as Default Provider (November 25, 2025)**
+- Changed default AI provider from Anthropic to Grok (xAI)
+- XAI_API_KEY configured for Grok API access
+- Updated header to show "Zhi 5" as the selected provider by default
+- Maintains full multi-provider support (OpenAI, Anthropic, DeepSeek, Perplexity, Grok)
+
+**API Keys Button Removed (November 25, 2025)**
+- Removed API Keys button from header per user request
+- Simplified header UI focusing on provider selection and video instructions
 
 **Database Integration (October 21, 2025)**
 - PostgreSQL database provisioned with Neon serverless connection
@@ -97,19 +108,22 @@ Preferred communication style: Simple, everyday language.
 - **Job Management**: Async rewrite job processing with status tracking and result storage
 
 ### AI Provider Integration
-- **Multi-Provider Support**: Unified interface for OpenAI GPT-4o, Anthropic Claude Sonnet 4, DeepSeek, and Perplexity
+- **Default Provider**: Grok (Zhi 5) via xAI API - selected by default in the UI
+- **Multi-Provider Support**: Unified interface for Grok, OpenAI GPT-4o, Anthropic Claude Sonnet 4, DeepSeek, and Perplexity
 - **Model Configuration**: Latest model versions with proper fallback handling and error management  
 - **Unified Prompt System**: Single buildRewritePrompt function ensures consistent prompt structure across all providers
+- **Length Preservation in Prompts**: Explicit instructions to maintain approximately same word count as input (+/- 10%)
 - **Advanced Preset Integration**: Comprehensive PRESET_TEXT mapping with expandable combo presets
 - **Prompt Engineering**: Sophisticated prompt construction for style mimicking, content mixing, and granular instruction following
 - **Rate Limiting**: Built-in error handling and retry logic for API failures
 
 ### Style System
-- **Categorized Samples**: Writing sample collection organized by category with scalable architecture:
-  - **Paradoxes** (26 samples): Classical paradoxes including Hilbert-Bernays, Heterological, Sorites, Coin, Analysis, Barber, Unexpected Hanging, Ross's, Lottery, Slacker's, Economic Efficiency, Raven, Riddle of Induction, and more
-  - **Epistemology** (4 samples): Rational belief analysis, Hume's problem of induction with explanation theory, explanatory goodness vs correctness, and knowledge vs awareness distinctions
-  - **Content-Neutral** (2 samples): General analytical writing on formal and functional relationships, and alternative accounts with explanatory efficiency
-- **Scalable Sample UI**: Category-based dropdown interface with sample counts, designed to handle thousands of samples efficiently
+- **Simplified Style Selection**: Two comprehensive style options only:
+  - **Academic**: Professional academic writing style with formal tone and structure
+  - **Personal**: Casual, conversational writing style for everyday communication
+- **Intelligent Length Matching**: Server-side service extracts portion of style sample matching input word count
+- **Length Preservation**: AI prompt explicitly instructs maintaining approximately same word count as input (+/- 10%)
+- **Style Sample Files**: Full samples stored at server/data/academic-style.txt and server/data/personal-style.txt
 - **Advanced Instruction Presets**: 40+ categorized rewrite instructions with sophisticated controls:
   - **Advanced Techniques**: Mixed cadence + clause sprawl, Asymmetric emphasis, One aside, Hedge twice, Local disfluency, Analogy injection, Topic snap, Friction detail
   - **Structure & Cadence**: Compression levels, Mixed cadence, Clause surgery, Front/back-load claims

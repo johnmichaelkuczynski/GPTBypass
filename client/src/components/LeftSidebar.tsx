@@ -209,7 +209,7 @@ export default function LeftSidebar({
                         value={customStyleText}
                         onChange={(e) => onCustomStyleTextChange(e.target.value)}
                         data-testid="input-custom-style"
-                        className="min-h-[200px] max-h-[400px] resize-y text-sm leading-relaxed"
+                        className="min-h-[450px] max-h-[600px] resize-y text-sm leading-relaxed"
                       />
                       {customStyleText && (
                         <Button

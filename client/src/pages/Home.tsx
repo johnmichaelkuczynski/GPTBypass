@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "@/components/Header";
 import LeftSidebar from "@/components/LeftSidebar";
 import TextBox from "@/components/TextBox";
@@ -7,30 +7,24 @@ import CustomInstructions from "@/components/CustomInstructions";
 import ChunkSelectionModal from "@/components/ChunkSelectionModal";
 import DownloadModal from "@/components/DownloadModal";
 import ChatInterface from "@/components/ChatInterface";
-import ApiKeyManager from "@/components/ApiKeyManager";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { writingSamples } from "@/lib/writingSamples";
 import type { TextChunk, RewriteRequest, RewriteResponse } from "@shared/schema";
 
 export default function Home() {
   const [provider, setProvider] = useState<string>("grok");
   const [inputText, setInputText] = useState("");
-  const [styleText, setStyleText] = useState("");
+  const [styleId, setStyleId] = useState<string>("academic");
   const [outputText, setOutputText] = useState("");
   const [customInstructions, setCustomInstructions] = useState("");
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
-  const [selectedStyleSample, setSelectedStyleSample] = useState<string>("");
-  const [showApiKeyManager, setShowApiKeyManager] = useState(false);
   
   // Content mixing state
   const [contentMixText, setContentMixText] = useState("");
-  const [mixingMode, setMixingMode] = useState<'style' | 'content' | 'both'>('style');
   
   // AI Detection scores
   const [inputAiScore, setInputAiScore] = useState<number | null>(null);
-  const [styleAiScore, setStyleAiScore] = useState<number | null>(null);
   const [outputAiScore, setOutputAiScore] = useState<number | null>(null);
   
   // Chunking state
@@ -43,42 +37,6 @@ export default function Home() {
   const [lastJobId, setLastJobId] = useState<string | null>(null);
   
   const { toast } = useToast();
-
-  // Set default style on mount (academic)
-  useEffect(() => {
-    if (!selectedStyleSample) {
-      setSelectedStyleSample("academic");
-    }
-  }, []);
-
-  // Function to generate Frankenstein sample - called manually, not on every keystroke
-  const generateFrankensteinSample = async () => {
-    if (!inputText.trim() || !selectedStyleSample || selectedStyleSample === "custom") {
-      return;
-    }
-    
-    try {
-      const response = await fetch('/api/frankenstein-sample', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inputText, styleId: selectedStyleSample })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setStyleText(data.content);
-      }
-    } catch (error) {
-      console.error('Failed to generate Frankenstein sample:', error);
-    }
-  };
-
-  // Generate Frankenstein sample when style is selected (and input exists)
-  useEffect(() => {
-    if (inputText.trim() && selectedStyleSample && selectedStyleSample !== "custom") {
-      generateFrankensteinSample();
-    }
-  }, [selectedStyleSample]);
 
   // Text analysis mutation
   const analyzeTextMutation = useMutation({
@@ -95,8 +53,6 @@ export default function Home() {
           setInputChunks(data.chunks);
           setSelectedChunkIds(data.chunks.map((chunk: TextChunk) => chunk.id));
         }
-      } else if (text === styleText) {
-        setStyleAiScore(data.aiScore);
       }
     },
     onError: (error) => {
@@ -174,74 +130,11 @@ export default function Home() {
     }
   };
 
-  const handleStyleTextChange = (text: string) => {
-    setStyleText(text);
-    if (text.trim()) {
-      analyzeTextMutation.mutate(text);
-    } else {
-      setStyleAiScore(null);
-    }
+  const handleStyleSelect = (selectedStyleId: string) => {
+    setStyleId(selectedStyleId);
   };
 
-  const handleStyleSampleSelect = async (sampleId: string) => {
-    if (sampleId === "custom") {
-      setSelectedStyleSample("custom");
-      setStyleText("");
-      setStyleAiScore(null);
-      toast({ description: "Enter your own style sample in Box B" });
-      return;
-    }
-    
-    setSelectedStyleSample(sampleId);
-    setStyleAiScore(null);
-    
-    // If there's input text, generate the Frankenstein sample immediately
-    if (!inputText.trim()) {
-      setStyleText("");
-      toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected. Enter text in Box A to see matched sentences.` });
-    } else {
-      // Directly call API to generate Frankenstein sample
-      try {
-        const response = await fetch('/api/frankenstein-sample', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ inputText, styleId: sampleId })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setStyleText(data.content);
-          toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style matched to your input!` });
-        }
-      } catch (error) {
-        console.error('Failed to generate Frankenstein sample:', error);
-        toast({ 
-          description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style selected!`,
-          variant: "destructive"
-        });
-      }
-    }
-  };
-
-  const handleStyleUpload = (content: string, type: 'style' | 'content') => {
-    if (type === 'style') {
-      setStyleText(content);
-      if (content.trim()) {
-        analyzeTextMutation.mutate(content);
-      }
-      setMixingMode('style');
-    } else {
-      setContentMixText(content);
-      setMixingMode(contentMixText ? 'both' : 'content');
-    }
-    
-    toast({
-      title: "Upload Complete",
-      description: `${type === 'style' ? 'Style sample' : 'Content reference'} has been added successfully.`,
-    });
-  };
-
-  const handleGenerateRewrite = async () => {
+  const handleGenerateRewrite = () => {
     if (!inputText.trim()) {
       toast({
         title: "Input Required",
@@ -251,25 +144,6 @@ export default function Home() {
       return;
     }
 
-    // Generate fresh Frankenstein sample before rewriting (if using preset style)
-    let finalStyleText = styleText;
-    if (selectedStyleSample && selectedStyleSample !== "custom" && inputText.trim()) {
-      try {
-        const response = await fetch('/api/frankenstein-sample', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ inputText, styleId: selectedStyleSample })
-        });
-        if (response.ok) {
-          const data = await response.json();
-          finalStyleText = data.content;
-          setStyleText(data.content); // Update Box B display
-        }
-      } catch (error) {
-        console.error('Failed to generate Frankenstein sample:', error);
-      }
-    }
-
     const request: RewriteRequest = {
       inputText: inputChunks.length > 0 && selectedChunkIds.length > 0
         ? inputChunks
@@ -277,13 +151,12 @@ export default function Home() {
             .map(chunk => chunk.content)
             .join('\n\n')
         : inputText,
-      styleText: finalStyleText.trim() || undefined,
+      styleId: styleId,
       contentMixText: contentMixText.trim() || undefined,
       customInstructions: customInstructions.trim() || undefined,
       selectedPresets: selectedPresets.length > 0 ? selectedPresets : undefined,
       provider,
       selectedChunkIds: selectedChunkIds.length > 0 ? selectedChunkIds : undefined,
-      mixingMode,
     };
 
     rewriteMutation.mutate(request);
@@ -314,12 +187,10 @@ export default function Home() {
 
   const handleClearAll = () => {
     setInputText("");
-    setStyleText("");
     setContentMixText("");
     setOutputText("");
     setCustomInstructions("");
     setInputAiScore(null);
-    setStyleAiScore(null);
     setOutputAiScore(null);
     setInputChunks([]);
     setSelectedChunkIds([]);
@@ -333,52 +204,24 @@ export default function Home() {
 
   const isProcessing = rewriteMutation.isPending || reRewriteMutation.isPending;
 
-  if (showApiKeyManager) {
-    return (
-      <div className="min-h-screen bg-gray-50 font-inter p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <button 
-              onClick={() => setShowApiKeyManager(false)}
-              className="text-blue-600 hover:text-blue-800 flex items-center"
-            >
-              <i className="fas fa-arrow-left mr-2"></i>
-              Back to App
-            </button>
-          </div>
-          <ApiKeyManager onKeysUpdated={() => setShowApiKeyManager(false)} />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
       <Header 
         provider={provider} 
         onProviderChange={setProvider}
-        onShowApiKeys={() => setShowApiKeyManager(true)}
       />
       
       <div className="flex h-screen pt-16">
         <LeftSidebar
           selectedPresets={selectedPresets}
           onPresetsChange={setSelectedPresets}
-          selectedStyleSample={selectedStyleSample}
-          onStyleSampleSelect={handleStyleSampleSelect}
-          onContentSampleSelect={(sampleId) => {
-            if (sampleId === "custom") {
-              setStyleText("");
-              setStyleAiScore(null);
-              setSelectedStyleSample("");
-              toast({ description: "Box B cleared - paste your own style sample!" });
-            }
-          }}
+          selectedStyleSample={styleId}
+          onStyleSampleSelect={handleStyleSelect}
         />
         
         <main className="flex-1 overflow-y-auto">
           <div className="p-6">
-            <div className="grid grid-cols-3 gap-6 mb-6" style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}>
+            <div className="grid grid-cols-3 gap-4 mb-6" style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}>
               <TextBox
                 title="Input Text (Box A)"
                 icon="fas fa-upload"
@@ -404,29 +247,24 @@ export default function Home() {
               />
               
               <TextBox
-                title="Style Sample (Box B)"
-                icon="fas fa-palette"
-                placeholder="Click Academic or Personal in sidebar to generate matched style sentences..."
-                value={styleText}
-                onChange={handleStyleTextChange}
-                aiScore={styleAiScore}
+                title="Content Reference (Box B)"
+                icon="fas fa-layer-group"
+                placeholder="Paste or upload content you want to blend with your text..."
+                value={contentMixText}
+                onChange={setContentMixText}
                 isLoading={analyzeTextMutation.isPending}
                 supportFileUpload
-                onClear={() => {
-                  setStyleText("");
-                  setStyleAiScore(null);
-                  setSelectedStyleSample("custom");
-                }}
+                onClear={() => setContentMixText("")}
                 onEnterSubmit={handleGenerateRewrite}
                 canSubmit={!!inputText.trim()}
               />
               
               <TextBox
-                title="Rewritten Output"
+                title="Rewritten Output (Box C)"
                 icon="fas fa-download"
                 placeholder="Rewritten text will appear here..."
                 value={outputText}
-                onChange={() => {}}
+                onChange={() => {}} // Read-only
                 aiScore={outputAiScore}
                 isLoading={isProcessing}
                 readOnly
@@ -450,7 +288,7 @@ export default function Home() {
               isGenerating={isProcessing}
               canGenerate={!!inputText.trim()}
               selectedPresets={selectedPresets}
-              hasStyleSample={!!styleText.trim()}
+              hasStyleSample={!!styleId}
               hasContentMix={!!contentMixText.trim()}
               onClearAll={handleClearAll}
             />
@@ -459,7 +297,7 @@ export default function Home() {
             <div className="mt-8 mb-8">
               <ChatInterface 
                 inputText={inputText}
-                styleText={styleText}
+                styleText={styleId}
                 contentMixText={contentMixText}
                 outputText={outputText}
                 onSendToBox={(boxId, text) => {
@@ -468,13 +306,8 @@ export default function Home() {
                       setInputText(text);
                       setInputAiScore(null);
                       break;
-                    case 'style':
-                      setStyleText(text);
-                      setMixingMode(contentMixText.trim() ? 'both' : 'style');
-                      break;
                     case 'content':
                       setContentMixText(text);
-                      setMixingMode(styleText.trim() ? 'both' : 'content');
                       break;
                     case 'output':
                       setOutputText(text);

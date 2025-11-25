@@ -1,59 +1,91 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 
-const ACADEMIC_SAMPLE_PATH = path.join(process.cwd(), 'server/data/academic-sample.txt');
-const PERSONAL_SAMPLE_PATH = path.join(process.cwd(), 'server/data/personal-sample.txt');
+const ACADEMIC_FILE = path.join(process.cwd(), 'server/data/academic-style.txt');
+const PERSONAL_FILE = path.join(process.cwd(), 'server/data/personal-style.txt');
 
-function loadSample(filePath: string): string {
+let academicContent: string | null = null;
+let personalContent: string | null = null;
+
+function loadStyleFiles() {
   try {
-    return fs.readFileSync(filePath, 'utf-8');
+    if (!academicContent) {
+      academicContent = fs.readFileSync(ACADEMIC_FILE, 'utf-8');
+      console.log(`📚 Loaded Academic style sample: ${academicContent.length} chars`);
+    }
+    if (!personalContent) {
+      personalContent = fs.readFileSync(PERSONAL_FILE, 'utf-8');
+      console.log(`📚 Loaded Personal style sample: ${personalContent.length} chars`);
+    }
   } catch (error) {
-    console.error(`Failed to load sample from ${filePath}:`, error);
-    return '';
+    console.error('Failed to load style sample files:', error);
   }
 }
 
-export function getAcademicSample(): string {
-  return loadSample(ACADEMIC_SAMPLE_PATH);
-}
-
-export function getPersonalSample(): string {
-  return loadSample(PERSONAL_SAMPLE_PATH);
-}
-
-export function getSampleById(id: string): string {
-  switch (id) {
-    case 'academic':
-      return getAcademicSample();
-    case 'personal':
-      return getPersonalSample();
-    default:
-      return '';
-  }
-}
+loadStyleFiles();
 
 function countWords(text: string): number {
-  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  return text.trim().split(/\s+/).filter(w => w.length > 0).length;
 }
 
-export function adjustStyleToInputLength(styleText: string, inputText: string): string {
-  const inputWordCount = countWords(inputText);
-  const styleWordCount = countWords(styleText);
+function extractMatchingLength(fullText: string, targetWordCount: number): string {
+  const words = fullText.trim().split(/\s+/).filter(w => w.length > 0);
   
-  if (styleWordCount === 0 || inputWordCount === 0) {
-    return styleText;
+  if (words.length <= targetWordCount) {
+    return fullText;
+  }
+
+  const targetWords = words.slice(0, targetWordCount);
+  let result = targetWords.join(' ');
+  
+  const lastPeriodIndex = result.lastIndexOf('.');
+  const lastQuestionIndex = result.lastIndexOf('?');
+  const lastExclamationIndex = result.lastIndexOf('!');
+  
+  const lastSentenceEnd = Math.max(lastPeriodIndex, lastQuestionIndex, lastExclamationIndex);
+  
+  if (lastSentenceEnd > result.length * 0.7) {
+    result = result.substring(0, lastSentenceEnd + 1);
   }
   
-  if (styleWordCount >= inputWordCount) {
-    const words = styleText.split(/\s+/);
-    return words.slice(0, inputWordCount).join(' ');
+  return result;
+}
+
+export function getStyleSample(styleId: string, inputWordCount: number): string {
+  loadStyleFiles();
+  
+  let fullContent: string;
+  
+  if (styleId === 'academic') {
+    fullContent = academicContent || '';
+  } else if (styleId === 'personal') {
+    fullContent = personalContent || '';
   } else {
-    const repetitionsNeeded = Math.ceil(inputWordCount / styleWordCount);
-    let expandedStyle = '';
-    for (let i = 0; i < repetitionsNeeded; i++) {
-      expandedStyle += (i > 0 ? '\n\n' : '') + styleText;
-    }
-    const words = expandedStyle.split(/\s+/);
-    return words.slice(0, inputWordCount).join(' ');
+    return '';
   }
+  
+  if (!fullContent) {
+    console.error(`Style sample not found for: ${styleId}`);
+    return '';
+  }
+  
+  const targetWordCount = Math.max(inputWordCount, 100);
+  
+  const extracted = extractMatchingLength(fullContent, Math.ceil(targetWordCount * 1.1));
+  
+  console.log(`📝 Extracted ${countWords(extracted)} words from ${styleId} style (input: ${inputWordCount} words)`);
+  
+  return extracted;
+}
+
+export function getFullStyleSample(styleId: string): string {
+  loadStyleFiles();
+  
+  if (styleId === 'academic') {
+    return academicContent || '';
+  } else if (styleId === 'personal') {
+    return personalContent || '';
+  }
+  
+  return '';
 }

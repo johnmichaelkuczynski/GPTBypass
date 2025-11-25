@@ -7,7 +7,7 @@ import { textChunkerService } from "./services/textChunker";
 import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
-import { getSampleById, adjustStyleToInputLength } from "./services/styleSamples";
+import { getStyleSample } from "./services/styleSamples";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -83,7 +83,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         aiScore: gptZeroResult.aiScore,
         needsChunking: processedFile.wordCount > 500,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('File upload error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -121,50 +121,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         chunks,
         needsChunking: wordCount > 500,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Text analysis error:', error);
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  // Get style sample endpoint
-  app.get("/api/style-samples/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const sample = getSampleById(id);
-      
-      if (!sample) {
-        return res.status(404).json({ message: "Style sample not found" });
-      }
-      
-      res.json({ content: sample });
-    } catch (error: any) {
-      console.error('Style sample error:', error);
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  // Generate Frankenstein sample - matches style sentences to input sentence lengths
-  app.post("/api/frankenstein-sample", async (req, res) => {
-    try {
-      const { inputText, styleId } = req.body;
-      
-      if (!inputText || !styleId) {
-        return res.status(400).json({ message: "inputText and styleId are required" });
-      }
-      
-      const fullStyleSample = getSampleById(styleId);
-      if (!fullStyleSample) {
-        return res.status(404).json({ message: "Style sample not found" });
-      }
-      
-      // Import Frankenstein logic
-      const { buildFrankensteinSample } = await import("../shared/frankenstein");
-      const frankensteinSample = buildFrankensteinSample(inputText, fullStyleSample);
-      
-      res.json({ content: frankensteinSample });
-    } catch (error: any) {
-      console.error('Frankenstein sample error:', error);
       res.status(500).json({ message: error.message });
     }
   });
@@ -179,39 +137,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Input text and provider are required" });
       }
 
+      // Get input word count for length-matching style sample
+      const inputWordCount = rewriteRequest.inputText.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
+      
+      // Get the style sample that matches the input length
+      const styleId = rewriteRequest.styleId || 'academic';
+      const styleText = getStyleSample(styleId, inputWordCount);
+      
+      console.log(`📝 Using ${styleId} style sample (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
+
       // Analyze input text
       const inputAnalysis = await gptZeroService.analyzeText(rewriteRequest.inputText);
       
       // Create rewrite job
       const rewriteJob = await storage.createRewriteJob({
         inputText: rewriteRequest.inputText,
-        styleText: rewriteRequest.styleText,
+        styleText: styleText,
         contentMixText: rewriteRequest.contentMixText,
         customInstructions: rewriteRequest.customInstructions,
         selectedPresets: rewriteRequest.selectedPresets,
         provider: rewriteRequest.provider,
         chunks: [],
         selectedChunkIds: rewriteRequest.selectedChunkIds,
-        mixingMode: rewriteRequest.mixingMode,
+        mixingMode: 'style',
         inputAiScore: inputAnalysis.aiScore,
         status: "processing",
       });
 
       try {
-        // Adjust style text to match input length
-        let adjustedStyleText = rewriteRequest.styleText;
-        if (adjustedStyleText && rewriteRequest.inputText) {
-          adjustedStyleText = adjustStyleToInputLength(adjustedStyleText, rewriteRequest.inputText);
-        }
-        
-        // Perform rewrite
+        // Perform rewrite with length-matched style sample
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: adjustedStyleText,
+          styleText: styleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,
-          mixingMode: rewriteRequest.mixingMode,
         });
 
         // Analyze output text
@@ -242,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         throw error;
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Rewrite error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -318,7 +278,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateRewriteJob(rewriteJob.id, { status: "failed" });
         throw error;
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Re-rewrite error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -335,7 +295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.json(job);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Get job error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -346,7 +306,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const jobs = await storage.listRewriteJobs();
       res.json(jobs);
-    } catch (error: any) {
+    } catch (error) {
       console.error('List jobs error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -366,7 +326,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("🔑 API Keys updated successfully");
       res.json({ success: true });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Set keys error:', error);
       res.status(500).json({ message: error.message });
     }

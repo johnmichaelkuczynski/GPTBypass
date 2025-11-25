@@ -56,10 +56,13 @@ const PRESET_TEXT: Record<string,string> = {
   "Hedge once": "Use exactly one hedge: probably/roughly/more or less.",
   "Drop intensifiers": "Remove 'very/clearly/obviously/significantly'.",
   "Low-heat voice": "Prefer plain verbs; avoid showy synonyms.",
+  "One aside": "Allow one short parenthetical or em-dash aside; strictly factual.",
   "Concrete benchmark": "Replace one vague scale with a testable one (e.g., 'enough to X').",
   "Swap generic example": "If the source has an example, make it slightly more specific; else skip.",
   "Metric nudge": "Replace 'more/better' with a minimal, source-safe comparator (e.g., 'more than last case').",
+  "Asymmetric emphasis": "Linger on the main claim; compress secondary points sharply.",
   "Cull repeats": "Delete duplicated sentences/ideas; keep the strongest instance.",
+  "Topic snap": "Allow one abrupt focus change; no recap.",
   "No lists": "Output as continuous prose; remove bullets/numbering.",
   "No meta": "No prefaces/apologies/phrases like 'as requested'.",
   "Exact nouns": "Replace ambiguous pronouns with exact nouns.",
@@ -98,51 +101,6 @@ function buildPresetBlock(selectedPresets?: string[], customInstructions?: strin
   return `Apply ONLY these additional rewrite instructions (no other goals):\n${lines.join("\n")}\n\n`;
 }
 
-function splitIntoSentences(text: string): string[] {
-  return text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
-}
-
-function getWordCount(sentence: string): number {
-  return sentence.split(/\s+/).filter(w => w.length > 0).length;
-}
-
-function buildFrankensteinSample(inputText: string, styleText: string): string {
-  const inputSentences = splitIntoSentences(inputText);
-  const styleSentences = splitIntoSentences(styleText);
-  
-  if (styleSentences.length === 0) return styleText;
-  if (inputSentences.length === 0) return styleText;
-  
-  const usedIndices = new Set<number>();
-  const matchedSentences: string[] = [];
-  
-  for (const inputSentence of inputSentences) {
-    const targetLength = getWordCount(inputSentence);
-    let bestMatch = -1;
-    let bestDiff = Infinity;
-    
-    for (let i = 0; i < styleSentences.length; i++) {
-      if (usedIndices.has(i)) continue;
-      const styleLength = getWordCount(styleSentences[i]);
-      const diff = Math.abs(styleLength - targetLength);
-      if (diff < bestDiff) {
-        bestDiff = diff;
-        bestMatch = i;
-      }
-    }
-    
-    if (bestMatch !== -1) {
-      matchedSentences.push(styleSentences[bestMatch]);
-      usedIndices.add(bestMatch);
-    } else {
-      const randomIdx = Math.floor(Math.random() * styleSentences.length);
-      matchedSentences.push(styleSentences[randomIdx]);
-    }
-  }
-  
-  return matchedSentences.join(" ");
-}
-
 function buildRewritePrompt(params: {
   inputText: string;
   styleText?: string;
@@ -152,41 +110,30 @@ function buildRewritePrompt(params: {
 }): string {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
-  const inputWordCount = params.inputText.split(/\s+/).filter(w => w.length > 0).length;
-  
-  const frankensteinSample = hasStyle 
-    ? buildFrankensteinSample(params.inputText, params.styleText!)
-    : "";
-  
-  let prompt = `Paraphrase the following text. You MUST keep the exact same meaning - every fact, name, and claim must remain.
+  const styleSample = hasStyle ? params.styleText! : `DEFAULT STYLE SAMPLE (The Raven Paradox):
 
-TEXT TO PARAPHRASE:
-${params.inputText}
+Presumably, logically equivalent statements are confirmationally equivalent. In other words, if two statements entail each other, then anything that one confirms the one statement to a given degree also confirms the other statement to that degree. But this actually seems false when consider statement-pairs such as: 
 
-`;
+(i) All ravens are black, 
+and 
+(ii) All non-black things are non-ravens, 
 
-  if (hasStyle) {
-    prompt += `When paraphrasing, mimic the sentence structures and rhythms from this writing sample:
-${frankensteinSample}
+which, though logically equivalent, seem to confirmationally equivalent, in that a non-black non-raven confirms (ii) to a high degree but confirms (i) to no degree or at most to a low degree. 
+A number of very contrived solutions to this paradox have been proposed, all of which either deny that there is a paradox or invent ad hoc systems of logic to validate the 'solution' in question. 
+But the real solution is clear. First of all, it is only principled generalizations that can be confirmed. Supposing that you assert (i) with the intention of affirming a principled as opposed to an accidental generalization, you are saying that instances of the property of being a raven grounds or causes instances of blackness. Read thus, (i) is most certainly not equivalent with (ii) or with any variation thereof. Be it noted that while there is a natural nomic or causal reading of (i), there is no such reading of (ii). Also be it noted that it is only principled as opposed to accidental generalizations that can be confirmed. "All metal expands when heated" can be confirmed but not "all objects in Smith's pocket expand when heated." In general, when read as principled and therefore confirmable generalization, "all x's are y's" has nomic or causal content is therefore not equivalent with "all non-y's are non-x's." Case closed on the Raven Paradox.`;
 
-`;
-  }
+  const inputWordCount = params.inputText.trim().split(/\s+/).filter(w => w.length > 0).length;
+
+  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample. CRITICAL: Keep your rewrite approximately the same length as the original text (approximately ${inputWordCount} words, +/- 10%).\n\nStyle sample:\n"${styleSample}"\n\n`;
 
   if (hasContent) {
-    prompt += `You may incorporate ideas from: ${params.contentMixText}
-
-`;
+    prompt += `Judiciously integrate relevant ideas, examples, and details from the following content reference to enrich the rewrite:\n"${params.contentMixText}"\n\n`;
   }
 
+  // <<< PRESETS/APPLIED INSTRUCTIONS HERE >>>
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `Requirements:
-- Keep ALL original facts and meaning
-- Output should be approximately ${inputWordCount} words
-- Only change how sentences are structured, not what they say
-
-Paraphrased text:`;
-
+  prompt += `Text to rewrite (${inputWordCount} words - your output should be similar length):\n"${params.inputText}"`;
   return prompt;
 }
 
@@ -196,7 +143,6 @@ export interface RewriteParams {
   contentMixText?: string;
   customInstructions?: string;
   selectedPresets?: string[];
-  mixingMode?: 'style' | 'content' | 'both';
 }
 
 export class AIProviderService {
@@ -252,10 +198,8 @@ export class AIProviderService {
         temperature: 0.7,
       });
 
-      const firstBlock = response.content[0];
-      const responseText = firstBlock.type === 'text' ? firstBlock.text : '';
-      console.log("🔥 Anthropic response received, length:", responseText?.length || 0);
-      return this.cleanMarkup(responseText || "");
+      console.log("🔥 Anthropic response received, length:", response.content[0].text?.length || 0);
+      return this.cleanMarkup(response.content[0].text || "");
     } catch (error: any) {
       console.error("🔥 ANTHROPIC API ERROR:", error);
       throw new Error(`Anthropic API error: ${error.message}`);

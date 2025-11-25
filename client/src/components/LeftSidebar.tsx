@@ -1,28 +1,23 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { instructionPresets } from "@/lib/instructionPresets";
-import { BookOpen, User, FileText } from "lucide-react";
+import { GraduationCap, User } from "lucide-react";
 
 interface LeftSidebarProps {
   selectedPresets: string[];
   onPresetsChange: (presets: string[]) => void;
   selectedStyleSample: string;
-  onStyleSampleSelect: (sampleId: string) => void;
-  onContentSampleSelect: (sampleId: string) => void;
+  onStyleSampleSelect: (styleId: string) => void;
 }
 
 export default function LeftSidebar({ 
   selectedPresets, 
   onPresetsChange, 
   selectedStyleSample,
-  onStyleSampleSelect,
-  onContentSampleSelect
+  onStyleSampleSelect
 }: LeftSidebarProps) {
-
   const handlePresetSelect = (presetId: string) => {
     if (!selectedPresets.includes(presetId)) {
       onPresetsChange([...selectedPresets, presetId]);
@@ -42,7 +37,7 @@ export default function LeftSidebar({
   }, {} as Record<string, any[]>);
 
   return (
-    <aside className="w-48 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
+    <aside className="w-80 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
       <ScrollArea className="h-full">
         <div className="p-4">
           {/* Instruction Presets Section */}
@@ -123,46 +118,58 @@ export default function LeftSidebar({
 
           <Separator className="my-6" />
 
-          {/* Writing Style Buttons Section */}
+          {/* Writing Style Selection - Two Clear Buttons */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <i className="fas fa-book mr-2 text-primary"></i>
               Writing Style
             </h3>
-            
-            <div className="space-y-2">
-              {/* Academic Button */}
-              <Button
-                variant="outline"
-                className="w-full h-auto py-2 px-2 flex items-center justify-start gap-2 hover:bg-blue-50 hover:border-blue-300"
+            <div className="space-y-3">
+              <button
                 onClick={() => onStyleSampleSelect("academic")}
-                data-testid="button-academic-style"
+                data-testid="style-button-academic"
+                className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all duration-200 ${
+                  selectedStyleSample === "academic"
+                    ? "bg-blue-600 border-blue-600 text-white shadow-lg"
+                    : "bg-white border-gray-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50"
+                }`}
               >
-                <BookOpen className="h-4 w-4 flex-shrink-0 text-blue-600" />
-                <span className="text-sm font-medium">Academic</span>
-              </Button>
+                <GraduationCap className={`w-6 h-6 ${selectedStyleSample === "academic" ? "text-white" : "text-blue-600"}`} />
+                <div className="text-left flex-1">
+                  <div className={`font-semibold ${selectedStyleSample === "academic" ? "text-white" : "text-gray-900"}`}>
+                    Academic
+                  </div>
+                  <div className={`text-xs ${selectedStyleSample === "academic" ? "text-blue-100" : "text-gray-500"}`}>
+                    Formal, professional tone
+                  </div>
+                </div>
+                {selectedStyleSample === "academic" && (
+                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                )}
+              </button>
 
-              {/* Personal Button */}
-              <Button
-                variant="outline"
-                className="w-full h-auto py-2 px-2 flex items-center justify-start gap-2 hover:bg-green-50 hover:border-green-300"
+              <button
                 onClick={() => onStyleSampleSelect("personal")}
-                data-testid="button-personal-style"
+                data-testid="style-button-personal"
+                className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all duration-200 ${
+                  selectedStyleSample === "personal"
+                    ? "bg-green-600 border-green-600 text-white shadow-lg"
+                    : "bg-white border-gray-200 text-gray-700 hover:border-green-300 hover:bg-green-50"
+                }`}
               >
-                <User className="h-4 w-4 flex-shrink-0 text-green-600" />
-                <span className="text-sm font-medium">Personal</span>
-              </Button>
-
-              {/* Custom Style Sample Button */}
-              <Button
-                variant="outline"
-                className="w-full h-auto py-2 px-2 flex items-center justify-start gap-2 hover:bg-purple-50 hover:border-purple-300"
-                onClick={() => onContentSampleSelect("custom")}
-                data-testid="button-custom-style"
-              >
-                <FileText className="h-4 w-4 flex-shrink-0 text-purple-600" />
-                <span className="text-sm font-medium">Custom</span>
-              </Button>
+                <User className={`w-6 h-6 ${selectedStyleSample === "personal" ? "text-white" : "text-green-600"}`} />
+                <div className="text-left flex-1">
+                  <div className={`font-semibold ${selectedStyleSample === "personal" ? "text-white" : "text-gray-900"}`}>
+                    Personal
+                  </div>
+                  <div className={`text-xs ${selectedStyleSample === "personal" ? "text-green-100" : "text-gray-500"}`}>
+                    Casual, conversational tone
+                  </div>
+                </div>
+                {selectedStyleSample === "personal" && (
+                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                )}
+              </button>
             </div>
           </div>
         </div>

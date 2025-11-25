@@ -7,6 +7,7 @@ import { textChunkerService } from "./services/textChunker";
 import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
+import { prepareStyleSample, getStyleSample } from "./services/styleSamples";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -126,15 +127,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get style sample endpoint
+  app.get("/api/style-sample/:type", async (req, res) => {
+    try {
+      const { type } = req.params;
+      if (type !== 'academic' && type !== 'personal') {
+        return res.status(400).json({ message: "Invalid style sample type. Use 'academic' or 'personal'" });
+      }
+      const content = getStyleSample(type);
+      res.json({ content, type });
+    } catch (error: any) {
+      console.error('Style sample error:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Rewrite text endpoint
   app.post("/api/rewrite", async (req, res) => {
     try {
       const rewriteRequest: RewriteRequest = req.body;
+      const { styleSampleType } = req.body;
       
       // Validate request
       if (!rewriteRequest.inputText || !rewriteRequest.provider) {
         return res.status(400).json({ message: "Input text and provider are required" });
       }
+
+      // Prepare style text with length matching
+      let finalStyleText: string;
+      if (rewriteRequest.styleText && rewriteRequest.styleText.trim()) {
+        // User provided custom style text - apply length matching
+        finalStyleText = prepareStyleSample('custom', rewriteRequest.styleText, rewriteRequest.inputText);
+      } else if (styleSampleType === 'academic' || styleSampleType === 'personal') {
+        // Use predefined style sample with length matching
+        finalStyleText = prepareStyleSample(styleSampleType, undefined, rewriteRequest.inputText);
+      } else {
+        // Default to academic style sample
+        finalStyleText = prepareStyleSample('academic', undefined, rewriteRequest.inputText);
+      }
+
+      console.log(`🔥 Style length matching: Input ${rewriteRequest.inputText.split(/\s+/).length} words, Style ${finalStyleText.split(/\s+/).length} words`);
 
       // Analyze input text
       const inputAnalysis = await gptZeroService.analyzeText(rewriteRequest.inputText);
@@ -142,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create rewrite job
       const rewriteJob = await storage.createRewriteJob({
         inputText: rewriteRequest.inputText,
-        styleText: rewriteRequest.styleText,
+        styleText: finalStyleText,
         contentMixText: rewriteRequest.contentMixText,
         customInstructions: rewriteRequest.customInstructions,
         selectedPresets: rewriteRequest.selectedPresets,
@@ -155,10 +187,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
-        // Perform rewrite
+        // Perform rewrite with length-matched style
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: rewriteRequest.styleText,
+          styleText: finalStyleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,

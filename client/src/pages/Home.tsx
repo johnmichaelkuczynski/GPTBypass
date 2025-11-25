@@ -46,10 +46,8 @@ export default function Home() {
 
   // Set default style sample on component mount
   useEffect(() => {
-    const defaultSample = writingSamples.find(sample => sample.id === "formal-functional-relationships");
-    if (defaultSample && !selectedStyleSample) {
-      setSelectedStyleSample(defaultSample.content);
-      setStyleText(defaultSample.content);
+    if (!selectedStyleSample) {
+      setSelectedStyleSample("academic");
     }
   }, []);
 
@@ -156,9 +154,13 @@ export default function Home() {
     }
   };
 
-  const handleStyleSampleSelect = (content: string) => {
-    setSelectedStyleSample(content);
-    handleStyleTextChange(content);
+  const handleStyleSampleSelect = (sampleId: string) => {
+    setSelectedStyleSample(sampleId);
+    // Clear custom style text when selecting a predefined sample
+    if (sampleId === 'academic' || sampleId === 'personal') {
+      setStyleText('');
+      setStyleAiScore(null);
+    }
   };
 
   const handleStyleUpload = (content: string, type: 'style' | 'content') => {
@@ -189,7 +191,7 @@ export default function Home() {
       return;
     }
 
-    const request: RewriteRequest = {
+    const request: RewriteRequest & { styleSampleType?: string } = {
       inputText: inputChunks.length > 0 && selectedChunkIds.length > 0
         ? inputChunks
             .filter(chunk => selectedChunkIds.includes(chunk.id))
@@ -203,9 +205,10 @@ export default function Home() {
       provider,
       selectedChunkIds: selectedChunkIds.length > 0 ? selectedChunkIds : undefined,
       mixingMode,
+      styleSampleType: selectedStyleSample || 'academic',
     };
 
-    rewriteMutation.mutate(request);
+    rewriteMutation.mutate(request as RewriteRequest);
   };
 
   const handleReRewrite = () => {

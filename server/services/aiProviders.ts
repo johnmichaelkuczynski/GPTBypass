@@ -98,6 +98,51 @@ function buildPresetBlock(selectedPresets?: string[], customInstructions?: strin
   return `Apply ONLY these additional rewrite instructions (no other goals):\n${lines.join("\n")}\n\n`;
 }
 
+function splitIntoSentences(text: string): string[] {
+  return text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+}
+
+function getWordCount(sentence: string): number {
+  return sentence.split(/\s+/).filter(w => w.length > 0).length;
+}
+
+function buildFrankensteinSample(inputText: string, styleText: string): string {
+  const inputSentences = splitIntoSentences(inputText);
+  const styleSentences = splitIntoSentences(styleText);
+  
+  if (styleSentences.length === 0) return styleText;
+  if (inputSentences.length === 0) return styleText;
+  
+  const usedIndices = new Set<number>();
+  const matchedSentences: string[] = [];
+  
+  for (const inputSentence of inputSentences) {
+    const targetLength = getWordCount(inputSentence);
+    let bestMatch = -1;
+    let bestDiff = Infinity;
+    
+    for (let i = 0; i < styleSentences.length; i++) {
+      if (usedIndices.has(i)) continue;
+      const styleLength = getWordCount(styleSentences[i]);
+      const diff = Math.abs(styleLength - targetLength);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestMatch = i;
+      }
+    }
+    
+    if (bestMatch !== -1) {
+      matchedSentences.push(styleSentences[bestMatch]);
+      usedIndices.add(bestMatch);
+    } else {
+      const randomIdx = Math.floor(Math.random() * styleSentences.length);
+      matchedSentences.push(styleSentences[randomIdx]);
+    }
+  }
+  
+  return matchedSentences.join(" ");
+}
+
 function buildRewritePrompt(params: {
   inputText: string;
   styleText?: string;
@@ -108,13 +153,15 @@ function buildRewritePrompt(params: {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
   const inputWordCount = params.inputText.split(/\s+/).filter(w => w.length > 0).length;
+  const inputSentences = splitIntoSentences(params.inputText);
+  
+  const frankensteinSample = hasStyle 
+    ? buildFrankensteinSample(params.inputText, params.styleText!)
+    : "";
   
   let prompt = `STRICT REWRITE TASK - Content preservation is mandatory.
 
-PHASE 1 - ANALYZE INPUT CONTENT:
-Read the INPUT TEXT. Every single fact, claim, name, number, and idea MUST appear in your output.
-
-INPUT TEXT (${inputWordCount} words):
+INPUT TEXT (${inputWordCount} words, ${inputSentences.length} sentences):
 """
 ${params.inputText}
 """
@@ -122,20 +169,17 @@ ${params.inputText}
 `;
 
   if (hasStyle) {
-    prompt += `PHASE 2 - EXTRACT STYLE PATTERNS ONLY:
-Study the STYLE SAMPLE below. Extract ONLY these elements:
-- Sentence length patterns (short vs long)
-- How sentences begin (with subject? with clause?)
-- Punctuation habits (em-dashes, semicolons, etc.)
-- Vocabulary register (casual vs formal)
-- Paragraph rhythm
-
-DO NOT take any topics, facts, or subject matter from the style sample.
-
-STYLE SAMPLE:
+    prompt += `STYLE TEMPLATE (${inputSentences.length} sentences matched by length to your input):
+Each sentence below corresponds to one input sentence. Use its structure as a template.
 """
-${params.styleText}
+${frankensteinSample}
 """
+
+INSTRUCTIONS:
+For each input sentence, rewrite it using the STRUCTURE of the corresponding style template sentence:
+- Copy the sentence pattern (how it begins, clause order, punctuation)
+- Keep ALL facts/content from the input sentence
+- Match the approximate word count of each input sentence
 
 `;
   }
@@ -151,20 +195,13 @@ ${params.contentMixText}
 
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `PHASE 3 - REWRITE WITH STRICT CONSTRAINTS:
-1. Take each sentence from the INPUT TEXT
-2. Rewrite it using the style patterns from the STYLE SAMPLE
-3. Keep EVERY fact from the input - do not add or remove any
-4. Target length: ${inputWordCount} words (±10%)
+  prompt += `STRICT RULES:
+1. Output must contain EVERY fact from the input
+2. Output must be ${inputWordCount} words (±10%)
+3. Do NOT use content/topics from the style template
+4. Do NOT drop or add facts
 
-FORBIDDEN:
-- Dropping any facts from the input
-- Adding facts not in the input
-- Copying content/topics from the style sample
-- Changing names, numbers, or specific claims
-- Making the output significantly shorter or longer
-
-OUTPUT (rewritten text only, no commentary):`;
+OUTPUT (rewritten text only):`;
 
   return prompt;
 }

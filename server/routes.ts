@@ -155,9 +155,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
         console.log(`📝 Custom style processed (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
       } else {
-        // Use built-in style sample
-        styleText = getStyleSample(styleId, inputWordCount);
-        console.log(`📝 Using ${styleId} style sample (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
+        // Use built-in style sample (fallback to 'academic' if custom style is empty or styleId is 'custom' without text)
+        const effectiveStyleId = styleId === 'custom' ? 'academic' : styleId;
+        styleText = getStyleSample(effectiveStyleId, inputWordCount);
+        console.log(`📝 Using ${effectiveStyleId} style sample (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
       }
 
       // Analyze input text

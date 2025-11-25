@@ -145,6 +145,15 @@ export default function Home() {
       return;
     }
 
+    if (styleId === "custom" && !customStyleText.trim()) {
+      toast({
+        title: "Custom Style Required",
+        description: "Please paste a writing sample in the custom style box, or select Academic/Personal style",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const request: RewriteRequest = {
       inputText: inputChunks.length > 0 && selectedChunkIds.length > 0
         ? inputChunks

@@ -51,32 +51,34 @@ export default function Home() {
     }
   }, []);
 
-  // Generate Frankenstein sample when input text changes AND a style is selected
-  useEffect(() => {
-    const generateFrankenstein = async () => {
-      if (!inputText.trim() || !selectedStyleSample || selectedStyleSample === "custom") {
-        return;
-      }
-      
-      try {
-        const response = await fetch('/api/frankenstein-sample', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ inputText, styleId: selectedStyleSample })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setStyleText(data.content);
-        }
-      } catch (error) {
-        console.error('Failed to generate Frankenstein sample:', error);
-      }
-    };
+  // Function to generate Frankenstein sample - called manually, not on every keystroke
+  const generateFrankensteinSample = async () => {
+    if (!inputText.trim() || !selectedStyleSample || selectedStyleSample === "custom") {
+      return;
+    }
     
-    const debounceTimer = setTimeout(generateFrankenstein, 500);
-    return () => clearTimeout(debounceTimer);
-  }, [inputText, selectedStyleSample]);
+    try {
+      const response = await fetch('/api/frankenstein-sample', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inputText, styleId: selectedStyleSample })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setStyleText(data.content);
+      }
+    } catch (error) {
+      console.error('Failed to generate Frankenstein sample:', error);
+    }
+  };
+
+  // Generate Frankenstein sample when style is selected (and input exists)
+  useEffect(() => {
+    if (inputText.trim() && selectedStyleSample && selectedStyleSample !== "custom") {
+      generateFrankensteinSample();
+    }
+  }, [selectedStyleSample]);
 
   // Text analysis mutation
   const analyzeTextMutation = useMutation({
@@ -221,7 +223,7 @@ export default function Home() {
     });
   };
 
-  const handleGenerateRewrite = () => {
+  const handleGenerateRewrite = async () => {
     if (!inputText.trim()) {
       toast({
         title: "Input Required",
@@ -231,6 +233,25 @@ export default function Home() {
       return;
     }
 
+    // Generate fresh Frankenstein sample before rewriting (if using preset style)
+    let finalStyleText = styleText;
+    if (selectedStyleSample && selectedStyleSample !== "custom" && inputText.trim()) {
+      try {
+        const response = await fetch('/api/frankenstein-sample', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inputText, styleId: selectedStyleSample })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          finalStyleText = data.content;
+          setStyleText(data.content); // Update Box B display
+        }
+      } catch (error) {
+        console.error('Failed to generate Frankenstein sample:', error);
+      }
+    }
+
     const request: RewriteRequest = {
       inputText: inputChunks.length > 0 && selectedChunkIds.length > 0
         ? inputChunks
@@ -238,7 +259,7 @@ export default function Home() {
             .map(chunk => chunk.content)
             .join('\n\n')
         : inputText,
-      styleText: styleText.trim() || undefined,
+      styleText: finalStyleText.trim() || undefined,
       contentMixText: contentMixText.trim() || undefined,
       customInstructions: customInstructions.trim() || undefined,
       selectedPresets: selectedPresets.length > 0 ? selectedPresets : undefined,

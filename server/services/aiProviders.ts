@@ -106,42 +106,6 @@ function getWordCount(sentence: string): number {
   return sentence.split(/\s+/).filter(w => w.length > 0).length;
 }
 
-function buildFrankensteinSample(inputText: string, styleText: string): string {
-  const inputSentences = splitIntoSentences(inputText);
-  const styleSentences = splitIntoSentences(styleText);
-  
-  if (styleSentences.length === 0) return styleText;
-  if (inputSentences.length === 0) return styleText;
-  
-  const usedIndices = new Set<number>();
-  const matchedSentences: string[] = [];
-  
-  for (const inputSentence of inputSentences) {
-    const targetLength = getWordCount(inputSentence);
-    let bestMatch = -1;
-    let bestDiff = Infinity;
-    
-    for (let i = 0; i < styleSentences.length; i++) {
-      if (usedIndices.has(i)) continue;
-      const styleLength = getWordCount(styleSentences[i]);
-      const diff = Math.abs(styleLength - targetLength);
-      if (diff < bestDiff) {
-        bestDiff = diff;
-        bestMatch = i;
-      }
-    }
-    
-    if (bestMatch !== -1) {
-      matchedSentences.push(styleSentences[bestMatch]);
-      usedIndices.add(bestMatch);
-    } else {
-      const randomIdx = Math.floor(Math.random() * styleSentences.length);
-      matchedSentences.push(styleSentences[randomIdx]);
-    }
-  }
-  
-  return matchedSentences.join(" ");
-}
 
 function buildRewritePrompt(params: {
   inputText: string;
@@ -154,20 +118,21 @@ function buildRewritePrompt(params: {
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
   const inputWordCount = params.inputText.split(/\s+/).filter(w => w.length > 0).length;
   
-  const frankensteinSample = hasStyle 
-    ? buildFrankensteinSample(params.inputText, params.styleText!)
-    : "";
-  
-  let prompt = `Paraphrase the following text. You MUST keep the exact same meaning - every fact, name, and claim must remain.
+  let prompt = `You are rewriting text while mimicking specific sentence structures.
 
-TEXT TO PARAPHRASE:
+INPUT TEXT (preserve ALL content, facts, and meaning):
 ${params.inputText}
 
 `;
 
   if (hasStyle) {
-    prompt += `When paraphrasing, mimic the sentence structures and rhythms from this writing sample:
-${frankensteinSample}
+    prompt += `STYLE SAMPLE (copy these sentence patterns, lengths, and rhythms):
+${params.styleText}
+
+For each sentence in the INPUT, use the corresponding sentence in the STYLE SAMPLE as a structural template.
+- Sentence 1 of output should mimic the structure of sentence 1 in the style sample
+- Sentence 2 of output should mimic the structure of sentence 2 in the style sample
+- And so on...
 
 `;
   }
@@ -180,12 +145,13 @@ ${frankensteinSample}
 
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `Requirements:
-- Keep ALL original facts and meaning
-- Output should be approximately ${inputWordCount} words
-- Only change how sentences are structured, not what they say
+  prompt += `CRITICAL REQUIREMENTS:
+- Keep ALL original facts, names, and claims from the INPUT - do not lose any information
+- Output MUST be approximately ${inputWordCount} words (same length as input)
+- Copy the FORM/STRUCTURE from the style sample, but keep the CONTENT from the input
+- Match the number of sentences: if input has N sentences, output should have N sentences
 
-Paraphrased text:`;
+Rewritten text:`;
 
   return prompt;
 }

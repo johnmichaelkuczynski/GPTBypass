@@ -1,0 +1,136 @@
+GPTBypass App: Complete Implementation Instructions for Replit Agent
+1. OVERVIEW
+GPTBypass is a text rewriting application that transforms AI-detected text into text that passes AI detection. It works by replacing the syntactic structure of user input with human-written syntactic structures from pre-built sentence databases, while preserving the semantic content of the original input.
+The core principle: 
+Rewrite = (Semantic content from user input) × (Syntactic shell from sentence database)
+2. UI CHANGES REQUIRED
+2.1 Left Sidebar Changes
+REMOVE the current "Instruction Presets" section.
+REMOVE the current "Writing Samples" section with individual samples.
+REMOVE the "Send to Style Box" and "Send to Content Box" buttons.
+REPLACE WITH a simple "Style Selection" section containing exactly THREE buttons:
+1.	ACADEMIC button — When clicked, loads the Academic Sentence Database
+2.	PERSONAL button — When clicked, loads the Personal Sentence Database
+3.	CUSTOM button — When clicked, opens a file upload dialog for user to upload their own style sample
+2.2 Button Behavior
+ACADEMIC button:
+•	Sets the active style source to the Academic Sentence Database
+•	Visual indicator shows ACADEMIC is selected
+•	When user submits target text, the style sample is constructed from Academic database
+PERSONAL button:
+•	Sets the active style source to the Personal Sentence Database
+•	Visual indicator shows PERSONAL is selected
+•	When user submits target text, the style sample is constructed from Personal database
+CUSTOM button:
+•	Opens file upload dialog
+•	User uploads a .txt file containing their custom style sample
+•	App automatically BLEACHES the uploaded text (see Section 6)
+•	Visual indicator shows CUSTOM is selected and displays filename
+•	When user submits target text, the style sample is constructed from the bleached custom text
+2.3 Main Content Area
+The main area should contain:
+•	Target Text Input Box — Where user enters text to be rewritten
+•	Style Sample Box — Displays the auto-generated constructed style sample (read-only, shows what was built from the database)
+•	Output Box — Displays the final rewritten text
+•	Rewrite Button — Triggers the rewrite process
+3. SENTENCE DATABASES
+Each database contains semantically-bleached sentences arranged by word count. Each sentence has been stripped of semantic content and replaced with placeholder variables (A, B, C, etc.) while preserving:
+•	Exact word count
+•	Punctuation
+•	Syntax structure
+•	Clause boundaries
+•	Discourse rhythm
+The databases are provided as separate .txt files: ACADEMIC_SENTENCE_DATABASE.txt and PERSONAL_SENTENCE_DATABASE.txt
+4. CORE ALGORITHM: STYLE SAMPLE CONSTRUCTION
+This is the heart of the application. The style sample must be constructed following these exact steps:
+4.1 Step-by-Step Process
+1.	SPLIT — Split the target text into individual sentences
+2.	COUNT — Count the words in each target sentence
+3.	MATCH — For each target sentence, find ONE sentence from the selected database with the closest word count
+4.	ASSEMBLE — Concatenate the matched sentences in order to form the style sample
+5.	DISPLAY — Place the constructed style sample in the Style Sample Box
+5. IRON RULES — ABSOLUTELY NON-NEGOTIABLE
+5.1 Sentence Matching Rules
+6.	ONE sentence per target sentence — Each target sentence maps to exactly one database sentence
+7.	Closest length match — Select the database sentence whose word count is closest to the target sentence's word count
+8.	Reuse is allowed — The same database sentence may be used multiple times if it's the best match for multiple target sentences
+9.	NO fabrication — Every sentence in the style sample MUST come verbatim from the database. Zero invented sentences. Zero invented words.
+5.2 The "AND" Rule
+CRITICAL: Do NOT add "and" between sentences. The only exception is when a single target sentence exceeds 70 words. In that rare case — and ONLY that case — multiple database sentences may be conjoined using "and" to reach the required length.
+Normal case (target sentence ≤ 70 words): ONE database sentence, NO connectors
+Exception case (target sentence > 70 words): Multiple database sentences joined with "and"
+5.3 Output Format Rules
+10.	The style sample is output as ONE continuous paragraph
+11.	Sentences are separated by periods (as they naturally are)
+12.	No labels, no commentary, no prefacing text
+13.	The style sample must have the same number of sentences as the target text
+6. CUSTOM STYLE SAMPLE HANDLING
+When a user clicks CUSTOM and uploads their own style sample (any text: Dickens, Orwell, legal brief, diary, etc.), the app must first SEMANTICALLY BLEACH it before using it.
+6.1 Semantic Bleaching Process
+Transform the uploaded text by:
+14.	Replacing all content words (nouns, verbs, adjectives, adverbs, proper names) with placeholder variables (A, B, C, etc.)
+15.	Preserving all punctuation exactly
+16.	Preserving all sentence boundaries exactly
+17.	Preserving exact word counts per sentence
+18.	Preserving syntax structure and clause boundaries
+19.	The result should have ZERO semantic content — only pure syntactic structure
+6.2 After Bleaching
+Once bleached, the custom sample is treated exactly like the Academic or Personal databases. The same matching algorithm applies: split target into sentences, count words, match to closest-length bleached sentences, assemble.
+7. REWRITE ENGINE LOGIC
+After the style sample is constructed and placed in the Style Sample Box, the rewrite engine generates the final output.
+7.1 What the Rewrite Engine Does
+20.	Takes the SEMANTIC CONTENT from the target text (the user's input)
+21.	Takes the SYNTACTIC STRUCTURE from the constructed style sample
+22.	Produces output that preserves the user's meaning while adopting the sentence structures from the style sample
+23.	The output should match the target text's total length approximately
+7.2 What the Rewrite Engine Must NEVER Do
+24.	NEVER ask the LLM to "humanize" the text
+25.	NEVER ask the LLM to "sound more natural"
+26.	NEVER ask the LLM to "improve" or "enhance" style
+27.	NEVER ignore the constructed style sample
+28.	NEVER invent transitions or smoothing phrases
+All style guidance comes EXCLUSIVELY from the constructed style sample. The style sample IS the style.
+8. COMPLETE EXAMPLE WALKTHROUGH
+8.1 User Action
+User clicks PERSONAL button in left sidebar, then enters target text.
+8.2 Target Text (User Input)
+"I've been thinking a lot lately about how much my communication habits have changed since starting college, especially in terms of how I present myself to other people. When I first arrived on campus, I felt like I was constantly performing—trying to sound confident, trying not to sound nervous, trying to fit into whatever 'college version' of myself I thought I was supposed to be."
+8.3 Sentence Analysis
+Sentence 1: 28 words
+Sentence 2: 38 words
+8.4 Database Matching (Using Personal Database)
+For 28 words → Find closest match: sentence #46 (28 words)
+For 38 words → Find closest match: sentence #48 (40 words)
+8.5 Constructed Style Sample (displayed in Style Sample Box)
+A have always had B, but in the last A or A A A figured out a A to A A with B how to A their A. I know S is A and may not be A to you, but if you can't get into a A A A the S A and A to get a A A to A you A A it.
+8.6 Final Rewrite (displayed in Output Box)
+The rewrite engine takes the user's meaning and maps it onto the syntactic structure from the style sample, producing text that passes AI detection.
+9. DATABASE FORMAT SPECIFICATION
+Each sentence database is a plain text file with one sentence per line. Format:
+[number]. [sentence text] - [word count] words
+Example:
+1. My A. - 2 words
+2. It is A work; but impossible to B. - 8 words
+3. Trying to cope with that F is really A. - 9 words
+Sentences should be sorted by word count (shortest to longest) for efficient lookup.
+10. CRITICAL FAILURE MODES TO AVOID
+29.	DO NOT add "and" between sentences (except for >70 word sentences)
+30.	DO NOT fabricate sentences that don't exist in the database
+31.	DO NOT paraphrase database sentences
+32.	DO NOT add commentary or labels to the style sample
+33.	DO NOT "smooth" or "improve" the style sample
+34.	DO NOT ask the LLM to "humanize" during rewriting
+35.	DO NOT ignore length matching requirements
+36.	DO NOT start from the same sentence every time (match by length, not position)
+37.	DO NOT keep the old "Writing Samples" UI with individual sample cards
+11. IMPLEMENTATION SUMMARY
+The GPTBypass app succeeds because it does not try to "make AI text sound human." Instead, it performs structural transplantation: it takes human-written syntactic shells and fills them with the user's semantic content. This is why it passes AI detection — the sentence-level structure genuinely comes from human sources.
+The algorithm is purely mechanical:
+38.	User selects ACADEMIC, PERSONAL, or CUSTOM from left sidebar
+39.	User enters target text
+40.	App counts words in each target sentence
+41.	App finds matching-length sentences in the selected database
+42.	App assembles them as the style sample
+43.	App uses the style sample to guide the rewrite
+No creativity. No interpretation. No shortcuts. Pure mechanical execution.
+END OF INSTRUCTIONS

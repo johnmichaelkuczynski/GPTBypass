@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { instructionPresets } from "@/lib/instructionPresets";
-import { writingSamples, getCategories, getSamplesByCategory, getCategoryCounts } from "@/lib/writingSamples";
+import { writingSamples } from "@/lib/writingSamples";
 
 interface LeftSidebarProps {
   selectedPresets: string[];
   onPresetsChange: (presets: string[]) => void;
   selectedStyleSample: string;
-  onStyleSampleSelect: (content: string) => void;
-  onContentSampleSelect: (content: string) => void;
+  onStyleSampleSelect: (sampleId: string) => void;
+  onContentSampleSelect: (sampleId: string) => void;
 }
 
 export default function LeftSidebar({ 
@@ -24,7 +22,7 @@ export default function LeftSidebar({
   onStyleSampleSelect,
   onContentSampleSelect
 }: LeftSidebarProps) {
-  const [selectedSampleId, setSelectedSampleId] = useState<string>("formal-functional-relationships");
+  const [selectedSampleId, setSelectedSampleId] = useState<string>("academic");
 
   const handlePresetSelect = (presetId: string) => {
     if (!selectedPresets.includes(presetId)) {
@@ -36,14 +34,9 @@ export default function LeftSidebar({
     onPresetsChange(selectedPresets.filter(id => id !== presetId));
   };
 
-
-
   const handleStyleSampleSelect = (sampleId: string) => {
-    const sample = writingSamples.find(s => s.id === sampleId);
-    if (sample) {
-      setSelectedSampleId(sample.id);
-      onStyleSampleSelect(sample.content);
-    }
+    setSelectedSampleId(sampleId);
+    onStyleSampleSelect(sampleId);
   };
 
   const groupedPresets = instructionPresets.reduce((acc, preset) => {
@@ -131,8 +124,6 @@ export default function LeftSidebar({
                   </Button>
                 </div>
               )}
-
-
             </div>
           </div>
 
@@ -142,35 +133,27 @@ export default function LeftSidebar({
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <i className="fas fa-book mr-2 text-primary"></i>
-              Writing Samples
+              Writing Style
             </h3>
             <div className="space-y-3">
+              <Label className="text-sm text-gray-600">
+                Choose a preset style or paste your own in Box B
+              </Label>
               <Select value={selectedSampleId} onValueChange={handleStyleSampleSelect}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Choose a writing sample..." />
+                <SelectTrigger className="w-full" data-testid="select-style-sample">
+                  <SelectValue placeholder="Choose a writing style..." />
                 </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {getCategories().map((category) => {
-                    const categorySamples = getSamplesByCategory(category);
-                    const categoryCount = getCategoryCounts()[category];
-                    return (
-                      <div key={category}>
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                          {category} ({categoryCount})
-                        </div>
-                        {categorySamples.map((sample) => (
-                          <SelectItem key={sample.id} value={sample.id}>
-                            <div className="flex flex-col items-start">
-                              <span className="font-medium">{sample.name}</span>
-                              <span className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                {sample.preview}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
+                <SelectContent>
+                  {writingSamples.map((sample) => (
+                    <SelectItem key={sample.id} value={sample.id} data-testid={`style-sample-${sample.id}`}>
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium">{sample.name}</span>
+                        <span className="text-xs text-muted-foreground mt-1">
+                          {sample.preview}
+                        </span>
                       </div>
-                    );
-                  })}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               
@@ -178,47 +161,26 @@ export default function LeftSidebar({
                 <div className="bg-gray-50 border rounded-lg p-3">
                   <div className="text-sm">
                     <div className="font-medium text-gray-900 mb-2">
-                      {writingSamples.find(s => s.id === selectedSampleId)?.name}
+                      {writingSamples.find(s => s.id === selectedSampleId)?.name} Style Selected
                     </div>
-                    <div className="text-gray-600 text-xs leading-relaxed max-h-24 overflow-y-auto">
+                    <div className="text-gray-600 text-xs leading-relaxed">
                       {writingSamples.find(s => s.id === selectedSampleId)?.preview}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center gap-2 mt-3">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-xs h-6 px-2 flex-1"
-                      onClick={() => {
-                        const sample = writingSamples.find(s => s.id === selectedSampleId);
-                        if (sample) onStyleSampleSelect(sample.content);
-                      }}
+                      className="text-xs h-7 px-3 flex-1"
+                      onClick={() => onStyleSampleSelect(selectedSampleId)}
+                      data-testid="button-send-style"
                     >
-                      Send to Style Box (B)
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-6 px-2 flex-1"
-                      onClick={() => {
-                        const sample = writingSamples.find(s => s.id === selectedSampleId);
-                        if (sample) onContentSampleSelect(sample.content);
-                      }}
-                    >
-                      Send to Content Box (C)
+                      Load to Style Box (B)
                     </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-2 text-xs h-6 px-2 w-full"
-                    onClick={() => {
-                      setSelectedSampleId("");
-                      onStyleSampleSelect("");
-                    }}
-                  >
-                    Clear Sample
-                  </Button>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Style length auto-adjusts to match your input length
+                  </p>
                 </div>
               )}
             </div>

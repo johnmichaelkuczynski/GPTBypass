@@ -7,6 +7,7 @@ import { textChunkerService } from "./services/textChunker";
 import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
+import { getSampleById, adjustStyleToInputLength } from "./services/styleSamples";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -120,8 +121,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         chunks,
         needsChunking: wordCount > 500,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Text analysis error:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get style sample endpoint
+  app.get("/api/style-samples/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const sample = getSampleById(id);
+      
+      if (!sample) {
+        return res.status(404).json({ message: "Style sample not found" });
+      }
+      
+      res.json({ content: sample });
+    } catch (error: any) {
+      console.error('Style sample error:', error);
       res.status(500).json({ message: error.message });
     }
   });
@@ -155,10 +173,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
+        // Adjust style text to match input length
+        let adjustedStyleText = rewriteRequest.styleText;
+        if (adjustedStyleText && rewriteRequest.inputText) {
+          adjustedStyleText = adjustStyleToInputLength(adjustedStyleText, rewriteRequest.inputText);
+        }
+        
         // Perform rewrite
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: rewriteRequest.styleText,
+          styleText: adjustedStyleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,

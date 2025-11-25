@@ -46,11 +46,21 @@ export default function Home() {
 
   // Set default style sample on component mount
   useEffect(() => {
-    const defaultSample = writingSamples.find(sample => sample.id === "formal-functional-relationships");
-    if (defaultSample && !selectedStyleSample) {
-      setSelectedStyleSample(defaultSample.content);
-      setStyleText(defaultSample.content);
-    }
+    const loadDefaultStyle = async () => {
+      if (!selectedStyleSample) {
+        try {
+          const response = await fetch('/api/style-samples/academic');
+          if (response.ok) {
+            const data = await response.json();
+            setSelectedStyleSample("academic");
+            setStyleText(data.content);
+          }
+        } catch (error) {
+          console.error('Failed to load default style sample:', error);
+        }
+      }
+    };
+    loadDefaultStyle();
   }, []);
 
   // Text analysis mutation
@@ -156,9 +166,28 @@ export default function Home() {
     }
   };
 
-  const handleStyleSampleSelect = (content: string) => {
-    setSelectedStyleSample(content);
-    handleStyleTextChange(content);
+  const handleStyleSampleSelect = async (sampleId: string) => {
+    try {
+      const response = await fetch(`/api/style-samples/${sampleId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedStyleSample(sampleId);
+        handleStyleTextChange(data.content);
+        toast({ description: `${sampleId.charAt(0).toUpperCase() + sampleId.slice(1)} style loaded successfully!` });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to load style sample",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load style sample",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleStyleUpload = (content: string, type: 'style' | 'content') => {
@@ -285,10 +314,22 @@ export default function Home() {
           onPresetsChange={setSelectedPresets}
           selectedStyleSample={selectedStyleSample}
           onStyleSampleSelect={handleStyleSampleSelect}
-          onContentSampleSelect={(content) => {
-            setContentMixText(content);
-            setMixingMode(styleText.trim() ? 'both' : 'content');
-            toast({ description: "Writing sample sent to Content Box successfully!" });
+          onContentSampleSelect={async (sampleId) => {
+            try {
+              const response = await fetch(`/api/style-samples/${sampleId}`);
+              if (response.ok) {
+                const data = await response.json();
+                setContentMixText(data.content);
+                setMixingMode(styleText.trim() ? 'both' : 'content');
+                toast({ description: "Writing sample sent to Content Box successfully!" });
+              }
+            } catch (error) {
+              toast({
+                title: "Error",
+                description: "Failed to load content sample",
+                variant: "destructive",
+              });
+            }
           }}
         />
         

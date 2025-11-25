@@ -8,6 +8,7 @@ import { gptZeroService } from "./services/gptZero";
 import { aiProviderService } from "./services/aiProviders";
 import { documentGeneratorService } from "./services/documentGenerator";
 import { getStyleSample } from "./services/styleSamples";
+import { processCustomStyleSample } from "./services/semanticBleacher";
 import { insertDocumentSchema, insertRewriteJobSchema, type RewriteRequest, type RewriteResponse } from "@shared/schema";
 import { z } from "zod";
 
@@ -140,11 +141,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get input word count for length-matching style sample
       const inputWordCount = rewriteRequest.inputText.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
       
-      // Get the style sample that matches the input length
+      // Determine the style text to use
+      let styleText: string;
       const styleId = rewriteRequest.styleId || 'academic';
-      const styleText = getStyleSample(styleId, inputWordCount);
       
-      console.log(`📝 Using ${styleId} style sample (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
+      if (styleId === 'custom' && rewriteRequest.customStyleText) {
+        // Process custom style sample: bleach it and adjust length
+        console.log(`📝 Processing custom style sample...`);
+        styleText = await processCustomStyleSample(
+          rewriteRequest.customStyleText,
+          rewriteRequest.inputText,
+          rewriteRequest.provider
+        );
+        console.log(`📝 Custom style processed (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
+      } else {
+        // Use built-in style sample
+        styleText = getStyleSample(styleId, inputWordCount);
+        console.log(`📝 Using ${styleId} style sample (${styleText.split(/\s+/).length} words) for input of ${inputWordCount} words`);
+      }
 
       // Analyze input text
       const inputAnalysis = await gptZeroService.analyzeText(rewriteRequest.inputText);

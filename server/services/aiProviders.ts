@@ -107,16 +107,32 @@ function buildRewritePrompt(params: {
 }): string {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
+  const inputWordCount = params.inputText.split(/\s+/).filter(w => w.length > 0).length;
   
-  let prompt = "";
-  
+  let prompt = `STRICT REWRITE TASK - Content preservation is mandatory.
+
+PHASE 1 - ANALYZE INPUT CONTENT:
+Read the INPUT TEXT. Every single fact, claim, name, number, and idea MUST appear in your output.
+
+INPUT TEXT (${inputWordCount} words):
+"""
+${params.inputText}
+"""
+
+`;
+
   if (hasStyle) {
-    prompt = `You must rewrite the INPUT TEXT below. 
+    prompt += `PHASE 2 - EXTRACT STYLE PATTERNS ONLY:
+Study the STYLE SAMPLE below. Extract ONLY these elements:
+- Sentence length patterns (short vs long)
+- How sentences begin (with subject? with clause?)
+- Punctuation habits (em-dashes, semicolons, etc.)
+- Vocabulary register (casual vs formal)
+- Paragraph rhythm
 
-IMPORTANT: Keep ALL the facts, meaning, and topic from the INPUT TEXT. 
-Only change HOW it is written to match the writing style of the STYLE SAMPLE.
+DO NOT take any topics, facts, or subject matter from the style sample.
 
-STYLE SAMPLE (copy the sentence patterns, word choices, and rhythm - but NOT the topic):
+STYLE SAMPLE:
 """
 ${params.styleText}
 """
@@ -125,7 +141,7 @@ ${params.styleText}
   }
 
   if (hasContent) {
-    prompt += `You may also integrate relevant ideas from this CONTENT REFERENCE:
+    prompt += `OPTIONAL ENRICHMENT - You may weave in ideas from:
 """
 ${params.contentMixText}
 """
@@ -135,12 +151,20 @@ ${params.contentMixText}
 
   prompt += buildPresetBlock(params.selectedPresets, params.customInstructions);
 
-  prompt += `INPUT TEXT (rewrite this - keep its meaning, change only the style):
-"""
-${params.inputText}
-"""
+  prompt += `PHASE 3 - REWRITE WITH STRICT CONSTRAINTS:
+1. Take each sentence from the INPUT TEXT
+2. Rewrite it using the style patterns from the STYLE SAMPLE
+3. Keep EVERY fact from the input - do not add or remove any
+4. Target length: ${inputWordCount} words (±10%)
 
-Rewritten text:`;
+FORBIDDEN:
+- Dropping any facts from the input
+- Adding facts not in the input
+- Copying content/topics from the style sample
+- Changing names, numbers, or specific claims
+- Making the output significantly shorter or longer
+
+OUTPUT (rewritten text only, no commentary):`;
 
   return prompt;
 }

@@ -198,16 +198,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       try {
-        // Adjust style text to match input length
-        let adjustedStyleText = rewriteRequest.styleText;
-        if (adjustedStyleText && rewriteRequest.inputText) {
-          adjustedStyleText = adjustStyleToInputLength(adjustedStyleText, rewriteRequest.inputText);
-        }
+        // Use styleText directly - it's already the Frankenstein sample from Box B
+        // DO NOT call adjustStyleToInputLength - that destroys the matched sentences
         
         // Perform rewrite
         const rewrittenText = await aiProviderService.rewrite(rewriteRequest.provider, {
           inputText: rewriteRequest.inputText,
-          styleText: adjustedStyleText,
+          styleText: rewriteRequest.styleText,
           contentMixText: rewriteRequest.contentMixText,
           customInstructions: rewriteRequest.customInstructions,
           selectedPresets: rewriteRequest.selectedPresets,

@@ -6,10 +6,9 @@ import { PlayCircle } from "lucide-react";
 interface HeaderProps {
   provider: string;
   onProviderChange: (provider: string) => void;
-  onShowApiKeys?: () => void;
 }
 
-export default function Header({ provider, onProviderChange, onShowApiKeys }: HeaderProps) {
+export default function Header({ provider, onProviderChange }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b border-gray-200 z-40">
       <div className="max-w-full mx-auto px-6 py-4">
@@ -45,13 +44,6 @@ export default function Header({ provider, onProviderChange, onShowApiKeys }: He
                 </SelectContent>
               </Select>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={onShowApiKeys}
-            >
-              <i className="fas fa-key mr-2"></i>API Keys
-            </Button>
           </div>
         </div>
       </div>

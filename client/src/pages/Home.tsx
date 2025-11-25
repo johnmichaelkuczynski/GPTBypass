@@ -7,7 +7,6 @@ import CustomInstructions from "@/components/CustomInstructions";
 import ChunkSelectionModal from "@/components/ChunkSelectionModal";
 import DownloadModal from "@/components/DownloadModal";
 import ChatInterface from "@/components/ChatInterface";
-import ApiKeyManager from "@/components/ApiKeyManager";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -22,7 +21,6 @@ export default function Home() {
   const [customInstructions, setCustomInstructions] = useState("");
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
   const [selectedStyleSample, setSelectedStyleSample] = useState<string>("");
-  const [showApiKeyManager, setShowApiKeyManager] = useState(false);
   
   // Content mixing state
   const [contentMixText, setContentMixText] = useState("");
@@ -252,31 +250,11 @@ export default function Home() {
 
   const isProcessing = rewriteMutation.isPending || reRewriteMutation.isPending;
 
-  if (showApiKeyManager) {
-    return (
-      <div className="min-h-screen bg-gray-50 font-inter p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <button 
-              onClick={() => setShowApiKeyManager(false)}
-              className="text-blue-600 hover:text-blue-800 flex items-center"
-            >
-              <i className="fas fa-arrow-left mr-2"></i>
-              Back to App
-            </button>
-          </div>
-          <ApiKeyManager onKeysUpdated={() => setShowApiKeyManager(false)} />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
       <Header 
         provider={provider} 
         onProviderChange={setProvider}
-        onShowApiKeys={() => setShowApiKeyManager(true)}
       />
       
       <div className="flex h-screen pt-16">

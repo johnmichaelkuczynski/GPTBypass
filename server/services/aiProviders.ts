@@ -107,31 +107,23 @@ function buildRewritePrompt(params: {
 }): string {
   const hasStyle = !!(params.styleText && params.styleText.trim() !== "");
   const hasContent = !!(params.contentMixText && params.contentMixText.trim() !== "");
-  
-  // Count sentences in input text
-  const inputSentences = params.inputText.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
-  const inputSentenceCount = inputSentences.length;
-  
-  // Count sentences in style sample
-  const styleSample = hasStyle ? params.styleText! : "";
-  const styleSentences = styleSample ? styleSample.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0) : [];
-  const styleSentenceCount = styleSentences.length;
+  const styleSample = hasStyle ? params.styleText! : `DEFAULT STYLE SAMPLE (The Raven Paradox):
 
-  let prompt = `You are a surgical style mimicry engine. Your task is to rewrite the input text while EXACTLY matching the structure of the style sample.
+Presumably, logically equivalent statements are confirmationally equivalent. In other words, if two statements entail each other, then anything that one confirms the one statement to a given degree also confirms the other statement to that degree. But this actually seems false when consider statement-pairs such as: 
 
-CRITICAL REQUIREMENTS:
-1. OUTPUT MUST HAVE EXACTLY ${inputSentenceCount} SENTENCES - same as the input
-2. The style sample has ${styleSentenceCount} sentences - match sentence-by-sentence structure
-3. Each output sentence should mirror the LENGTH and STRUCTURE of the corresponding style sample sentence
-4. Preserve ALL original meaning, facts, and terminology from the input text
-5. The style sample may contain placeholder letters (A, B, C, X, Y, Z) - these represent abstract concepts. DO NOT copy these placeholders. Mimic ONLY the syntactic patterns: sentence length, clause structure, punctuation rhythm, and rhetorical flow.
+(i) All ravens are black, 
+and 
+(ii) All non-black things are non-ravens, 
 
-STYLE SAMPLE TO MIMIC (${styleSentenceCount} sentences):
-"""
-${styleSample}
-"""
+which, though logically equivalent, seem to confirmationally equivalent, in that a non-black non-raven confirms (ii) to a high degree but confirms (i) to no degree or at most to a low degree. 
+A number of very contrived solutions to this paradox have been proposed, all of which either deny that there is a paradox or invent ad hoc systems of logic to validate the 'solution' in question. 
+But the real solution is clear. First of all, it is only principled generalizations that can be confirmed. Supposing that you assert (i) with the intention of affirming a principled as opposed to an accidental generalization, you are saying that instances of the property of being a raven grounds or causes instances of blackness. Read thus, (i) is most certainly not equivalent with (ii) or with any variation thereof. Be it noted that while there is a natural nomic or causal reading of (i), there is no such reading of (ii). Also be it noted that it is only principled as opposed to accidental generalizations that can be confirmed. "All metal expands when heated" can be confirmed but not "all objects in Smith's pocket expand when heated." In general, when read as principled and therefore confirmable generalization, "all x's are y's" has nomic or causal content is therefore not equivalent with "all non-y's are non-x's." Case closed on the Raven Paradox.`;
 
-`;
+  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample.
+
+CRITICAL: The style sample may contain placeholder letters (A, B, C, X, Y, Z, etc.) that represent abstract concepts. DO NOT copy these placeholder letters into your output. Instead, mimic ONLY the stylistic elements: sentence structure, cadence, complexity, voice, tone, paragraph flow, and rhetorical patterns. Keep all the original meaning and specific terms from the input text.
+
+Style sample:\n"${styleSample}"\n\n`;
 
   if (hasContent) {
     prompt += `Judiciously integrate relevant ideas, examples, and details from the following content reference to enrich the rewrite:\n"${params.contentMixText}"\n\n`;

@@ -56,10 +56,13 @@ const PRESET_TEXT: Record<string,string> = {
   "Hedge once": "Use exactly one hedge: probably/roughly/more or less.",
   "Drop intensifiers": "Remove 'very/clearly/obviously/significantly'.",
   "Low-heat voice": "Prefer plain verbs; avoid showy synonyms.",
+  "One aside": "Allow one short parenthetical or em-dash aside; strictly factual.",
   "Concrete benchmark": "Replace one vague scale with a testable one (e.g., 'enough to X').",
   "Swap generic example": "If the source has an example, make it slightly more specific; else skip.",
   "Metric nudge": "Replace 'more/better' with a minimal, source-safe comparator (e.g., 'more than last case').",
+  "Asymmetric emphasis": "Linger on the main claim; compress secondary points sharply.",
   "Cull repeats": "Delete duplicated sentences/ideas; keep the strongest instance.",
+  "Topic snap": "Allow one abrupt focus change; no recap.",
   "No lists": "Output as continuous prose; remove bullets/numbering.",
   "No meta": "No prefaces/apologies/phrases like 'as requested'.",
   "Exact nouns": "Replace ambiguous pronouns with exact nouns.",
@@ -119,11 +122,7 @@ which, though logically equivalent, seem to confirmationally equivalent, in that
 A number of very contrived solutions to this paradox have been proposed, all of which either deny that there is a paradox or invent ad hoc systems of logic to validate the 'solution' in question. 
 But the real solution is clear. First of all, it is only principled generalizations that can be confirmed. Supposing that you assert (i) with the intention of affirming a principled as opposed to an accidental generalization, you are saying that instances of the property of being a raven grounds or causes instances of blackness. Read thus, (i) is most certainly not equivalent with (ii) or with any variation thereof. Be it noted that while there is a natural nomic or causal reading of (i), there is no such reading of (ii). Also be it noted that it is only principled as opposed to accidental generalizations that can be confirmed. "All metal expands when heated" can be confirmed but not "all objects in Smith's pocket expand when heated." In general, when read as principled and therefore confirmable generalization, "all x's are y's" has nomic or causal content is therefore not equivalent with "all non-y's are non-x's." Case closed on the Raven Paradox.`;
 
-  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample.
-
-CRITICAL: The style sample may contain placeholder letters (A, B, C, X, Y, Z, etc.) that represent abstract concepts. DO NOT copy these placeholder letters into your output. Instead, mimic ONLY the stylistic elements: sentence structure, cadence, complexity, voice, tone, paragraph flow, and rhetorical patterns. Keep all the original meaning and specific terms from the input text.
-
-Style sample:\n"${styleSample}"\n\n`;
+  let prompt = `Rewrite the text below so that its style matches, at a granular level, the style of the following style sample:\n"${styleSample}"\n\n`;
 
   if (hasContent) {
     prompt += `Judiciously integrate relevant ideas, examples, and details from the following content reference to enrich the rewrite:\n"${params.contentMixText}"\n\n`;
@@ -198,10 +197,8 @@ export class AIProviderService {
         temperature: 0.7,
       });
 
-      const textContent = response.content[0];
-      const text = textContent.type === 'text' ? textContent.text : '';
-      console.log("🔥 Anthropic response received, length:", text?.length || 0);
-      return this.cleanMarkup(text || "");
+      console.log("🔥 Anthropic response received, length:", response.content[0].text?.length || 0);
+      return this.cleanMarkup(response.content[0].text || "");
     } catch (error: any) {
       console.error("🔥 ANTHROPIC API ERROR:", error);
       throw new Error(`Anthropic API error: ${error.message}`);

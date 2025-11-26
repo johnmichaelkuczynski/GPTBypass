@@ -18,51 +18,6 @@ const upload = multer({
   },
 });
 
-function splitIntoSentences(text: string): string[] {
-  const normalized = text.replace(/\s+/g, ' ').trim();
-  const sentences: string[] = [];
-  let current = '';
-  let inQuote = false;
-  let inParen = 0;
-  
-  for (let i = 0; i < normalized.length; i++) {
-    const char = normalized[i];
-    const nextChar = normalized[i + 1] || '';
-    
-    current += char;
-    
-    if (char === '"' || char === '"' || char === '"') {
-      inQuote = !inQuote;
-    }
-    if (char === '(') inParen++;
-    if (char === ')') inParen--;
-    
-    const isSentenceEnd = (char === '.' || char === '!' || char === '?') && 
-                          !inQuote && 
-                          inParen === 0;
-    
-    if (isSentenceEnd) {
-      const lookAhead = normalized.slice(i + 1, i + 10);
-      const isAbbreviation = /^[a-z]/.test(lookAhead) || 
-                             /\b(Mr|Mrs|Ms|Dr|Prof|Inc|Ltd|Jr|Sr|vs|etc|i\.e|e\.g)\.$/.test(current.trim());
-      
-      if (!isAbbreviation || nextChar === ' ' && /^[A-Z]/.test(normalized[i + 2] || '')) {
-        const sentence = current.trim();
-        if (sentence.length > 0) {
-          sentences.push(sentence);
-        }
-        current = '';
-      }
-    }
-  }
-  
-  if (current.trim().length > 0) {
-    sentences.push(current.trim());
-  }
-  
-  return sentences.filter(s => s.length > 0);
-}
-
 function cleanMarkup(text: string): string {
   return text
     // Remove markdown bold/italic markers
@@ -415,86 +370,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Download error:', error);
       res.status(500).json({ message: `Failed to generate ${req.params.format.toUpperCase()} file: ${error.message}` });
-    }
-  });
-
-  // Semantic bleaching endpoint for custom uploads
-  app.post("/api/bleach-text", async (req, res) => {
-    try {
-      const { text } = req.body;
-      
-      if (!text || typeof text !== 'string') {
-        return res.status(400).json({ message: "Text is required" });
-      }
-
-      // Split into sentences
-      const sentences = splitIntoSentences(text);
-      const bleachedSentences = [];
-
-      const placeholders = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      
-      // Content words pattern - excludes function words
-      const functionWords = new Set([
-        'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-        'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-        'should', 'may', 'might', 'must', 'shall', 'can', 'need', 'dare',
-        'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by',
-        'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above',
-        'below', 'between', 'under', 'over', 'out', 'up', 'down', 'off',
-        'about', 'against', 'among', 'around', 'behind', 'beside', 'beyond',
-        'inside', 'outside', 'within', 'without', 'along', 'across', 'toward',
-        'upon', 'until', 'since', 'but', 'and', 'or', 'nor', 'so', 'yet',
-        'both', 'either', 'neither', 'not', 'only', 'also', 'than', 'that',
-        'this', 'these', 'those', 'which', 'who', 'whom', 'whose', 'what',
-        'when', 'where', 'why', 'how', 'if', 'then', 'because', 'although',
-        'though', 'while', 'unless', 'whether', 'however', 'therefore',
-        'thus', 'hence', 'moreover', 'furthermore', 'nevertheless',
-        'nonetheless', 'meanwhile', 'otherwise', 'instead', 'rather',
-        'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her',
-        'us', 'them', 'my', 'your', 'his', 'its', 'our', 'their', 'mine',
-        'yours', 'hers', 'ours', 'theirs', 'myself', 'yourself', 'himself',
-        'herself', 'itself', 'ourselves', 'themselves'
-      ]);
-
-      for (let i = 0; i < sentences.length; i++) {
-        const sentence = sentences[i];
-        const words = sentence.split(/\s+/);
-        const wordCount = words.filter(w => w.replace(/[^\w]/g, '').length > 0).length;
-        
-        let placeholderIndex = 0;
-        const wordMap = new Map<string, string>();
-        
-        const bleachedWords = words.map(word => {
-          const cleanWord = word.replace(/[^\w']/g, '').toLowerCase();
-          if (!cleanWord || functionWords.has(cleanWord)) {
-            return word;
-          }
-          
-          if (wordMap.has(cleanWord)) {
-            const placeholder = wordMap.get(cleanWord)!;
-            return word.replace(/\w+/, placeholder);
-          }
-          
-          const placeholder = placeholders[placeholderIndex % placeholders.length];
-          placeholderIndex++;
-          wordMap.set(cleanWord, placeholder);
-          return word.replace(/\w+/, placeholder);
-        });
-        
-        bleachedSentences.push({
-          id: i + 1,
-          text: bleachedWords.join(' '),
-          wordCount
-        });
-      }
-
-      res.json({
-        sentences: bleachedSentences,
-        totalSentences: bleachedSentences.length
-      });
-    } catch (error: any) {
-      console.error('Bleach text error:', error);
-      res.status(500).json({ message: error.message });
     }
   });
 

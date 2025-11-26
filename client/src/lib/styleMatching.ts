@@ -139,7 +139,10 @@ export function constructStyleSample(
     
     if (targetWordCount > 70) {
       const multiMatches = findMultipleMatchesForLongSentence(targetWordCount, database);
-      const combinedText = multiMatches.map(m => m.text.replace(/^"|"$/g, '')).join(' and ');
+      // Strip both curly and straight quotes from each sentence
+      const combinedText = multiMatches.map(m => 
+        m.text.replace(/^[""`'']/g, '').replace(/[""`''"]$/g, '').trim()
+      ).join(' and ');
       
       styleParts.push(combinedText);
       
@@ -152,7 +155,8 @@ export function constructStyleSample(
       });
     } else {
       const closestMatch = findClosestMatch(targetWordCount, database);
-      const matchText = closestMatch.text.replace(/^"|"$/g, '');
+      // Strip both curly and straight quotes
+      const matchText = closestMatch.text.replace(/^[""`'']/g, '').replace(/[""`''"]$/g, '').trim();
       
       styleParts.push(matchText);
       
@@ -166,6 +170,7 @@ export function constructStyleSample(
     }
   }
   
+  // Join with space - each sentence from database already ends with punctuation
   const styleSample = styleParts.join(' ');
   
   return {

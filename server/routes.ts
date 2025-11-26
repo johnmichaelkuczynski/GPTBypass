@@ -306,18 +306,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // API Keys endpoint
   app.post("/api/set-keys", async (req, res) => {
     try {
-      const { openai, anthropic, deepseek, perplexity, gptzero } = req.body;
+      const { openai, anthropic, deepseek, perplexity, xai, gptzero } = req.body;
       
       // Store keys in environment variables
       if (openai) process.env.OPENAI_API_KEY = openai;
       if (anthropic) process.env.ANTHROPIC_API_KEY = anthropic;
       if (deepseek) process.env.DEEPSEEK_API_KEY = deepseek;
       if (perplexity) process.env.PERPLEXITY_API_KEY = perplexity;
+      if (xai) process.env.XAI_API_KEY = xai;
       if (gptzero) process.env.GPTZERO_API_KEY = gptzero;
       
       console.log("🔑 API Keys updated successfully");
       res.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Set keys error:', error);
       res.status(500).json({ message: error.message });
     }
@@ -402,6 +403,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         case 'perplexity':
           providerName = "Zhi 4";
           break;
+        case 'grok':
+          providerName = "Zhi 5";
+          break;
       }
 
       if (context) {
@@ -451,6 +455,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           break;
         case 'perplexity':
           response = await aiProviderService.rewriteWithPerplexity({ 
+            inputText: message,
+            customInstructions: systemInstructions
+          });
+          break;
+        case 'grok':
+          response = await aiProviderService.rewriteWithGrok({ 
             inputText: message,
             customInstructions: systemInstructions
           });

@@ -11,6 +11,7 @@ The newest Anthropic model is "claude-sonnet-4-20250514", not "claude-3-7-sonnet
 // <important_do_not_delete>
 const DEFAULT_OPENAI_MODEL = "gpt-4o";
 const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514";
+const DEFAULT_GROK_MODEL = "grok-2-1212";
 // </important_do_not_delete>
 
 const openai = new OpenAI({
@@ -19,6 +20,11 @@ const openai = new OpenAI({
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY_ENV_VAR || "default_key",
+});
+
+const grokClient = new OpenAI({
+  baseURL: "https://api.x.ai/v1",
+  apiKey: process.env.XAI_API_KEY || process.env.XAI_API_KEY_ENV_VAR || "default_key",
 });
 
 const PRESET_TEXT: Record<string,string> = {
@@ -231,7 +237,7 @@ export class AIProviderService {
 
       const data = await response.json();
       return this.cleanMarkup(data.choices[0].message.content || "");
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Perplexity API error: ${error.message}`);
     }
   }
@@ -269,8 +275,38 @@ export class AIProviderService {
 
       const data = await response.json();
       return this.cleanMarkup(data.choices[0].message.content || "");
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`DeepSeek API error: ${error.message}`);
+    }
+  }
+
+  async rewriteWithGrok(params: RewriteParams): Promise<string> {
+    console.log("🔥 CALLING GROK API - Input length:", params.inputText?.length || 0);
+    const prompt = buildRewritePrompt({
+      inputText: params.inputText,
+      styleText: params.styleText,
+      contentMixText: params.contentMixText,
+      selectedPresets: params.selectedPresets,
+      customInstructions: params.customInstructions,
+    });
+    console.log("🔥 User prompt length:", prompt.length);
+    
+    try {
+      console.log("🔥 About to make Grok API call...");
+      const response = await grokClient.chat.completions.create({
+        model: DEFAULT_GROK_MODEL,
+        messages: [
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 4000,
+      });
+
+      console.log("🔥 Grok response received, length:", response.choices[0].message.content?.length || 0);
+      return this.cleanMarkup(response.choices[0].message.content || "");
+    } catch (error: any) {
+      console.error("🔥 GROK API ERROR:", error);
+      throw new Error(`Grok API error: ${error.message}`);
     }
   }
 
@@ -307,6 +343,8 @@ export class AIProviderService {
         return this.rewriteWithPerplexity(params);
       case 'deepseek':
         return this.rewriteWithDeepSeek(params);
+      case 'grok':
+        return this.rewriteWithGrok(params);
       default:
         throw new Error(`Unsupported AI provider: ${provider}`);
     }

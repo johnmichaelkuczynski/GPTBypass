@@ -15,6 +15,7 @@ export default function ApiKeyManager({ onKeysUpdated }: ApiKeyManagerProps) {
     anthropic: "",
     deepseek: "",
     perplexity: "",
+    xai: "",
     gptzero: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -99,6 +100,17 @@ export default function ApiKeyManager({ onKeysUpdated }: ApiKeyManagerProps) {
             placeholder="pplx-..."
             value={keys.perplexity}
             onChange={(e) => setKeys(prev => ({ ...prev, perplexity: e.target.value }))}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="xai">Zhi 5 (Grok) API Key</Label>
+          <Input
+            id="xai"
+            type="password"
+            placeholder="xai-..."
+            value={keys.xai}
+            onChange={(e) => setKeys(prev => ({ ...prev, xai: e.target.value }))}
           />
         </div>
 

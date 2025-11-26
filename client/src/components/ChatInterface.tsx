@@ -31,7 +31,7 @@ export default function ChatInterface({
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [selectedProvider, setSelectedProvider] = useState<string>("grok");
+  const [selectedProvider, setSelectedProvider] = useState<string>("anthropic");
   const [isLoading, setIsLoading] = useState(false);
 
   const providers = [
@@ -39,7 +39,6 @@ export default function ChatInterface({
     { value: "anthropic", label: "Zhi 2" },
     { value: "deepseek", label: "Zhi 3" },
     { value: "perplexity", label: "Zhi 4" },
-    { value: "grok", label: "Zhi 5" },
   ];
 
   const sendMessage = async () => {

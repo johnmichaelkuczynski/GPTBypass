@@ -339,8 +339,6 @@ export class AIProviderService {
         return this.rewriteWithOpenAI(params);
       case 'anthropic':
         return this.rewriteWithAnthropic(params);
-      case 'perplexity':
-        return this.rewriteWithPerplexity(params);
       case 'deepseek':
         return this.rewriteWithDeepSeek(params);
       case 'grok':

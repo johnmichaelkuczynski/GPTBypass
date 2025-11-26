@@ -14,7 +14,6 @@ export default function ApiKeyManager({ onKeysUpdated }: ApiKeyManagerProps) {
     openai: "",
     anthropic: "",
     deepseek: "",
-    perplexity: "",
     xai: "",
     gptzero: ""
   });
@@ -89,17 +88,6 @@ export default function ApiKeyManager({ onKeysUpdated }: ApiKeyManagerProps) {
             placeholder="sk-..."
             value={keys.deepseek}
             onChange={(e) => setKeys(prev => ({ ...prev, deepseek: e.target.value }))}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="perplexity">Zhi 4 API Key</Label>
-          <Input
-            id="perplexity"
-            type="password"
-            placeholder="pplx-..."
-            value={keys.perplexity}
-            onChange={(e) => setKeys(prev => ({ ...prev, perplexity: e.target.value }))}
           />
         </div>
 

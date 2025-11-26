@@ -40,7 +40,6 @@ export default function Header({ provider, onProviderChange, onShowApiKeys }: He
                   <SelectItem value="openai">Zhi 1</SelectItem>
                   <SelectItem value="anthropic">Zhi 2</SelectItem>
                   <SelectItem value="deepseek">Zhi 3</SelectItem>
-                  <SelectItem value="perplexity">Zhi 4</SelectItem>
                   <SelectItem value="grok">Zhi 5</SelectItem>
                 </SelectContent>
               </Select>

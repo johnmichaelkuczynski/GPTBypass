@@ -38,7 +38,6 @@ export default function ChatInterface({
     { value: "openai", label: "Zhi 1" },
     { value: "anthropic", label: "Zhi 2" },
     { value: "deepseek", label: "Zhi 3" },
-    { value: "perplexity", label: "Zhi 4" },
     { value: "grok", label: "Zhi 5" },
   ];
 

@@ -83,7 +83,7 @@ export interface WritingSample {
 }
 
 export interface AIProviderConfig {
-  provider: 'openai' | 'anthropic' | 'deepseek' | 'perplexity' | 'grok';
+  provider: 'openai' | 'anthropic' | 'deepseek' | 'grok';
   model?: string;
 }
 

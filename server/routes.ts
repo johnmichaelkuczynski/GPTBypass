@@ -306,13 +306,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // API Keys endpoint
   app.post("/api/set-keys", async (req, res) => {
     try {
-      const { openai, anthropic, deepseek, perplexity, xai, gptzero } = req.body;
+      const { openai, anthropic, deepseek, xai, gptzero } = req.body;
       
       // Store keys in environment variables
       if (openai) process.env.OPENAI_API_KEY = openai;
       if (anthropic) process.env.ANTHROPIC_API_KEY = anthropic;
       if (deepseek) process.env.DEEPSEEK_API_KEY = deepseek;
-      if (perplexity) process.env.PERPLEXITY_API_KEY = perplexity;
       if (xai) process.env.XAI_API_KEY = xai;
       if (gptzero) process.env.GPTZERO_API_KEY = gptzero;
       
@@ -400,9 +399,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         case 'deepseek':
           providerName = "Zhi 3";
           break;
-        case 'perplexity':
-          providerName = "Zhi 4";
-          break;
         case 'grok':
           providerName = "Zhi 5";
           break;
@@ -449,12 +445,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           break;
         case 'deepseek':
           response = await aiProviderService.rewriteWithDeepSeek({ 
-            inputText: message,
-            customInstructions: systemInstructions
-          });
-          break;
-        case 'perplexity':
-          response = await aiProviderService.rewriteWithPerplexity({ 
             inputText: message,
             customInstructions: systemInstructions
           });

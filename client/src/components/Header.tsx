@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { PlayCircle } from "lucide-react";
+import { PlayCircle, Mail } from "lucide-react";
 
 interface HeaderProps {
   provider: string;
@@ -44,6 +44,16 @@ export default function Header({ provider, onProviderChange, onShowApiKeys }: He
                 </SelectContent>
               </Select>
             </div>
+            <a href="mailto:zhi@zhisystems.org">
+              <Button 
+                variant="outline" 
+                size="sm"
+                data-testid="button-contact-us"
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                Contact Us
+              </Button>
+            </a>
             <Button 
               variant="outline" 
               size="sm"
